@@ -1,9 +1,9 @@
 # clem_site
-site en développement
+## site en développement (v.ALPHA)
 
-but du site : reproduire un ordinateur windows xp
+## but du site : reproduire un ordinateur windows xp
 
-code : semi vibe codé
+## code : semi vibe codé
 
 # versions importentes :
 PRE-Alpha 0.0 : commencement
@@ -17,3 +17,6 @@ Consulte le wiki (boutton dans la sidebar en haut de l'écran)
 ## IA(s) :
 - Gemini
 - Claude
+
+# Code fait 100% sans IA
+## le code 100% par humain se trouve dans les dossiers qui contiennent un info.txt qui indique que le code du dossier a été fait 100% par humain sans intervention d'ia même pour la révision
