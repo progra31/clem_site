@@ -7,3 +7,6 @@ code : semi vibe codé
 
 # versions importentes :
 PRE-Alpha 0.0 : commencement
+
+# Une question ?
+Consulte le wiki (boutton dans la sidebar en haut de l'écran)
