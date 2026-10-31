@@ -1,2 +1,5 @@
 # clem_site
-LE super site trop bien
+site en développement
+
+versions importentes :
+PRE-Alpha 0.0 : commencement
