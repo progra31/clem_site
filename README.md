@@ -1,4 +1,4 @@
-# clem_site
+# clem (site/code en python/SEMI vibe coding)
 ## site en développement (v.ALPHA)
 
 ## but du site : reproduire un ordinateur windows xp
