@@ -10,3 +10,10 @@ PRE-Alpha 0.0 : commencement
 
 # Une question ?
 Consulte le wiki (boutton dans la sidebar en haut de l'écran)
+
+# Credits
+## Humains :
+- Clément BEYT
+## IA(s) :
+- Gemini
+- Claude
