@@ -115,6 +115,9 @@
     <div class="xp-desktop-icon flex flex-col items-center gap-1 text-white text-xs drop-shadow-[0_1px_2px_rgba(0,0,0,1)]" ondblclick="openApp('cmd')" onclick="selectIcon(event, this)">
         <i class="fa-solid fa-terminal text-3xl text-gray-200 drop-shadow"></i><span class="leading-tight text-center">Invite de commandes</span>
     </div>
+    <div class="xp-desktop-icon flex flex-col items-center gap-1 text-white text-xs drop-shadow-[0_1px_2px_rgba(0,0,0,1)]" ondblclick="openApp('wiki')" onclick="selectIcon(event, this)">
+        <i class="fa-solid fa-book text-3xl text-amber-300 drop-shadow"></i><span class="leading-tight text-center">Wiki</span>
+    </div>
     <div class="xp-desktop-icon flex flex-col items-center gap-1 text-white text-xs drop-shadow-[0_1px_2px_rgba(0,0,0,1)]" ondblclick="alert('La corbeille est vide !')" onclick="selectIcon(event, this)">
         <i class="fa-solid fa-trash-can text-3xl text-gray-200 drop-shadow"></i><span class="leading-tight text-center">Corbeille</span>
     </div>
@@ -327,6 +330,35 @@
         </div>
         <div class="resizable-handle" onmousedown="resizeStart(event,'win-cmd')"></div>
     </div>
+
+    <!-- WIKI -->
+    <div id="win-wiki" class="xp-window pointer-events-auto hidden" style="width:400px;height:430px;top:90px;left:260px;">
+        <div class="xp-window-titlebar" onmousedown="dragStart(event,'win-wiki')">
+            <div class="flex items-center gap-2"><i class="fa-solid fa-book text-xs"></i><span>Wiki ClemSite</span></div>
+            <div class="flex items-center">
+                <button class="xp-btn-ctrl xp-btn-minimize" onclick="minimizeApp('wiki')">_</button>
+                <button class="xp-btn-ctrl xp-btn-close" onclick="closeApp('wiki')">✕</button>
+            </div>
+        </div>
+        <div class="flex-1 overflow-auto flex flex-col items-center justify-center gap-5 p-4" style="background:linear-gradient(#fdf6e3,#ece9d8)">
+            <!-- Livre -->
+            <div style="display:flex;filter:drop-shadow(5px 7px 6px rgba(0,0,0,.4))">
+                <div style="width:18px;height:250px;background:linear-gradient(90deg,#2e1408,#5a2c14);border-radius:6px 0 0 6px"></div>
+                <div style="width:190px;height:250px;background:linear-gradient(135deg,#a63a22,#6e1f10);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:14px;color:#f5d98b;text-align:center">
+                    <div style="border:2px solid #f5d98b;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:10px">
+                        <i class="fa-solid fa-book-open" style="font-size:42px"></i>
+                        <div style="font-weight:bold;font-size:20px;letter-spacing:1px;text-shadow:1px 1px 2px #000">WIKI<br>CLEMSITE</div>
+                        <div style="font-size:11px;font-style:italic;opacity:.85">Guide &amp; documentation</div>
+                    </div>
+                </div>
+                <div style="width:9px;height:250px;background:repeating-linear-gradient(#fff 0 2px,#d8d0b8 2px 3px);border-radius:0 3px 3px 0"></div>
+            </div>
+            <a href="https://github.com/progra31/clem_site/wiki" target="_blank" rel="noopener noreferrer"
+               class="px-5 py-2 bg-green-600 text-white font-bold text-sm border border-green-800 rounded hover:bg-green-700 shadow no-underline">
+                <i class="fa-solid fa-book-open mr-1"></i> Ouvrir le wiki
+            </a>
+        </div>
+    </div>
 </div>
 
 <!-- MENU DÉMARRER -->
@@ -356,6 +388,10 @@
             <div class="flex items-center gap-2 p-1.5 hover:bg-blue-600 hover:text-white rounded cursor-pointer" onclick="openApp('cmd'); toggleStartMenu()">
                 <i class="fa-solid fa-terminal text-gray-700 text-base"></i>
                 <div><div class="font-bold">Invite de commandes</div><div class="text-[10px] text-gray-500 hover:text-white">Console</div></div>
+            </div>
+            <div class="flex items-center gap-2 p-1.5 hover:bg-blue-600 hover:text-white rounded cursor-pointer" onclick="openApp('wiki'); toggleStartMenu()">
+                <i class="fa-solid fa-book text-amber-600 text-base"></i>
+                <div><div class="font-bold">Wiki</div><div class="text-[10px] text-gray-500 hover:text-white">Documentation</div></div>
             </div>
         </div>
         <div class="bg-blue-50/50 p-1.5 space-y-2 border-l border-blue-100">
@@ -469,7 +505,7 @@ function toggleMaximize(winId) {
 const appTitles = {
     computer: 'Poste de travail', browser: 'ClemBrowser', notepad: 'Bloc-notes',
     player: 'ClemPlayer', minesweeper: 'Démineur XP',
-    control: 'Panneau de config.', cmd: 'Invite de commandes'
+    control: 'Panneau de config.', cmd: 'Invite de commandes', wiki: 'Wiki'
 };
 function addTaskbarItem(appId) {
     const container = document.getElementById('taskbar-items');
