@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full select-none">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClemSite - Windows XP Edition</title>
+    <!-- Tailwind CSS pour les utilitaires de disposition -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Police 'Tahoma' emblématique de Windows XP -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
+
+        * {
+            font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+        }
+
+        /* Thème Bliss Windows XP */
+        .xp-wallpaper {
+            background: linear-gradient(to bottom, #3a6ea5 0%, #a2c4e0 30%, #68a442 70%, #3e8125 100%);
+            background-image: url('https://upload.wikimedia.org/wikipedia/en/2/27/Bliss_%28Windows_XP%29.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Fenêtre Windows XP Luna Blue */
+        .xp-window {
+            position: absolute;
+            background-color: #ece9d8;
+            border: 3px solid #0055ea;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            box-shadow: 3px 3px 12px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-width: 280px;
+            min-height: 180px;
+        }
+
+        .xp-window-titlebar {
+            background: linear-gradient(to bottom, #0058ee 0%, #3593ff 4%, #288eff 6%, #0055ea 10%, #0055ea 83%, #0046d5 88%, #0041cd 93%, #002dd0 100%);
+            color: white;
+            padding: 3px 6px 3px 8px;
+            font-weight: bold;
+            font-size: 12px;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: move;
+            height: 30px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .xp-window.inactive .xp-window-titlebar {
+            background: linear-gradient(to bottom, #7697e7 0%, #7e9fe8 100%);
+            color: #d8e4f8;
+        }
+
+        /* Boutons de fenêtre (Réduire, Agrandir, Fermer) */
+        .xp-btn-ctrl {
+            width: 21px;
+            height: 21px;
+            border-radius: 3px;
+            border: 1px solid #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+            box-shadow: inset 0 0 2px rgba(255,255,255,0.8), 1px 1px 2px rgba(0,0,0,0.3);
+            cursor: pointer;
+            margin-left: 2px;
+        }
+        .xp-btn-minimize { background: linear-gradient(to bottom, #3c91ff, #0053e1); }
+        .xp-btn-maximize { background: linear-gradient(to bottom, #3c91ff, #0053e1); }
+        .xp-btn-close { background: linear-gradient(to bottom, #e7664c, #c72f12); }
+        .xp-btn-close:hover { background: linear-gradient(to bottom, #ff7a61, #e03212); }
+
+        /* Barre des tâches */
+        .xp-taskbar {
+            background: linear-gradient(to bottom, #1f2f86 0%, #3168d8 3%, #1951d1 9%, #1141b8 18%, #103eb3 42%, #1241b8 87%, #021a73 95%, #000000 100%);
+            height: 38px;
+            z-index: 99999;
+        }
+
+        /* Bouton Démarrer */
+        .xp-start-btn {
+            background: linear-gradient(to bottom, #388a34 0%, #43a33d 10%, #399135 30%, #2e7a2b 85%, #185215 100%);
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            box-shadow: inset 1px 1px 1px rgba(255,255,255,0.5), 2px 0 5px rgba(0,0,0,0.4);
+            font-weight: bold;
+            font-style: italic;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+        .xp-start-btn:hover {
+            background: linear-gradient(to bottom, #42a23e 0%, #4ebc47 10%, #42a73d 30%, #358d31 85%, #1e621a 100%);
+        }
+
+        /* Zone de notification / Horloge */
+        .xp-tray {
+            background: linear-gradient(to bottom, #0c8fea 0%, #0f70c7 10%, #095bc5 30%, #0c67cb 85%, #084aa3 100%);
+            border-left: 1px solid #09347a;
+            box-shadow: inset 1px 0 2px rgba(0,0,0,0.3);
+        }
+
+        /* Menu Démarrer XP */
+        .xp-start-menu {
+            position: absolute;
+            bottom: 38px;
+            left: 0;
+            width: 380px;
+            background-color: #4282d6;
+            border-top-right-radius: 8px;
+            border-top-left-radius: 8px;
+            box-shadow: 4px 4px 15px rgba(0,0,0,0.5);
+            display: none;
+            z-index: 100000;
+            border: 2px solid #003399;
+            overflow: hidden;
+        }
+
+        .xp-start-header {
+            background: linear-gradient(to bottom, #1c5ec9 0%, #1144a6 100%);
+            padding: 8px 12px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #e58700;
+        }
+
+        /* Onglets d'application dans la barre des tâches */
+        .xp-taskbar-item {
+            background: linear-gradient(to bottom, #3a82ea 0%, #2960cc 50%, #1542a8 100%);
+            border: 1px solid #103078;
+            border-radius: 3px;
+            color: white;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+            font-size: 11px;
+            max-width: 150px;
+        }
+        .xp-taskbar-item.active {
+            background: linear-gradient(to bottom, #1d4399 0%, #204db5 50%, #193f92 100%);
+            box-shadow: inset 1px 1px 3px rgba(0,0,0,0.6);
+        }
+
+        /* Effet icône sélectionnée */
+        .xp-desktop-icon {
+            width: 80px;
+            padding: 6px;
+            border: 1px transparent dashed;
+            border-radius: 3px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .xp-desktop-icon:hover {
+            background-color: rgba(49, 106, 197, 0.3);
+            border-color: rgba(49, 106, 197, 0.5);
+        }
+        .xp-desktop-icon:active, .xp-desktop-icon.selected {
+            background-color: rgba(49, 106, 197, 0.6);
+            border-color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Grille Démineur */
+        .minesweeper-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 25px);
+            grid-template-rows: repeat(9, 25px);
+            gap: 1px;
+            background-color: #7b7b7b;
+            border: 3px inset #ffffff;
+        }
+        .minesweeper-cell {
+            width: 25px;
+            height: 25px;
+            background-color: #c0c0c0;
+            border: 2px outset #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .minesweeper-cell.revealed {
+            border: 1px solid #7b7b7b;
+            background-color: #bdbdbd;
+        }
+
+        /* Curseur classique XP pour fenêtres */
+        .resizable-handle {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 12px;
+            height: 12px;
+            cursor: se-resize;
+        }
+    </style>
+</head>
+<body class="h-full w-full overflow-hidden xp-wallpaper relative flex flex-col justify-between" id="xp-body">
+
+    <!-- DESKTOP ICONS AREA -->
+    <div class="p-4 grid grid-flow-col auto-rows-max gap-4 justify-start items-start content-start h-full" id="desktop-area" onclick="deselectIcons(event)">
+        
+        <!-- Poste de travail -->
+        <div class="xp-desktop-icon flex flex-col items-center gap-1 text-white text-xs drop-shadow-[0_1px_2px_rgba(0,0,0,1)]"
+             ondblclick="openApp('computer')" onclick="selectIcon(event, this)">
+            <i class="fa-solid fa-desktop text-3xl text-blue-300 drop-shadow"></i>
+            <span class="leading-tight text-center">Poste de travail</span>
+        </div>
+
+        <!-- ClemBrowser / Internet -->
+        <div class="xp-desktop-icon flex flex-col items-center gap-1 text-white text-xs drop-shadow-[0_1px_2px_rgba(0,0,0,1)]"
+             ondblclick="openApp('browser')" onclick="selectIcon(event, this)">
+            <i class="fa-brands fa-internet-explorer text-3xl text-blue-400 drop-shadow"></i>
+            <span class="leading-tight text-center">ClemBrowser</span>
+        </div>
+
+        <!-- ClemNotes -->
+        <div class="xp-desktop-icon flex flex-col items-center gap-1 text-white text-xs drop-shadow-[0_1px_2px_rgba(0,0,0,1)]"
+             ondblclick="openApp('notepad')" onclick="selectIcon(event, this)">
+            <i class="fa-solid fa-file-lines text-3xl text-yellow-100 drop-shadow"></i>
+            <span class="leading-tight text-center">Bloc-notes</span>
+        </div>
+
+        <!-- ClemPlayer -->
+        <div class="xp-desktop-icon flex flex-col items-center gap-1 text-white text-xs drop-shadow-[0_1px_2px_rgba(0,0,0,1)]"
+             ondblclick="openApp('player')" onclick="selectIcon(event, this)">
+            <i class="fa-solid fa-circle-play text-3xl text-orange-400 drop-shadow"></i>
+            <span class="leading-tight text-center">ClemPlayer</span>
+        </div>
+
+        <!-- Démineur -->
+        <div class="xp-desktop-icon flex flex-col items-center gap-1 text-white text-xs drop-shadow-[0_1px_2px_rgba(0,0,0,1)]"
+             ondblclick="openApp('minesweeper')" onclick="selectIcon(event, this)">
+            <i class="fa-solid fa-bomb text-3xl text-red-400 drop-shadow"></i>
+            <span class="leading-tight text-center">Démineur XP</span>
+        </div>
+
+        <!-- Corbeille -->
+        <div class="xp-desktop-icon flex flex-col items-center gap-1 text-white text-xs drop-shadow-[0_1px_2px_rgba(0,0,0,1)]"
+             ondblclick="alert('La corbeille est vide !')" onclick="selectIcon(event, this)">
+            <i class="fa-solid fa-trash-can text-3xl text-gray-200 drop-shadow"></i>
+            <span class="leading-tight text-center">Corbeille</span>
+        </div>
+    </div>
+
+    <!-- WINDOWS CONTAINER -->
+    <div id="windows-container" class="absolute inset-0 pointer-events-none overflow-hidden pb-10">
+
+        <!-- FENÊTRE 1: POSTE DE TRAVAIL (ClemDrive) -->
+        <div id="win-computer" class="xp-window pointer-events-auto hidden" style="width: 580px; height: 380px; top: 60px; left: 100px;">
+            <div class="xp-window-titlebar" onmousedown="dragStart(event, 'win-computer')">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-desktop text-xs"></i>
+                    <span>Poste de travail - ClemDrive (C:)</span>
+                </div>
+                <div class="flex items-center">
+                    <button class="xp-btn-ctrl xp-btn-minimize" onclick="minimizeApp('computer')">_</button>
+                    <button class="xp-btn-ctrl xp-btn-maximize" onclick="toggleMaximize('win-computer')">□</button>
+                    <button class="xp-btn-ctrl xp-btn-close" onclick="closeApp('computer')">✕</button>
+                </div>
+            </div>
+            <!-- Menu Bar -->
+            <div class="bg-[#ece9d8] text-xs px-2 py-1 border-b border-gray-300 flex gap-4">
+                <span class="hover:bg-blue-600 hover:text-white px-1 cursor-pointer">Fichier</span>
+                <span class="hover:bg-blue-600 hover:text-white px-1 cursor-pointer">Édition</span>
+                <span class="hover:bg-blue-600 hover:text-white px-1 cursor-pointer">Affichage</span>
+                <span class="hover:bg-blue-600 hover:text-white px-1 cursor-pointer">Favoris</span>
+                <span class="hover:bg-blue-600 hover:text-white px-1 cursor-pointer">Outils</span>
+                <span class="hover:bg-blue-600 hover:text-white px-1 cursor-pointer">?</span>
+            </div>
+            <!-- Body -->
+            <div class="flex-1 bg-white p-4 overflow-auto text-xs grid grid-cols-2 gap-4">
+                <div class="border p-3 rounded bg-blue-50 border-blue-200">
+                    <div class="font-bold text-blue-900 border-b pb-1 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-hard-drive text-blue-600"></i> Disque local (C:)
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 p-1 hover:bg-blue-100 rounded cursor-pointer" onclick="openApp('browser')">
+                            <i class="fa-solid fa-folder text-yellow-500 text-lg"></i>
+                            <div>
+                                <div class="font-bold">Projets_ClemSite</div>
+                                <div class="text-gray-500 text-[10px]">Dossier de fichiers</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 p-1 hover:bg-blue-100 rounded cursor-pointer" onclick="openApp('notepad')">
+                            <i class="fa-solid fa-file-code text-blue-500 text-lg"></i>
+                            <div>
+                                <div class="font-bold">A_Propos_de_Clem.txt</div>
+                                <div class="text-gray-500 text-[10px]">Document texte (2 KB)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border p-3 rounded bg-gray-50 border-gray-200">
+                    <div class="font-bold text-gray-800 border-b pb-1 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-blue-500"></i> Informations système
+                    </div>
+                    <p class="text-gray-600 mb-2">Bienvenue sur **ClemSite**, une expérience interactive reproduisant l'univers rétro et nostalgique de Windows XP.</p>
+                    <ul class="list-disc pl-4 text-gray-700 space-y-1">
+                        <li>Système : ClemOS v2026</li>
+                        <li>Processeur : ClemCore i9 Rétro</li>
+                        <li>Mémoire : 512 MB de RAM Virtuelle</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="resizable-handle" onmousedown="resizeStart(event, 'win-computer')"></div>
+        </div>
+
+        <!-- FENÊTRE 2: CLEMBROWSER (Internet Explorer XP) -->
+        <div id="win-browser" class="xp-window pointer-events-auto hidden" style="width: 640px; height: 440px; top: 40px; left: 160px;">
+            <div class="xp-window-titlebar" onmousedown="dragStart(event, 'win-browser')">
+                <div class="flex items-center gap-2">
+                    <i class="fa-brands fa-internet-explorer text-xs"></i>
+                    <span>ClemBrowser - Accueil ClemSite</span>
+                </div>
+                <div class="flex items-center">
+                    <button class="xp-btn-ctrl xp-btn-minimize" onclick="minimizeApp('browser')">_</button>
+                    <button class="xp-btn-ctrl xp-btn-maximize" onclick="toggleMaximize('win-browser')">□</button>
+                    <button class="xp-btn-ctrl xp-btn-close" onclick="closeApp('browser')">✕</button>
+                </div>
+            </div>
+            <!-- Browser Toolbar -->
+            <div class="bg-[#ece9d8] p-1 border-b border-gray-300 flex items-center gap-2 text-xs">
+                <button class="px-2 py-0.5 border border-gray-400 rounded bg-gray-100 hover:bg-gray-200" onclick="alert('Page précédente')">◄ Précédent</button>
+                <button class="px-2 py-0.5 border border-gray-400 rounded bg-gray-100 hover:bg-gray-200" onclick="alert('Page suivante')">►</button>
+                <button class="px-2 py-0.5 border border-gray-400 rounded bg-gray-100 hover:bg-gray-200" onclick="reloadBrowser()"><i class="fa-solid fa-rotate-right"></i></button>
+                <span class="text-gray-600">Adresse:</span>
+                <input type="text" id="browser-url" value="http://www.clemsite.fr/accueil" class="flex-1 px-2 py-0.5 border border-gray-400 text-xs bg-white rounded-none outline-none">
+                <button class="px-3 py-0.5 bg-green-600 text-white font-bold border border-green-800 rounded hover:bg-green-700" onclick="navigateBrowser()">OK</button>
+            </div>
+            <!-- Browser Body -->
+            <div id="browser-content" class="flex-1 bg-white p-6 overflow-auto border-t">
+                <div class="max-w-md mx-auto text-center space-y-4">
+                    <div class="inline-block p-3 bg-blue-100 rounded-full text-blue-600 text-4xl mb-2">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-blue-900 border-b pb-2">Bienvenue sur ClemSite !</h1>
+                    <p class="text-gray-700 text-sm leading-relaxed">
+                        ClemSite est votre portail interactif sur le Web Rétro. Conçu avec passion pour vous offrir une expérience fluide, créative et nostalgique directement dans votre navigateur web.
+                    </p>
+                    <div class="grid grid-cols-2 gap-3 text-left my-4">
+                        <div class="p-3 bg-yellow-50 border border-yellow-200 rounded">
+                            <h3 class="font-bold text-yellow-800 text-xs"><i class="fa-solid fa-code"></i> Développeur</h3>
+                            <p class="text-xs text-gray-600">Créé par Clem, passionné par le Web et l'UX Rétro.</p>
+                        </div>
+                        <div class="p-3 bg-green-50 border border-green-200 rounded">
+                            <h3 class="font-bold text-green-800 text-xs"><i class="fa-solid fa-rocket"></i> Objectif</h3>
+                            <p class="text-xs text-gray-600">Allier nostalgie de Windows XP et puissance moderne.</p>
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-500 pt-4 border-t">
+                        © 2026 ClemSite Inc.Tous droits réservés.
+                    </div>
+                </div>
+            </div>
+            <div class="resizable-handle" onmousedown="resizeStart(event, 'win-browser')"></div>
+        </div>
+
+        <!-- FENÊTRE 3: CLEMNOTES (Bloc-notes) -->
+        <div id="win-notepad" class="xp-window pointer-events-auto hidden" style="width: 480px; height: 320px; top: 120px; left: 220px;">
+            <div class="xp-window-titlebar" onmousedown="dragStart(event, 'win-notepad')">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-file-lines text-xs"></i>
+                    <span>ClemNotes - Document sans titre</span>
+                </div>
+                <div class="flex items-center">
+                    <button class="xp-btn-ctrl xp-btn-minimize" onclick="minimizeApp('notepad')">_</button>
+                    <button class="xp-btn-ctrl xp-btn-maximize" onclick="toggleMaximize('win-notepad')">□</button>
+                    <button class="xp-btn-ctrl xp-btn-close" onclick="closeApp('notepad')">✕</button>
+                </div>
+            </div>
+            <div class="bg-[#ece9d8] text-xs px-2 py-1 border-b border-gray-300 flex gap-4">
+                <span class="hover:bg-blue-600 hover:text-white px-1 cursor-pointer" onclick="downloadNote()">Enregistrer</span>
+                <span class="hover:bg-blue-600 hover:text-white px-1 cursor-pointer" onclick="clearNote()">Effacer</span>
+            </div>
+            <textarea id="notepad-text" class="flex-1 p-2 font-mono text-sm border-none outline-none resize-none bg-white" placeholder="Saisissez votre texte ici..."></textarea>
+            <div class="resizable-handle" onmousedown="resizeStart(event, 'win-notepad')"></div>
+        </div>
+
+        <!-- FENÊTRE 4: CLEMPLAYER (Lecteur Média) -->
+        <div id="win-player" class="xp-window pointer-events-auto hidden" style="width: 420px; height: 260px; top: 150px; left: 280px;">
+            <div class="xp-window-titlebar" onmousedown="dragStart(event, 'win-player')">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-circle-play text-xs"></i>
+                    <span>ClemPlayer XP</span>
+                </div>
+                <div class="flex items-center">
+                    <button class="xp-btn-ctrl xp-btn-minimize" onclick="minimizeApp('player')">_</button>
+                    <button class="xp-btn-ctrl xp-btn-close" onclick="closeApp('player')">✕</button>
+                </div>
+            </div>
+            <div class="flex-1 bg-slate-900 text-white p-4 flex flex-col justify-between">
+                <!-- Visualiseur rétro -->
+                <div class="h-24 bg-black rounded border border-slate-700 flex items-center justify-center relative overflow-hidden">
+                    <div id="audio-visualizer" class="flex items-end justify-center gap-1 h-full w-full p-2">
+                        <div class="bg-green-500 w-3 rounded-t transition-all duration-150 h-4"></div>
+                        <div class="bg-green-500 w-3 rounded-t transition-all duration-150 h-8"></div>
+                        <div class="bg-yellow-500 w-3 rounded-t transition-all duration-150 h-14"></div>
+                        <div class="bg-red-500 w-3 rounded-t transition-all duration-150 h-10"></div>
+                        <div class="bg-green-500 w-3 rounded-t transition-all duration-150 h-6"></div>
+                    </div>
+                    <span id="player-status" class="absolute text-xs text-blue-400 font-mono bottom-2 left-2">Prêt</span>
+                </div>
+
+                <!-- Contrôles -->
+                <div class="space-y-2">
+                    <div class="text-xs text-slate-300 font-mono text-center truncate" id="track-title">Piste audio : Clem_Synth_Theme.mp3</div>
+                    <div class="flex items-center justify-center gap-4">
+                        <button onclick="playRetroSound()" class="w-10 h-10 bg-blue-600 hover:bg-blue-500 rounded-full flex items-center justify-center text-white text-lg shadow">
+                            <i class="fa-solid fa-play"></i>
+                        </button>
+                        <button onclick="stopRetroSound()" class="w-8 h-8 bg-slate-700 hover:bg-slate-600 rounded-full flex items-center justify-center text-white text-sm">
+                            <i class="fa-solid fa-stop"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FENÊTRE 5: DÉMINEUR XP -->
+        <div id="win-minesweeper" class="xp-window pointer-events-auto hidden" style="width: 290px; height: 350px; top: 80px; left: 320px;">
+            <div class="xp-window-titlebar" onmousedown="dragStart(event, 'win-minesweeper')">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-bomb text-xs"></i>
+                    <span>Démineur XP</span>
+                </div>
+                <div class="flex items-center">
+                    <button class="xp-btn-ctrl xp-btn-minimize" onclick="minimizeApp('minesweeper')">_</button>
+                    <button class="xp-btn-ctrl xp-btn-close" onclick="closeApp('minesweeper')">✕</button>
+                </div>
+            </div>
+            <div class="bg-[#c0c0c0] p-3 flex flex-col items-center justify-center gap-3 flex-1 border-t-2 border-white">
+                <!-- En-tête du jeu -->
+                <div class="w-full bg-[#c0c0c0] border-2 border-gray-600 p-2 flex justify-between items-center">
+                    <div class="bg-black text-red-600 font-mono text-xl font-bold px-2 py-0.5 border border-gray-500" id="mine-count">010</div>
+                    <button class="w-8 h-8 border-2 border-white text-xl flex items-center justify-center bg-[#c0c0c0] active:border-gray-500" onclick="initMinesweeper()" id="smiley-btn">🙂</button>
+                    <div class="bg-black text-red-600 font-mono text-xl font-bold px-2 py-0.5 border border-gray-500" id="mine-timer">000</div>
+                </div>
+
+                <!-- Grille -->
+                <div class="minesweeper-grid" id="minesweeper-board"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- START MENU -->
+    <div id="start-menu" class="xp-start-menu">
+        <div class="xp-start-header">
+            <div class="w-8 h-8 rounded-md bg-white/20 border border-white/50 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <span class="text-lg tracking-wide">Visiteur ClemSite</span>
+        </div>
+        <div class="grid grid-cols-2 bg-white text-xs p-1 gap-1">
+            <!-- Gauche: Apps recommandées -->
+            <div class="space-y-1 p-1">
+                <div class="flex items-center gap-2 p-1.5 hover:bg-blue-600 hover:text-white rounded cursor-pointer" onclick="openApp('browser'); toggleStartMenu()">
+                    <i class="fa-brands fa-internet-explorer text-blue-500 text-base"></i>
+                    <div>
+                        <div class="font-bold">ClemBrowser</div>
+                        <div class="text-[10px] text-gray-500 hover:text-white">Navigateur web</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 p-1.5 hover:bg-blue-600 hover:text-white rounded cursor-pointer" onclick="openApp('notepad'); toggleStartMenu()">
+                    <i class="fa-solid fa-file-lines text-yellow-600 text-base"></i>
+                    <div>
+                        <div class="font-bold">Bloc-notes</div>
+                        <div class="text-[10px] text-gray-500 hover:text-white">Éditeur de texte</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 p-1.5 hover:bg-blue-600 hover:text-white rounded cursor-pointer" onclick="openApp('player'); toggleStartMenu()">
+                    <i class="fa-solid fa-circle-play text-orange-500 text-base"></i>
+                    <div>
+                        <div class="font-bold">ClemPlayer</div>
+                        <div class="text-[10px] text-gray-500 hover:text-white">Lecteur audio</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 p-1.5 hover:bg-blue-600 hover:text-white rounded cursor-pointer" onclick="openApp('minesweeper'); toggleStartMenu()">
+                    <i class="fa-solid fa-bomb text-red-500 text-base"></i>
+                    <div>
+                        <div class="font-bold">Démineur XP</div>
+                        <div class="text-[10px] text-gray-500 hover:text-white">Jeu Rétro</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Droite: Raccourcis système -->
+            <div class="bg-blue-50/50 p-1.5 space-y-2 border-l border-blue-100">
+                <div class="font-bold text-blue-900 border-b pb-1 cursor-pointer hover:underline" onclick="openApp('computer'); toggleStartMenu()">
+                    <i class="fa-solid fa-desktop mr-1 text-blue-600"></i> Poste de travail
+                </div>
+                <div class="text-gray-700 cursor-pointer hover:underline" onclick="alert('Mes documents - Fonctionnalité de démonstration')">
+                    <i class="fa-solid fa-folder-open mr-1 text-yellow-500"></i> Mes documents
+                </div>
+                <div class="text-gray-700 cursor-pointer hover:underline" onclick="alert('Panneau de configuration - ClemSite configuré avec succès !')">
+                    <i class="fa-solid fa-sliders mr-1 text-gray-600"></i> Panneau de config.
+                </div>
+            </div>
+        </div>
+        <!-- Start Menu Footer -->
+        <div class="bg-gradient-to-r from-blue-700 to-blue-900 p-2 flex justify-end gap-2 text-white text-xs border-t border-blue-400">
+            <button class="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 px-3 py-1 rounded shadow" onclick="shutdownXP()">
+                <i class="fa-solid fa-power-off"></i> Arrêter ClemSite
+            </button>
+        </div>
+    </div>
+
+    <!-- TASKBAR -->
+    <div class="xp-taskbar w-full flex justify-between items-center px-0 relative select-none">
+        <!-- Start Button & Active Windows -->
+        <div class="flex items-center gap-1 h-full flex-1 overflow-hidden">
+            <button class="xp-start-btn h-full px-3 text-white flex items-center gap-2 cursor-pointer" onclick="toggleStartMenu(event)">
+                <i class="fa-brands fa-windows text-lg"></i>
+                <span class="text-sm tracking-wide">démarrer</span>
+            </button>
+
+            <!-- Separator -->
+            <div class="h-6 w-[2px] bg-blue-400/40 mx-1"></div>
+
+            <!-- Taskbar Items Container -->
+            <div id="taskbar-items" class="flex items-center gap-1 h-full overflow-x-auto py-1">
+                <!-- Les boutons réduits/ouverts apparaîtront dynamiquement ici -->
+            </div>
+        </div>
+
+        <!-- System Tray -->
+        <div class="xp-tray h-full px-3 flex items-center gap-3 text-white text-xs">
+            <i class="fa-solid fa-shield-halved text-green-400 text-xs" title="ClemSite Protection Active"></i>
+            <i class="fa-solid fa-volume-high text-xs cursor-pointer" onclick="playRetroSound()"></i>
+            <span id="xp-clock" class="font-mono text-xs">12:00</span>
+        </div>
+    </div>
+
+    <!-- SCRIPT JS INTÉGRÉ -->
+    <script>
+        // --- HORLOGE SYSTÈME ---
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('xp-clock').textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- GESTION DU MENU DÉMARRER ---
+        function toggleStartMenu(event) {
+            if (event) event.stopPropagation();
+            const menu = document.getElementById('start-menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('start-menu');
+            if (menu && !menu.contains(e.target) && !e.target.closest('.xp-start-btn')) {
+                menu.style.display = 'none';
+            }
+        });
+
+        // --- GESTION DES ICÔNES DU BUREAU ---
+        function selectIcon(event, element) {
+            event.stopPropagation();
+            document.querySelectorAll('.xp-desktop-icon').forEach(icon => icon.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function deselectIcons(event) {
+            document.querySelectorAll('.xp-desktop-icon').forEach(icon => icon.classList.remove('selected'));
+        }
+
+        // --- GESTION DES FENÊTRES ---
+        let highestZIndex = 100;
+        const activeApps = {};
+
+        function openApp(appId) {
+            const win = document.getElementById(`win-${appId}`);
+            if (!win) return;
+
+            win.classList.remove('hidden');
+            focusWindow(win);
+
+            if (!activeApps[appId]) {
+                activeApps[appId] = true;
+                addTaskbarItem(appId);
+            }
+        }
+
+        function closeApp(appId) {
+            const win = document.getElementById(`win-${appId}`);
+            if (win) win.classList.add('hidden');
+            delete activeApps[appId];
+            removeTaskbarItem(appId);
+        }
+
+        function minimizeApp(appId) {
+            const win = document.getElementById(`win-${appId}`);
+            if (win) win.classList.add('hidden');
+            const taskBtn = document.getElementById(`task-btn-${appId}`);
+            if (taskBtn) taskBtn.classList.remove('active');
+        }
+
+        function focusWindow(win) {
+            document.querySelectorAll('.xp-window').forEach(w => w.classList.add('inactive'));
+            win.classList.remove('inactive');
+            highestZIndex++;
+            win.style.zIndex = highestZIndex;
+
+            // Mettre à jour la barre des tâches
+            const appId = win.id.replace('win-', '');
+            document.querySelectorAll('.xp-taskbar-item').forEach(btn => btn.classList.remove('active'));
+            const taskBtn = document.getElementById(`task-btn-${appId}`);
+            if (taskBtn) taskBtn.classList.add('active');
+        }
+
+        function toggleMaximize(winId) {
+            const win = document.getElementById(winId);
+            if (!win) return;
+
+            if (win.dataset.maximized === 'true') {
+                win.style.width = win.dataset.oldWidth;
+                win.style.height = win.dataset.oldHeight;
+                win.style.top = win.dataset.oldTop;
+                win.style.left = win.dataset.oldLeft;
+                win.dataset.maximized = 'false';
+            } else {
+                win.dataset.oldWidth = win.style.width || '500px';
+                win.dataset.oldHeight = win.style.height || '350px';
+                win.dataset.oldTop = win.style.top || '50px';
+                win.dataset.oldLeft = win.style.left || '50px';
+
+                win.style.width = '100vw';
+                win.style.height = 'calc(100vh - 38px)';
+                win.style.top = '0px';
+                win.style.left = '0px';
+                win.dataset.maximized = 'true';
+            }
+        }
+
+        // --- BARRE DES TÂCHES ---
+        const appTitles = {
+            computer: 'Poste de travail',
+            browser: 'ClemBrowser',
+            notepad: 'Bloc-notes',
+            player: 'ClemPlayer',
+            minesweeper: 'Démineur XP'
+        };
+
+        function addTaskbarItem(appId) {
+            const container = document.getElementById('taskbar-items');
+            if (document.getElementById(`task-btn-${appId}`)) return;
+
+            const btn = document.createElement('button');
+            btn.id = `task-btn-${appId}`;
+            btn.className = 'xp-taskbar-item active px-3 py-1 flex items-center gap-1.5 truncate cursor-pointer h-7';
+            btn.innerHTML = `<span class="truncate">${appTitles[appId] || appId}</span>`;
+            
+            btn.onclick = () => {
+                const win = document.getElementById(`win-${appId}`);
+                if (win.classList.contains('hidden') || win.classList.contains('inactive')) {
+                    win.classList.remove('hidden');
+                    focusWindow(win);
+                } else {
+                    minimizeApp(appId);
+                }
+            };
+
+            container.appendChild(btn);
+        }
+
+        function removeTaskbarItem(appId) {
+            const btn = document.getElementById(`task-btn-${appId}`);
+            if (btn) btn.remove();
+        }
+
+        // --- GLISSER-DÉPOSER (DRAG & DROP) FENÊTRES ---
+        let currentDragWin = null;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+
+        function dragStart(e, winId) {
+            currentDragWin = document.getElementById(winId);
+            focusWindow(currentDragWin);
+
+            const rect = currentDragWin.getBoundingClientRect();
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+
+            document.addEventListener('mousemove', dragMove);
+            document.addEventListener('mouseup', dragStop);
+        }
+
+        function dragMove(e) {
+            if (!currentDragWin) return;
+            currentDragWin.style.left = `${Math.max(0, e.clientX - dragOffsetX)}px`;
+            currentDragWin.style.top = `${Math.max(0, e.clientY - dragOffsetY)}px`;
+        }
+
+        function dragStop() {
+            currentDragWin = null;
+            document.removeEventListener('mousemove', dragMove);
+            document.removeEventListener('mouseup', dragStop);
+        }
+
+        // --- REDIMENSIONNEMENT DES FENÊTRES ---
+        let currentResizeWin = null;
+
+        function resizeStart(e, winId) {
+            e.stopPropagation();
+            currentResizeWin = document.getElementById(winId);
+            document.addEventListener('mousemove', resizeMove);
+            document.addEventListener('mouseup', resizeStop);
+        }
+
+        function resizeMove(e) {
+            if (!currentResizeWin) return;
+            const rect = currentResizeWin.getBoundingClientRect();
+            const width = e.clientX - rect.left;
+            const height = e.clientY - rect.top;
+
+            if (width > 250) currentResizeWin.style.width = `${width}px`;
+            if (height > 150) currentResizeWin.style.height = `${height}px`;
+        }
+
+        function resizeStop() {
+            currentResizeWin = null;
+            document.removeEventListener('mousemove', resizeMove);
+            document.removeEventListener('mouseup', resizeStop);
+        }
+
+        // Focus window au clic à l'intérieur
+        document.querySelectorAll('.xp-window').forEach(win => {
+            win.addEventListener('mousedown', () => focusWindow(win));
+        });
+
+        // --- FONCTIONS APPLIS ---
+        // NAVIGATEUR
+        function navigateBrowser() {
+            const urlInput = document.getElementById('browser-url').value;
+            const content = document.getElementById('browser-content');
+            content.innerHTML = `
+                <div class="p-4">
+                    <h2 class="text-lg font-bold text-blue-800 border-b pb-1">Résultats de la recherche</h2>
+                    <p class="text-xs text-gray-600 mt-2">Vous naviguez actuellement sur : <b>${urlInput}</b></p>
+                    <div class="mt-4 p-3 bg-gray-100 rounded border text-xs">
+                        Page factice générée dans ClemBrowser XP. 🚀
+                    </div>
+                </div>
+            `;
+        }
+
+        function reloadBrowser() {
+            document.getElementById('browser-url').value = 'http://www.clemsite.fr/accueil';
+            document.getElementById('browser-content').innerHTML = `
+                <div class="max-w-md mx-auto text-center space-y-4">
+                    <div class="inline-block p-3 bg-blue-100 rounded-full text-blue-600 text-4xl mb-2">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-blue-900 border-b pb-2">Bienvenue sur ClemSite !</h1>
+                    <p class="text-gray-700 text-sm leading-relaxed">
+                        ClemSite est votre portail interactif sur le Web Rétro.
+                    </p>
+                </div>
+            `;
+        }
+
+        // BLOC-NOTES
+        function clearNote() {
+            document.getElementById('notepad-text').value = '';
+        }
+
+        function downloadNote() {
+            const text = document.getElementById('notepad-text').value;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'ClemNote.txt';
+            a.click();
+        }
+
+        // LECTEUR AUDIO SYNTHÉTIQUE
+        let audioCtx = null;
+        let isPlayingSound = false;
+
+        function playRetroSound() {
+            if (isPlayingSound) return;
+            isPlayingSound = true;
+            document.getElementById('player-status').textContent = 'Lecture en cours...';
+
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            // Générateur de sons rétro amusants
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 1);
+
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 1);
+
+            setTimeout(() => {
+                isPlayingSound = false;
+                document.getElementById('player-status').textContent = 'Arrêté';
+            }, 1000);
+        }
+
+        function stopRetroSound() {
+            isPlayingSound = false;
+            document.getElementById('player-status').textContent = 'Arrêté';
+        }
+
+        // --- JEU DÉMINEUR XP ---
+        const boardSize = 9;
+        const mineCount = 10;
+        let grid = [];
+
+        function initMinesweeper() {
+            const board = document.getElementById('minesweeper-board');
+            board.innerHTML = '';
+            document.getElementById('mine-count').textContent = '010';
+            document.getElementById('smiley-btn').textContent = '🙂';
+
+            grid = Array(boardSize).fill(null).map(() => Array(boardSize).fill(null).map(() => ({
+                mine: false,
+                revealed: false,
+                count: 0
+            })));
+
+            // Placer les mines
+            let placed = 0;
+            while (placed < mineCount) {
+                let r = Math.floor(Math.random() * boardSize);
+                let c = Math.floor(Math.random() * boardSize);
+                if (!grid[r][c].mine) {
+                    grid[r][c].mine = true;
+                    placed++;
+                }
+            }
+
+            // Calculer compteurs
+            for (let r = 0; r < boardSize; r++) {
+                for (let c = 0; c < boardSize; c++) {
+                    if (grid[r][c].mine) continue;
+                    let count = 0;
+                    for (let dr = -1; dr <= 1; dr++) {
+                        for (let dc = -1; dc <= 1; dc++) {
+                            let nr = r + dr, nc = c + dc;
+                            if (nr >= 0 && nr < boardSize && nc >= 0 && nc < boardSize && grid[nr][nc].mine) {
+                                count++;
+                            }
+                        }
+                    }
+                    grid[r][c].count = count;
+                }
+            }
+
+            // Rendu HTML
+            for (let r = 0; r < boardSize; r++) {
+                for (let c = 0; c < boardSize; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'minesweeper-cell';
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    cell.onclick = () => revealCell(r, c);
+                    board.appendChild(cell);
+                }
+            }
+        }
+
+        function revealCell(r, c) {
+            const cellData = grid[r][c];
+            if (cellData.revealed) return;
+
+            cellData.revealed = true;
+            const cellElem = document.querySelector(`.minesweeper-cell[data-row="${r}"][data-col="${c}"]`);
+            cellElem.classList.add('revealed');
+
+            if (cellData.mine) {
+                cellElem.textContent = '💣';
+                cellElem.style.backgroundColor = 'red';
+                document.getElementById('smiley-btn').textContent = '😵';
+                alert('BOOM ! Vous avez touché une mine.');
+            } else {
+                if (cellData.count > 0) {
+                    cellElem.textContent = cellData.count;
+                    const colors = ['', 'blue', 'green', 'red', 'darkblue', 'brown', 'teal', 'black', 'gray'];
+                    cellElem.style.color = colors[cellData.count] || 'black';
+                } else {
+                    // Propagation zones vides
+                    for (let dr = -1; dr <= 1; dr++) {
+                        for (let dc = -1; dc <= 1; dc++) {
+                            let nr = r + dr, nc = c + dc;
+                            if (nr >= 0 && nr < boardSize && nc >= 0 && nc < boardSize && !grid[nr][nc].revealed) {
+                                revealCell(nr, nc);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // ARRÊTER CLEMSITE
+        function shutdownXP() {
+            // Fermer le menu démarrer
+            document.getElementById('start-menu').style.display = 'none';
+            
+            // Créer l'écran d'extinction noir
+            let shutdownOverlay = document.getElementById('shutdown-overlay');
+            if (!shutdownOverlay) {
+                shutdownOverlay = document.createElement('div');
+                shutdownOverlay.id = 'shutdown-overlay';
+                shutdownOverlay.className = 'fixed inset-0 bg-black z-[999999] flex flex-col items-center justify-center text-white transition-opacity duration-700 opacity-0';
+                shutdownOverlay.innerHTML = `
+                    <div class="flex flex-col items-center gap-6 animate-pulse">
+                        <button onclick="bootXP()" class="w-24 h-24 rounded-full bg-gradient-to-b from-gray-800 to-gray-950 border-4 border-gray-600 hover:border-green-500 hover:shadow-[0_0_25px_rgba(34,197,94,0.6)] flex items-center justify-center transition-all duration-300 group cursor-pointer active:scale-95">
+                            <i class="fa-solid fa-power-off text-4xl text-red-500 group-hover:text-green-400 transition-colors"></i>
+                        </button>
+                        <span class="text-sm tracking-widest uppercase font-mono text-gray-400">Appuyez pour démarrer ClemSite</span>
+                    </div>
+                `;
+                document.body.appendChild(shutdownOverlay);
+            }
+            
+            shutdownOverlay.classList.remove('hidden');
+            setTimeout(() => {
+                shutdownOverlay.classList.remove('opacity-0');
+            }, 50);
+        }
+
+        function bootXP() {
+            const shutdownOverlay = document.getElementById('shutdown-overlay');
+            if (shutdownOverlay) {
+                shutdownOverlay.classList.add('opacity-0');
+                setTimeout(() => {
+                    shutdownOverlay.classList.add('hidden');
+                }, 700);
+            }
+            // Jouer le son de démarrage rétro
+            playRetroSound();
+        }
+
+        // INITIALISATION AU CHARGEMENT
+        window.onload = function() {
+            // Ouvrir ClemBrowser et Poste de Travail au démarrage
+            openApp('computer');
+            openApp('browser');
+            initMinesweeper();
+        };
+    </script>
+</body>
+</html>
