@@ -212,6 +212,24 @@
             cursor: se-resize;
         }
 
+        /* Mode Téléphone (Mobile) */
+        body.mobile-mode #windows-container .xp-window {
+            width: 96vw !important;
+            height: 75vh !important;
+            left: 2vw !important;
+            top: 10px !important;
+        }
+        body.mobile-mode #desktop-area {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-auto-rows: auto;
+            grid-flow: row;
+            gap: 8px;
+            padding: 8px;
+        }
+        body.mobile-mode .xp-desktop-icon {
+            width: 100%;
+        }
+
         /* Invite de commandes */
         #cmd-box, #cmd-box * { 
             font-family: 'Lucida Console', Consolas, monospace; 
@@ -223,6 +241,28 @@
     </style>
 </head>
 <body class="h-full w-full overflow-hidden xp-wallpaper relative flex flex-col justify-between" id="xp-body">
+
+    <!-- ÉCRAN DE CHOIX AU DÉMARRAGE (BOOT SELECTOR) -->
+    <div id="boot-screen" class="fixed inset-0 bg-black z-[9999999] flex flex-col items-center justify-center text-white p-4">
+        <div class="text-center max-w-sm space-y-6">
+            <div class="flex flex-col items-center gap-2">
+                <i class="fa-brands fa-windows text-blue-500 text-6xl animate-pulse"></i>
+                <h1 class="text-2xl font-bold tracking-widest font-mono">CLEMSITE XP</h1>
+                <p class="text-xs text-gray-400">Choisissez votre mode d'affichage pour démarrer</p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-4 w-full">
+                <button onclick="bootSystem('desktop')" class="flex-1 py-4 px-3 bg-gradient-to-b from-gray-800 to-gray-900 border-2 border-gray-600 hover:border-blue-500 rounded-xl flex flex-col items-center justify-center gap-2 transition-all active:scale-95 group shadow-lg">
+                    <i class="fa-solid fa-desktop text-3xl text-blue-400 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-bold uppercase tracking-wider">Version PC</span>
+                </button>
+                <button onclick="bootSystem('mobile')" class="flex-1 py-4 px-3 bg-gradient-to-b from-gray-800 to-gray-900 border-2 border-gray-600 hover:border-green-500 rounded-xl flex flex-col items-center justify-center gap-2 transition-all active:scale-95 group shadow-lg">
+                    <i class="fa-solid fa-mobile-screen-button text-3xl text-green-400 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-bold uppercase tracking-wider">Version Mobile</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- DESKTOP ICONS AREA -->
     <div class="p-4 grid grid-flow-col auto-rows-max gap-4 justify-start items-start content-start h-full" id="desktop-area" onclick="deselectIcons(event)">
@@ -1227,7 +1267,115 @@
             if (isDir(nodeAt(p))) { T.cwd = p; setPrompt(); } else out('Le chemin d\'accès spécifié est introuvable.');
         });
         cmd('pwd', 'Affiche le dossier courant', () => out('C:\\' + T.cwd.join('\\')));
+        cmd('mkdir', 'Crée un dossier', a => {
+            if (!a[0]) return out('Syntaxe : mkdir <nom>');
+            const n = nodeAt(T.cwd); if (n[a[0]] !== undefined) return out('Existe déjà.');
+            n[a[0]] = {};
+        });
+        cmd('touch', 'Crée un fichier vide', a => {
+            if (!a[0]) return out('Syntaxe : touch <nom>');
+            const n = nodeAt(T.cwd); if (n[a[0]] === undefined) n[a[0]] = '';
+        });
+        cmd('type', "Affiche le contenu d'un fichier", a => {
+            const p = resolve(a.join(' ')), n = nodeAt(p);
+            if (n === undefined) return out('Fichier introuvable.');
+            out(isDir(n) ? 'Accès refusé (dossier).' : n || '(fichier vide)');
+        }); alias('cat', 'type');
+        cmd('del', 'Supprime un fichier ou un dossier', a => {
+            const p = resolve(a.join(' ')), name = p.pop(), par = nodeAt(p);
+            if (!par || par[name] === undefined) return out('Fichier introuvable.');
+            delete par[name]; out('Supprimé : ' + name);
+        }); alias('rm', 'del'); alias('rmdir', 'del');
+        cmd('tree', "Arborescence du dossier courant", () => {
+            const walk = (n, pre) => Object.keys(n).forEach((k, i, arr) => {
+                const last = i === arr.length - 1;
+                out(pre + (last ? '└── ' : '├── ') + k);
+                if (isDir(n[k])) walk(n[k], pre + (last ? '    ' : '│   '));
+            });
+            out('C:\\' + T.cwd.join('\\')); walk(nodeAt(T.cwd), '');
+        });
+        cmd('color', 'Couleurs de la console (ex : color 0a)', a => {
+            const H = ['#000', '#0000a8', '#00a800', '#00a8a8', '#a80000', '#a800a8', '#a8a800', '#c0c0c0', '#808080', '#5555ff', '#55ff55', '#55ffff', '#ff5555', '#ff55ff', '#ffff55', '#fff'];
+            const m = /^([0-9a-f])([0-9a-f])$/i.exec(a[0] || '');
+            if (!m) return out('Syntaxe : color <fond><texte>, en hexadécimal (ex : color 0a)');
+            const b = document.getElementById('cmd-box');
+            b.style.background = H[parseInt(m[1], 16)]; b.style.color = H[parseInt(m[2], 16)];
+        });
+        cmd('title', 'Change le titre de la fenêtre', (a, raw) => { document.getElementById('cmd-title').textContent = raw || 'Invite de commandes'; });
         cmd('exit', "Ferme l'invite de commandes", () => closeApp('cmd'));
+        cmd('ipconfig', 'Configuration réseau (fictive)', () => out('Configuration IP de ClemOS\n\n  Adresse IPv4 . . . : 192.168.1.42\n  Masque . . . . . . : 255.255.255.0\n  Passerelle . . . . : 192.168.1.1'));
+        cmd('ping', 'Teste un hôte (simulation)', a => {
+            const h = a[0] || 'clemsite.fr';
+            out('Envoi d\'une requête Ping sur ' + h + ' avec 32 octets de données :');
+            for (let i = 0; i < 4; i++) setTimeout(() => out('Réponse de ' + h + ' : octets=32 temps=' + (8 + Math.floor(Math.random() * 40)) + 'ms TTL=117'), 400 * (i + 1));
+        });
+        cmd('tasklist', 'Liste les applications ouvertes', () => {
+            out('Nom de l\'image         ID');
+            const k = Object.keys(activeApps);
+            if (!k.length) out('(aucune)');
+            k.forEach((id, i) => out(id.padEnd(22) + (1000 + i * 37)));
+        });
+        cmd('taskkill', 'Ferme une application (taskkill <nom>)', a => {
+            if (!a[0] || !appTitles[a[0]]) return out('Applications : ' + Object.keys(appTitles).join(', '));
+            closeApp(a[0]); out('Processus ' + a[0] + ' arrêté.');
+        });
+        cmd('systeminfo', 'Informations système', () => out('Nom de l\'hôte : ' + T.host + '\nSystème : ClemOS v2026\nProcesseur : ClemCore i9 Rétro\nMémoire : 512 Mo\nNavigateur : ' + navigator.userAgent.slice(0, 60) + '…'));
+        cmd('set', 'Affiche/définit des variables (set A=1)', (a, raw) => {
+            const m = /^(\w+)=(.*)$/.exec(raw);
+            if (m) { T.vars[m[1].toUpperCase()] = m[2]; return; }
+            Object.entries(T.vars).forEach(([k, v]) => out(k + '=' + v));
+        });
+        cmd('vol', 'Affiche le volume', () => out('Le volume du lecteur C s\'appelle ClemDrive\nNuméro de série : 2026-C1EM'));
+        cmd('mem', 'Utilisation mémoire', () => out('Mémoire totale : 512 Mo\nUtilisée : ' + (120 + Object.keys(activeApps).length * 30) + ' Mo\nLibre : ' + (392 - Object.keys(activeApps).length * 30) + ' Mo'));
+        cmd('uptime', 'Temps depuis le démarrage', () => { const s = Math.floor((Date.now() - T.t0) / 1000); out('En marche depuis ' + Math.floor(s / 60) + ' min ' + (s % 60) + ' s'); });
+        cmd('history', 'Historique des commandes', () => T.hist.forEach((h, i) => out(String(i + 1).padStart(3) + '  ' + h)));
+        cmd('calc', 'Calculatrice (calc 2+2*3)', (a, raw) => {
+            if (!/^[0-9+\-*/().%\s]+$/.test(raw)) return out('Expression invalide.');
+            try { out(String(Function('"use strict";return (' + raw + ')')())); } catch (e) { out('Erreur de calcul.'); }
+        });
+        cmd('random', 'Nombre aléatoire (random [max])', a => out(String(Math.floor(Math.random() * (parseInt(a[0]) || 100)) + 1)));
+        cmd('dice', 'Lance un dé', () => out('🎲 ' + (1 + Math.floor(Math.random() * 6))));
+        cmd('coin', 'Pile ou face', () => out(rnd(['Pile', 'Face'])));
+        cmd('fortune', 'Citation du jour', () => out(rnd(['Le meilleur navigateur est celui qui ne plante pas.', 'Sauvegardez souvent !', 'Windows XP, c\'était mieux avant.', 'Un clic droit par jour éloigne le bug.', 'Redémarrer règle 90 % des problèmes.'])));
+        cmd('joke', 'Une blague', () => out(rnd(['Pourquoi les développeurs confondent Halloween et Noël ? Parce que OCT 31 = DEC 25.', 'Il y a 10 types de personnes : celles qui comprennent le binaire et les autres.', 'Mon code marche… je ne sais pas pourquoi. Mon code ne marche pas… je ne sais pas pourquoi.'])));
+        cmd('cowsay', 'Une vache qui parle', (a, raw) => {
+            const t = raw || 'Meuh !';
+            out(' ' + '_'.repeat(t.length + 2) + '\n< ' + t + ' >\n ' + '-'.repeat(t.length + 2) + '\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||');
+        });
+        cmd('matrix', 'Pluie de caractères', () => {
+            let n = 0;
+            const iv = setInterval(() => {
+                out(Array.from({ length: 50 }, () => String.fromCharCode(0x30A0 + Math.floor(Math.random() * 96))).join(''), '#0f0');
+                if (++n > 15) clearInterval(iv);
+            }, 100);
+        });
+        cmd('bg', 'Fond d\'écran (bg reset | #couleur | url)', (a, raw) => {
+            if (!raw) return out('Syntaxe : bg reset | bg #ff8800 | bg https://…/image.jpg');
+            if (raw === 'reset') return applyBg('');
+            if (/^#[0-9a-f]{3,6}$/i.test(raw)) return applyBg(raw);
+            if (/^https?:\/\//i.test(raw)) { document.getElementById('bg-url').value = raw; return applyBgUrl(); }
+            out('Valeur non reconnue.');
+        });
+        cmd('open', 'Ouvre une application (open <nom>)', a => {
+            if (!a[0] || !appTitles[a[0]]) return out('Applications : ' + Object.keys(appTitles).join(', '));
+            openApp(a[0]);
+        });
+        cmd('apps', 'Liste les applications', () => Object.entries(appTitles).forEach(([k, v]) => out(k.padEnd(13) + v)));
+        cmd('shutdown', 'Éteint ClemSite', () => shutdownXP());
+        cmd('reboot', 'Recharge la page', () => { noSave = false; saveState(); location.reload(); });
+        cmd('reset', 'Réinitialise toutes les données', () => resetAll());
+        cmd('neofetch', 'Infos système en ASCII', () => out('   ____  _       \n  / ___|| | ___  _ __ ___  \n | |    | |/ _ \\| \'_ ` _ \\ \n | |___ | |  __/| | | | | |\n  \\____||_|\\___||_| |_| |_|\n\nOS : ClemOS 2026\nHôte : ' + T.host + '\nShell : clem-cmd\nApps ouvertes : ' + Object.keys(activeApps).length));
+        cmd('about', 'À propos', () => out('ClemSite - Windows XP Edition\nCréé par Clem. © 2026 ClemSite Inc.'));
+        cmd('hello', 'Dis bonjour', () => out('Bonjour ' + T.user + ' ! 👋'));
+        cmd('upper', 'Met en majuscules', (a, raw) => out(raw.toUpperCase()));
+        cmd('lower', 'Met en minuscules', (a, raw) => out(raw.toLowerCase()));
+        cmd('reverse', 'Inverse un texte', (a, raw) => out([...raw].reverse().join('')));
+        cmd('base64', 'Encode en base64', (a, raw) => { try { out(btoa(unescape(encodeURIComponent(raw)))); } catch (e) { out('Erreur.'); } });
+        cmd('sudo', 'Tentez votre chance', () => out(T.user + ' n\'est pas dans le fichier sudoers. Cet incident sera signalé. 🚨'));
+        cmd('format', 'Formate le disque (rassurez-vous)', () => out('Formatage de C: …\nBien essayé ! 😄 Rien n\'a été effacé.'));
+        cmd('hack', 'Piratage de la NASA', () => {
+            ['Connexion au serveur…', 'Contournement du pare-feu…', 'Téléchargement des plans secrets…', 'Accès accordé ✔ (c\'est une blague)'].forEach((m, i) => setTimeout(() => out(m, '#0f0'), 500 * i));
+        });
 
         function runCmd(line) {
             out(prompt_() + line);
@@ -1248,11 +1396,29 @@
                     if (e.key === 'Enter') { const v = inp.value; inp.value = ''; runCmd(v); }
                     else if (e.key === 'ArrowUp') { e.preventDefault(); if (T.hi > 0) inp.value = T.hist[--T.hi]; }
                     else if (e.key === 'ArrowDown') { e.preventDefault(); inp.value = T.hi < T.hist.length - 1 ? T.hist[++T.hi] : (T.hi = T.hist.length, ''); }
+                    else if (e.key === 'Tab') {
+                        e.preventDefault();
+                        const m = Object.keys(C).filter(k => k.startsWith(inp.value.toLowerCase()));
+                        if (m.length === 1) inp.value = m[0];
+                        else if (m.length > 1) out(m.join('  '));
+                    }
                 });
             }
         }
 
-        // INITIALISATION AU CHARGEMENT (DÉMARRAGE PROPRE)
+        // Lancement du système (PC ou Mobile)
+        window.bootSystem = function(mode) {
+            if (mode === 'mobile') {
+                document.body.classList.add('mobile-mode');
+            } else {
+                document.body.classList.remove('mobile-mode');
+            }
+            const bootScreen = document.getElementById('boot-screen');
+            if (bootScreen) bootScreen.style.display = 'none';
+            playRetroSound();
+        };
+
+        // INITIALISATION AU CHARGEMENT
         window.onload = function() {
             initMinesweeper();
             initControl();
