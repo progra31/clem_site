@@ -41,6 +41,7 @@ let highestZIndex = 100;
 const activeApps = {};
 
 window.openApp = function(appId) {
+    if (appId === 'browser') return; // Application supprimée
     const win = document.getElementById(`win-${appId}`);
     if (!win) return;
 
@@ -51,6 +52,7 @@ window.openApp = function(appId) {
         activeApps[appId] = true;
         addTaskbarItem(appId);
     }
+    if (appId === 'computer') updateRealSystemInfo();
     if (appId === 'cmd') setTimeout(() => document.getElementById('cmd-in').focus(), 50);
 };
 
@@ -107,7 +109,6 @@ window.toggleMaximize = function(winId) {
 // --- BARRE DES TÂCHES ---
 const appTitles = {
     computer: 'Poste de travail',
-    browser: 'ClemBrowser',
     notepad: 'Bloc-notes',
     player: 'ClemPlayer',
     minesweeper: 'Démineur XP',
@@ -203,40 +204,60 @@ document.querySelectorAll('.xp-window').forEach(win => {
     win.addEventListener('mousedown', () => focusWindow(win));
 });
 
-// --- FONCTIONS APPLIS ---
-window.navigateBrowser = function() {
-    const urlInput = document.getElementById('browser-url').value;
-    const content = document.getElementById('browser-content');
-    if (content) {
-        content.innerHTML = `
-            <div class="p-4">
-                <h2 class="text-lg font-bold text-blue-800 border-b pb-1">Résultats de la recherche</h2>
-                <p class="text-xs text-gray-600 mt-2">Vous naviguez actuellement sur : <b>${urlInput}</b></p>
-                <div class="mt-4 p-3 bg-gray-100 rounded border text-xs">
-                    Page factice générée dans ClemBrowser XP. 🚀
-                </div>
-            </div>
-        `;
-    }
-};
+// --- INFORMATIONS SYSTÈME EN TEMPS RÉEL (POSTE DE TRAVAIL) ---
+function updateRealSystemInfo() {
+    const infoContainer = document.getElementById('real-system-info');
+    if (!infoContainer) return;
 
-window.reloadBrowser = function() {
-    document.getElementById('browser-url').value = 'http://www.clemsite.fr/accueil';
-    const content = document.getElementById('browser-content');
-    if (content) {
-        content.innerHTML = `
-            <div class="max-w-md mx-auto text-center space-y-4">
-                <div class="inline-block p-3 bg-blue-100 rounded-full text-blue-600 text-4xl mb-2">
-                    <i class="fa-solid fa-globe"></i>
-                </div>
-                <h1 class="text-2xl font-bold text-blue-900 border-b pb-2">Bienvenue sur ClemSite !</h1>
-                <p class="text-gray-700 text-sm leading-relaxed">
-                    ClemSite est votre portail interactif sur le Web Rétro.
-                </p>
-            </div>
-        `;
+    // Détection simplifiée de l'OS et du navigateur sans exposer d'IP ou données privées
+    const ua = navigator.userAgent;
+    let browserName = "Inconnu";
+    if (ua.includes("Firefox")) browserName = "Mozilla Firefox";
+    else if (ua.includes("Chrome")) browserName = "Google Chrome / Chromium";
+    else if (ua.includes("Safari")) browserName = "Apple Safari";
+    else if (ua.includes("Edg")) browserName = "Microsoft Edge";
+
+    let osName = "Inconnu";
+    if (navigator.userAgentData && navigator.userAgentData.platform) {
+        osName = navigator.userAgentData.platform;
+    } else if (navigator.platform) {
+        osName = navigator.platform;
     }
-};
+
+    const cores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} cœurs` : 'Non disponible';
+    const ram = navigator.deviceMemory ? `~${navigator.deviceMemory} Go` : 'Non disponible';
+    const screenRes = `${window.screen.width} x ${window.screen.height}`;
+    const connection = navigator.onLine ? 'Connecté à Internet' : 'Hors ligne';
+
+    infoContainer.innerHTML = `
+        <ul class="list-disc pl-4 space-y-1">
+            <li><b>Système d'exploitation :</b> ${osName}</li>
+            <li><b>Navigateur hôte :</b> ${browserName}</li>
+            <li><b>Écran :</b> ${screenRes}</li>
+            <li><b>Processeur :</b> ${cores}</li>
+            <li><b>Mémoire estimée :</b> ${ram}</li>
+            <li><b>Réseau :</b> ${connection}</li>
+            <li id="battery-status-li"><b>Batterie :</b> Analyse en cours...</li>
+        </ul>
+    `;
+
+    if (navigator.getBattery) {
+        navigator.getBattery().then(battery => {
+            const batteryLi = document.getElementById('battery-status-li');
+            if (batteryLi) {
+                const level = Math.round(battery.level * 100);
+                const charging = battery.charging ? ' (en charge)' : '';
+                batteryLi.innerHTML = `<b>Batterie :</b> ${level}%${charging}`;
+            }
+        }).catch(() => {
+            const batteryLi = document.getElementById('battery-status-li');
+            if (batteryLi) batteryLi.style.display = 'none';
+        });
+    } else {
+        const batteryLi = document.getElementById('battery-status-li');
+        if (batteryLi) batteryLi.style.display = 'none';
+    }
+}
 
 // BLOC-NOTES
 window.clearNote = function() {
