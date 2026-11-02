@@ -45,11 +45,6 @@
             <span class="leading-tight text-center">Poste de travail</span>
         </div>
 
-        <div class="xp-desktop-icon flex flex-col items-center gap-1 text-white text-xs drop-shadow-[0_1px_2px_rgba(0,0,0,1)]" ondblclick="openApp('browser')" onclick="selectIcon(event, this)">
-            <i class="fa-brands fa-internet-explorer text-3xl text-blue-400 drop-shadow"></i>
-            <span class="leading-tight text-center">ClemBrowser</span>
-        </div>
-
         <div class="xp-desktop-icon flex flex-col items-center gap-1 text-white text-xs drop-shadow-[0_1px_2px_rgba(0,0,0,1)]" ondblclick="openApp('notepad')" onclick="selectIcon(event, this)">
             <i class="fa-solid fa-file-lines text-3xl text-yellow-100 drop-shadow"></i>
             <span class="leading-tight text-center">Bloc-notes</span>
@@ -117,13 +112,6 @@
                         <i class="fa-solid fa-hard-drive text-blue-600"></i> Disque local (C:)
                     </div>
                     <div class="space-y-2">
-                        <div class="flex items-center gap-2 p-1 hover:bg-blue-100 rounded cursor-pointer" onclick="openApp('browser')">
-                            <i class="fa-solid fa-folder text-yellow-500 text-lg"></i>
-                            <div>
-                                <div class="font-bold">Projets_ClemSite</div>
-                                <div class="text-gray-500 text-[10px]">Dossier de fichiers</div>
-                            </div>
-                        </div>
                         <div class="flex items-center gap-2 p-1 hover:bg-blue-100 rounded cursor-pointer" onclick="openApp('notepad')">
                             <i class="fa-solid fa-file-code text-blue-500 text-lg"></i>
                             <div>
@@ -138,63 +126,12 @@
                     <div class="font-bold text-gray-800 border-b pb-1 mb-2 flex items-center gap-2">
                         <i class="fa-solid fa-circle-info text-blue-500"></i> Informations système
                     </div>
-                    <p class="text-gray-600 mb-2">Bienvenue sur <b>ClemSite</b>, une expérience interactive reproduisant l'univers rétro et nostalgique de Windows XP.</p>
-                    <ul class="list-disc pl-4 text-gray-700 space-y-1">
-                        <li>Système : ClemOS v2026</li>
-                        <li>Processeur : ClemCore i9 Rétro</li>
-                        <li>Mémoire : 512 MB de RAM Virtuelle</li>
-                    </ul>
+                    <div id="real-system-info" class="text-gray-700 space-y-1">
+                        <div>Chargement des spécifications de l'appareil...</div>
+                    </div>
                 </div>
             </div>
             <div class="resizable-handle" onmousedown="resizeStart(event, 'win-computer')"></div>
-        </div>
-
-        <!-- CLEMBROWSER -->
-        <div id="win-browser" class="xp-window pointer-events-auto hidden" style="width: 640px; height: 440px; top: 40px; left: 160px;">
-            <div class="xp-window-titlebar" onmousedown="dragStart(event, 'win-browser')">
-                <div class="flex items-center gap-2">
-                    <i class="fa-brands fa-internet-explorer text-xs"></i>
-                    <span>ClemBrowser - Accueil ClemSite</span>
-                </div>
-                <div class="flex items-center">
-                    <button class="xp-btn-ctrl xp-btn-minimize" onclick="minimizeApp('browser')">_</button>
-                    <button class="xp-btn-ctrl xp-btn-maximize" onclick="toggleMaximize('win-browser')">□</button>
-                    <button class="xp-btn-ctrl xp-btn-close" onclick="closeApp('browser')">✕</button>
-                </div>
-            </div>
-            <div class="bg-[#ece9d8] p-1 border-b border-gray-300 flex items-center gap-2 text-xs">
-                <button class="px-2 py-0.5 border border-gray-400 rounded bg-gray-100 hover:bg-gray-200" onclick="alert('Page précédente')">◄ Précédent</button>
-                <button class="px-2 py-0.5 border border-gray-400 rounded bg-gray-100 hover:bg-gray-200" onclick="alert('Page suivante')">►</button>
-                <button class="px-2 py-0.5 border border-gray-400 rounded bg-gray-100 hover:bg-gray-200" onclick="reloadBrowser()"><i class="fa-solid fa-rotate-right"></i></button>
-                <span class="text-gray-600">Adresse:</span>
-                <input type="text" id="browser-url" value="http://www.clemsite.fr/accueil" class="flex-1 px-2 py-0.5 border border-gray-400 text-xs bg-white rounded-none outline-none">
-                <button class="px-3 py-0.5 bg-green-600 text-white font-bold border border-green-800 rounded hover:bg-green-700" onclick="navigateBrowser()">OK</button>
-            </div>
-            <div id="browser-content" class="flex-1 bg-white p-6 overflow-auto border-t">
-                <div class="max-w-md mx-auto text-center space-y-4">
-                    <div class="inline-block p-3 bg-blue-100 rounded-full text-blue-600 text-4xl mb-2">
-                        <i class="fa-solid fa-globe"></i>
-                    </div>
-                    <h1 class="text-2xl font-bold text-blue-900 border-b pb-2">Bienvenue sur ClemSite !</h1>
-                    <p class="text-gray-700 text-sm leading-relaxed">
-                        ClemSite est votre portail interactif sur le Web Rétro. Conçu avec passion pour vous offrir une expérience fluide, créative et nostalgique directement dans votre navigateur web.
-                    </p>
-                    <div class="grid grid-cols-2 gap-3 text-left my-4">
-                        <div class="p-3 bg-yellow-50 border border-yellow-200 rounded">
-                            <h3 class="font-bold text-yellow-800 text-xs"><i class="fa-solid fa-code"></i> Développeur</h3>
-                            <p class="text-xs text-gray-600">Créé par Clem, passionné par le Web et l'UX Rétro.</p>
-                        </div>
-                        <div class="p-3 bg-green-50 border border-green-200 rounded">
-                            <h3 class="font-bold text-green-800 text-xs"><i class="fa-solid fa-rocket"></i> Objectif</h3>
-                            <p class="text-xs text-gray-600">Allier nostalgie de Windows XP et puissance moderne.</p>
-                        </div>
-                    </div>
-                    <div class="text-xs text-gray-500 pt-4 border-t">
-                        © 2026 ClemSite Inc. Tous droits réservés.
-                    </div>
-                </div>
-            </div>
-            <div class="resizable-handle" onmousedown="resizeStart(event, 'win-browser')"></div>
         </div>
 
         <!-- BLOC-NOTES -->
@@ -425,13 +362,6 @@
         </div>
         <div class="grid grid-cols-2 bg-white text-xs p-1 gap-1">
             <div class="space-y-1 p-1">
-                <div class="flex items-center gap-2 p-1.5 hover:bg-blue-600 hover:text-white rounded cursor-pointer" onclick="openApp('browser'); toggleStartMenu()">
-                    <i class="fa-brands fa-internet-explorer text-blue-500 text-base"></i>
-                    <div>
-                        <div class="font-bold">ClemBrowser</div>
-                        <div class="text-[10px] text-gray-500 hover:text-white">Navigateur web</div>
-                    </div>
-                </div>
                 <div class="flex items-center gap-2 p-1.5 hover:bg-blue-600 hover:text-white rounded cursor-pointer" onclick="openApp('notepad'); toggleStartMenu()">
                     <i class="fa-solid fa-file-lines text-yellow-600 text-base"></i>
                     <div>
