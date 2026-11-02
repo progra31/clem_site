@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
+
+{
+font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif;
+box-sizing: border-box;
+}
+
+/* Thème Bliss Windows XP */
+.xp-wallpaper {
+background: linear-gradient(to bottom, #3a6ea5 0%, #a2c4e0 30%, #68a442 70%, #3e8125 100%);
+background-image: url('https://upload.wikimedia.org/wikipedia/en/2/27/Bliss_%28Windows_XP%29.png');
+background-size: cover;
+background-position: center;
+}
+
+/* Fenêtre Windows XP Luna Blue */
+.xp-window {
+position: absolute;
+background-color: #ece9d8;
+border: 3px solid #0055ea;
+border-top-left-radius: 8px;
+border-top-right-radius: 8px;
+box-shadow: 3px 3px 12px rgba(0,0,0,0.4);
+display: flex;
+flex-direction: column;
+overflow: hidden;
+min-width: 280px;
+min-height: 180px;
+}
+
+.xp-window.hidden {
+display: none !important;
+}
+
+.xp-window-titlebar {
+background: linear-gradient(to bottom, #0058ee 0%, #3593ff 4%, #288eff 6%, #0055ea 10%, #0055ea 83%, #0046d5 88%, #0041cd 93%, #002dd0 100%);
+color: white;
+padding: 3px 6px 3px 8px;
+font-weight: bold;
+font-size: 12px;
+text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+display: flex;
+align-items: center;
+justify-content: space-between;
+cursor: move;
+height: 30px;
+flex-shrink: 0;
+border-top-left-radius: 5px;
+border-top-right-radius: 5px;
+}
+
+.xp-window.inactive .xp-window-titlebar {
+background: linear-gradient(to bottom, #7697e7 0%, #7e9fe8 100%);
+color: #d8e4f8;
+}
+
+/* Boutons de contrôle de fenêtre */
+.xp-btn-ctrl {
+width: 21px;
+height: 21px;
+border-radius: 3px;
+border: 1px solid #ffffff;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-size: 10px;
+font-weight: bold;
+color: white;
+box-shadow: inset 0 0 2px rgba(255,255,255,0.8), 1px 1px 2px rgba(0,0,0,0.3);
+cursor: pointer;
+margin-left: 2px;
+}
+.xp-btn-minimize { background: linear-gradient(to bottom, #3c91ff, #0053e1); }
+.xp-btn-maximize { background: linear-gradient(to bottom, #3c91ff, #0053e1); }
+.xp-btn-close { background: linear-gradient(to bottom, #e7664c, #c72f12); }
+.xp-btn-close:hover { background: linear-gradient(to bottom, #ff7a61, #e03212); }
+
+/* Barre des tâches */
+.xp-taskbar {
+background: linear-gradient(to bottom, #1f2f86 0%, #3168d8 3%, #1951d1 9%, #1141b8 18%, #103eb3 42%, #1241b8 87%, #021a73 95%, #000000 100%);
+height: 38px;
+z-index: 99999;
+}
+
+/* Bouton Démarrer */
+.xp-start-btn {
+background: linear-gradient(to bottom, #388a34 0%, #43a33d 10%, #399135 30%, #2e7a2b 85%, #185215 100%);
+border-top-right-radius: 8px;
+border-bottom-right-radius: 8px;
+box-shadow: inset 1px 1px 1px rgba(255,255,255,0.5), 2px 0 5px rgba(0,0,0,0.4);
+font-weight: bold;
+font-style: italic;
+text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+}
+.xp-start-btn:hover {
+background: linear-gradient(to bottom, #42a23e 0%, #4ebc47 10%, #42a73d 30%, #358d31 85%, #1e621a 100%);
+}
+
+/* Zone de notification / Horloge */
+.xp-tray {
+background: linear-gradient(to bottom, #0c8fea 0%, #0f70c7 10%, #095bc5 30%, #0c67cb 85%, #084aa3 100%);
+border-left: 1px solid #09347a;
+box-shadow: inset 1px 0 2px rgba(0,0,0,0.3);
+}
+
+/* Menu Démarrer XP */
+.xp-start-menu {
+position: absolute;
+bottom: 38px;
+left: 0;
+width: 380px;
+background-color: #4282d6;
+border-top-right-radius: 8px;
+border-top-left-radius: 8px;
+box-shadow: 4px 4px 15px rgba(0,0,0,0.5);
+display: none;
+z-index: 100000;
+border: 2px solid #003399;
+overflow: hidden;
+}
+
+.xp-start-header {
+background: linear-gradient(to bottom, #1c5ec9 0%, #1144a6 100%);
+padding: 8px 12px;
+color: white;
+font-weight: bold;
+display: flex;
+align-items: center;
+gap: 10px;
+border-bottom: 2px solid #e58700;
+}
+
+/* Onglets d'application dans la barre des tâches */
+.xp-taskbar-item {
+background: linear-gradient(to bottom, #3a82ea 0%, #2960cc 50%, #1542a8 100%);
+border: 1px solid #103078;
+border-radius: 3px;
+color: white;
+text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+font-size: 11px;
+max-width: 150px;
+}
+.xp-taskbar-item.active {
+background: linear-gradient(to bottom, #1d4399 0%, #204db5 50%, #193f92 100%);
+box-shadow: inset 1px 1px 3px rgba(0,0,0,0.6);
+}
+
+/* Effet icône sélectionnée */
+.xp-desktop-icon {
+width: 80px;
+padding: 6px;
+border: 1px transparent dashed;
+border-radius: 3px;
+cursor: pointer;
+text-align: center;
+}
+.xp-desktop-icon:hover {
+background-color: rgba(49, 106, 197, 0.3);
+border-color: rgba(49, 106, 197, 0.5);
+}
+.xp-desktop-icon:active, .xp-desktop-icon.selected {
+background-color: rgba(49, 106, 197, 0.6);
+border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Grille Démineur */
+.minesweeper-grid {
+display: grid;
+grid-template-columns: repeat(9, 25px);
+grid-template-rows: repeat(9, 25px);
+gap: 1px;
+background-color: #7b7b7b;
+border: 3px inset #ffffff;
+}
+.minesweeper-cell {
+width: 25px;
+height: 25px;
+background-color: #c0c0c0;
+border: 2px outset #ffffff;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: bold;
+font-size: 14px;
+cursor: pointer;
+}
+.minesweeper-cell.revealed {
+border: 1px solid #7b7b7b;
+background-color: #bdbdbd;
+}
+
+/* Curseur redimensionnement */
+.resizable-handle {
+position: absolute;
+right: 0;
+bottom: 0;
+width: 12px;
+height: 12px;
+cursor: se-resize;
+}
+
+/* Mode Téléphone (Mobile) */
+body.mobile-mode #windows-container .xp-window {
+width: 96vw !important;
+height: 75vh !important;
+left: 2vw !important;
+top: 10px !important;
+}
+body.mobile-mode #desktop-area {
+grid-template-columns: repeat(3, minmax(0, 1fr));
+grid-auto-rows: auto;
+grid-flow: row;
+gap: 8px;
+padding: 8px;
+}
+body.mobile-mode .xp-desktop-icon {
+width: 100%;
+}
+
+/* Invite de commandes */
+#cmd-box, #cmd-box * {
+font-family: 'Lucida Console', Consolas, monospace;
+font-size: 12px;
+}
+#cmd-out {
+color: inherit;
+}
