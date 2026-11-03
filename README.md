@@ -1,7 +1,8 @@
 # clem (site/code en python/SEMI vibe coding)
 ## site en développement (v.ALPHA)
 
-## but du site : reproduire un ordinateur windows xp
+## but du site : faire des projets seul ou a plusieurs
+## projet principal : ordinateur web
 
 ## code : semi vibe codé
 
