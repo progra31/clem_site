@@ -1,59 +1,73 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenue - Clément Beyt</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .button-container {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            font-size: 1rem;
-            color: #ffffff;
-            background-color: #007bff;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bureau Interactif & HUD</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>bienvenue sur le site de clément beyt veuillez sélectionner un service</h1>
-    
-    <div class="button-container">
-        <a href="https://progra31.github.io/clem_site/xp-computer/" class="btn">ordinateur web</a>
-        <a href="https://progra31.github.io/clem_site/super-pannel" class="btn">super pannel</a>
+  <!-- Menu latéral -->
+  <aside id="sidebar">
+    <h2>Modules HUD</h2>
+    <div class="module-toggle">
+      <label>
+        <input type="checkbox" data-module="fps"> Compteur de FPS
+      </label>
+    </div>
+    <div class="module-toggle">
+      <label>
+        <input type="checkbox" data-module="specs"> Specs de l'appareil
+      </label>
+    </div>
+    <div class="module-toggle">
+      <label>
+        <input type="checkbox" data-module="keyboard"> Tracker Clavier
+      </label>
+    </div>
+    <div class="module-toggle">
+      <label>
+        <input type="checkbox" data-module="mouse"> Tracker Souris
+      </label>
+    </div>
+  </aside>
+
+  <!-- Zone Bureau -->
+  <main id="desk">
+    <!-- Fournitures de bureau -->
+    <div class="supply notepad">
+      <div class="notepad-header"></div>
+      <div class="notepad-lines">
+        <p>Notes du jour...</p>
+      </div>
     </div>
 
+    <div class="supply pen-holder">
+      <div class="pen pen-blue"></div>
+      <div class="pen pen-red"></div>
+      <div class="pen pen-yellow"></div>
+    </div>
+
+    <div class="supply coffee-mug">
+      <div class="coffee"></div>
+    </div>
+
+    <div class="supply sticky-note">
+      <p>HUD à activer ➔</p>
+    </div>
+  </main>
+
+  <!-- Conteneur global pour les overlays HUD -->
+  <div id="hud-overlay"></div>
+
+  <!-- Scripts des modules -->
+  <script src="module-fps.js"></script>
+  <script src="module-specs.js"></script>
+  <script src="module-keyboard.js"></script>
+  <script src="module-mouse.js"></script>
+
+  <!-- Script principal -->
+  <script src="script.js"></script>
 </body>
 </html>
