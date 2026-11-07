@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CforCodeEditor</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            editorDark: '#1e1e1e',
+            editorDarkHeader: '#252526',
+            editorDarkSidebar: '#333333',
+            editorLight: '#ffffff',
+            editorLightHeader: '#f3f4f6',
+          }
+        }
+      }
+    }
+  </script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- CodeMirror CSS & JS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/neo.min.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+
+  <style>
+    /* Styling CodeMirror for flex layout */
+    .CodeMirror {
+      height: 100% !important;
+      font-family: 'Fira Code', monospace, monospace;
+      font-size: 14px;
+    }
+    .cm-wrapper {
+      height: calc(100% - 40px);
+    }
+    /* Splitter custom styling */
+    .resizer-h {
+      cursor: col-resize;
+      width: 6px;
+      background-color: transparent;
+      transition: background-color 0.2s;
+    }
+    .resizer-h:hover, .resizer-h.dragging {
+      background-color: #3b82f6;
+    }
+    .resizer-v {
+      cursor: row-resize;
+      height: 6px;
+      background-color: transparent;
+      transition: background-color 0.2s;
+    }
+    .resizer-v:hover, .resizer-v.dragging {
+      background-color: #3b82f6;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 h-screen flex flex-col overflow-hidden font-sans">
+
+  <!-- En-tête / Barre d'outils -->
+  <header class="h-14 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 flex items-center justify-between z-10 select-none">
+    <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-2 text-blue-600 dark:text-blue-400 font-bold text-lg tracking-tight">
+        <i class="fa-solid fa-code text-xl"></i>
+        <span>CforCodeEditor</span>
+      </div>
+      <span class="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded font-medium">IDE Web Live</span>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center space-x-2">
+      <!-- Auto-run toggle -->
+      <label class="flex items-center space-x-2 cursor-pointer text-xs mr-2">
+        <input type="checkbox" id="autoRunToggle" checked class="rounded border-gray-400 text-blue-600 focus:ring-blue-500">
+        <span class="text-gray-600 dark:text-gray-400">Exécution Auto</span>
+      </label>
+
+      <!-- Bouton Exécuter -->
+      <button id="runBtn" class="flex items-center space-x-1.5 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors shadow-sm">
+        <i class="fa-solid fa-play text-xs"></i>
+        <span>Lancer</span>
+      </button>
+
+      <!-- Bouton Effacer -->
+      <button id="clearBtn" class="flex items-center space-x-1.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+        <i class="fa-solid fa-trash-can text-xs"></i>
+        <span>Effacer</span>
+      </button>
+
+      <!-- Bouton Télécharger -->
+      <button id="downloadBtn" class="flex items-center space-x-1.5 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors shadow-sm">
+        <i class="fa-solid fa-download text-xs"></i>
+        <span>Télécharger</span>
+      </button>
+
+      <div class="h-5 w-px bg-gray-300 dark:bg-gray-700 mx-1"></div>
+
+      <!-- Basculer le Thème -->
+      <button id="themeToggle" class="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Changer de thème">
+        <i class="fa-solid fa-moon dark:hidden"></i>
+        <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Zone Principale -->
+  <main class="flex-1 flex flex-col md:flex-row overflow-hidden relative" id="mainContainer">
+    
+    <!-- Section Éditeur de code (Gauche) -->
+    <div id="editorPanel" class="w-full md:w-1/2 flex flex-col h-1/2 md:h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800">
+      
+      <!-- Barre des Onglets -->
+      <div class="flex items-center bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-2 pt-2 space-x-1 select-none">
+        <button class="tab-btn active px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 border-blue-500 bg-white dark:bg-gray-900 text-blue-600 dark:text-blue-400 flex items-center space-x-2" data-tab="html">
+          <i class="fa-brands fa-html5 text-orange-500"></i>
+          <span>index.html</span>
+        </button>
+        <button class="tab-btn px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 flex items-center space-x-2" data-tab="css">
+          <i class="fa-brands fa-css3-alt text-blue-500"></i>
+          <span>style.css</span>
+        </button>
+        <button class="tab-btn px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 flex items-center space-x-2" data-tab="js">
+          <i class="fa-brands fa-js text-yellow-400"></i>
+          <span>script.js</span>
+        </button>
+      </div>
+
+      <!-- Conteneurs CodeMirror pour chaque langages -->
+      <div class="cm-wrapper relative flex-1">
+        <div id="htmlEditor" class="tab-content h-full"></div>
+        <div id="cssEditor" class="tab-content h-full hidden"></div>
+        <div id="jsEditor" class="tab-content h-full hidden"></div>
+      </div>
+    </div>
+
+    <!-- Redimensionneur Horizontal (Desktop) -->
+    <div id="resizerH" class="resizer-h hidden md:block z-20"></div>
+
+    <!-- Section Aperçu & Console (Droite) -->
+    <div id="previewPanel" class="w-full md:w-1/2 flex flex-col h-1/2 md:h-full bg-gray-50 dark:bg-gray-950 overflow-hidden">
+      
+      <!-- Zone d'Aperçu Web -->
+      <div id="iframeContainer" class="flex-1 flex flex-col h-2/3 min-h-[150px]">
+        <div class="h-9 bg-gray-200 dark:bg-gray-800 px-4 flex items-center justify-between text-xs font-semibold text-gray-600 dark:text-gray-400 border-b border-gray-300 dark:border-gray-700 select-none">
+          <span class="flex items-center space-x-2">
+            <i class="fa-solid fa-desktop"></i>
+            <span>Aperçu en direct</span>
+          </span>
+          <button id="refreshPreview" class="hover:text-blue-500 transition-colors" title="Rafraîchir l'aperçu">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
+        <iframe id="previewIframe" class="w-full flex-1 bg-white border-0" sandbox="allow-scripts allow-modals flex flex-col"></iframe>
+      </div>
+
+      <!-- Redimensionneur Vertical (Entre Preview et Console) -->
+      <div id="resizerV" class="resizer-v z-20"></div>
+
+      <!-- Zone Console Log -->
+      <div id="consoleContainer" class="h-1/3 min-h-[100px] flex flex-col bg-gray-900 border-t border-gray-800">
+        <div class="h-8 bg-gray-800 px-4 flex items-center justify-between text-xs font-mono text-gray-400 select-none">
+          <span class="flex items-center space-x-2">
+            <i class="fa-solid fa-terminal text-green-400"></i>
+            <span class="font-bold text-gray-300">Console</span>
+          </span>
+          <button id="clearConsoleBtn" class="hover:text-white transition-colors" title="Effacer la console">
+            <i class="fa-solid fa-ban"></i>
+          </button>
+        </div>
+        <div id="consoleOutput" class="flex-1 p-3 font-mono text-xs overflow-y-auto space-y-1.5 text-gray-300">
+          <!-- Logs générés dynamiquement ici -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    // --- Codes de démonstration initiales ---
+    const initialHTML = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Démo CforCodeEditor</title>
+</head>
+<body>
+  <div class="card">
+    <h1>✨ CforCodeEditor</h1>
+    <p>Bienvenue dans votre éditeur de code interactif en temps réel !</p>
+    <div class="counter-box">
+      <p>Compteur : <span id="count">0</span></p>
+      <button id="btnInc">Incrementer</button>
+      <button id="btnReset">Réinitialiser</button>
+    </div>
+  </div>
+</body>
+</html>`;
+
+    const initialCSS = `body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 400px;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.counter-box {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f7fafc;
+  border-radius: 8px;
+}
+
+#count {
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: #4c51bf;
+}
+
+button {
+  background: #4c51bf;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin: 0.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.1s, background-color 0.2s;
+}
+
+button:hover {
+  background: #434190;
+}
+
+button:active {
+  transform: scale(0.95);
+}`;
+
+    const initialJS = `// Écrivez votre code JavaScript ici !
+let count = 0;
+
+const countDisplay = document.getElementById('count');
+const btnInc = document.getElementById('btnInc');
+const btnReset = document.getElementById('btnReset');
+
+console.log("Initialisation de l'application réussie !");
+
+btnInc.addEventListener('click', () => {
+  count++;
+  countDisplay.textContent = count;
+  console.log("Nouveau compte :", count);
+});
+
+btnReset.addEventListener('click', () => {
+  count = 0;
+  countDisplay.textContent = count;
+  console.log("Compteur réinitialisé.");
+});`;
+
+    // --- Initialisation de CodeMirror ---
+    let editors = {};
+
+    function initEditors() {
+      const darkTheme = document.documentElement.classList.contains('dark');
+      const theme = darkTheme ? 'dracula' : 'neo';
+
+      editors.html = CodeMirror(document.getElementById('htmlEditor'), {
+        value: initialHTML,
+        mode: 'htmlmixed',
+        theme: theme,
+        lineNumbers: true,
+        autoCloseTags: true,
+        tabSize: 2,
+        lineWrapping: true
+      });
+
+      editors.css = CodeMirror(document.getElementById('cssEditor'), {
+        value: initialCSS,
+        mode: 'css',
+        theme: theme,
+        lineNumbers: true,
+        tabSize: 2,
+        lineWrapping: true
+      });
+
+      editors.js = CodeMirror(document.getElementById('jsEditor'), {
+        value: initialJS,
+        mode: 'javascript',
+        theme: theme,
+        lineNumbers: true,
+        tabSize: 2,
+        lineWrapping: true
+      });
+
+      // Écouter les changements pour la mise à jour automatique
+      Object.keys(editors).forEach(key => {
+        editors[key].on('change', () => {
+          if (document.getElementById('autoRunToggle').checked) {
+            debounceUpdate();
+          }
+        });
+      });
+    }
+
+    // --- Gestion des onglets ---
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetTab = btn.getAttribute('data-tab');
+
+        tabButtons.forEach(b => {
+          b.classList.remove('active', 'border-blue-500', 'text-blue-600', 'dark:text-blue-400', 'bg-white', 'dark:bg-gray-900');
+          b.classList.add('border-transparent', 'text-gray-500');
+        });
+
+        btn.classList.add('active', 'border-blue-500', 'text-blue-600', 'dark:text-blue-400', 'bg-white', 'dark:bg-gray-900');
+        btn.classList.remove('border-transparent', 'text-gray-500');
+
+        tabContents.forEach(content => content.classList.add('hidden'));
+        document.getElementById(`${targetTab}Editor`).classList.remove('hidden');
+
+        // Rafraîchir l'éditeur affiché pour corriger les bugs d'affichage de CodeMirror
+        if (editors[targetTab]) {
+          editors[targetTab].refresh();
+        }
+      });
+    });
+
+    // --- Rendu de l'aperçu et interception de la console ---
+    const previewIframe = document.getElementById('previewIframe');
+    const consoleOutput = document.getElementById('consoleOutput');
+
+    function updatePreview() {
+      const html = editors.html.getValue();
+      const css = editors.css.getValue();
+      const js = editors.js.getValue();
+
+      // Script d'injection pour capturer la console et les erreurs
+      const consoleOverrideScript = `
+        <script>
+          (function() {
+            const originalLog = console.log;
+            const originalError = console.error;
+            const originalWarn = console.warn;
+            const originalInfo = console.info;
+
+            function sendToHost(type, args) {
+              window.parent.postMessage({
+                type: 'CONSOLE_LOG',
+                logType: type,
+                data: Array.from(args).map(arg => {
+                  try {
+                    return typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg);
+                  } catch(e) {
+                    return String(arg);
+                  }
+                })
+              }, '*');
+            }
+
+            console.log = function(...args) { sendToHost('log', args); originalLog.apply(console, args); };
+            console.error = function(...args) { sendToHost('error', args); originalError.apply(console, args); };
+            console.warn = function(...args) { sendToHost('warn', args); originalWarn.apply(console, args); };
+            console.info = function(...args) { sendToHost('info', args); originalInfo.apply(console, args); };
+
+            window.onerror = function(msg, url, line) {
+              sendToHost('error', ["Erreur: " + msg + " (Ligne " + line + ")"]);
+              return false;
+            };
+          })();
+        <\/script>
+      `;
+
+      const combinedSource = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <style>${css}</style>
+            ${consoleOverrideScript}
+          </head>
+          <body>
+            ${html}
+            <script>${js}<\/script>
+          </body>
+        </html>
+      `;
+
+      previewIframe.srcdoc = combinedSource;
+    }
+
+    // Gestion de l'anti-rebond (Debounce) pour l'exécution automatique
+    let debounceTimer;
+    function debounceUpdate() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(updatePreview, 600);
+    }
+
+    // Réception des messages de la console iframe
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'CONSOLE_LOG') {
+        appendConsoleLog(event.data.logType, event.data.data);
+      }
+    });
+
+    function appendConsoleLog(type, logs) {
+      const logRow = document.createElement('div');
+      logRow.className = 'flex items-start space-x-2 font-mono text-xs border-b border-gray-800/50 pb-1';
+
+      let colorClass = 'text-gray-300';
+      let icon = 'fa-angle-right';
+
+      if (type === 'error') {
+        colorClass = 'text-red-400 bg-red-950/30 p-1 rounded';
+        icon = 'fa-circle-xmark';
+      } else if (type === 'warn') {
+        colorClass = 'text-amber-400 bg-amber-950/30 p-1 rounded';
+        icon = 'fa-triangle-exclamation';
+      } else if (type === 'info') {
+        colorClass = 'text-blue-400';
+        icon = 'fa-circle-info';
+      }
+
+      logRow.innerHTML = `
+        <i class="fa-solid ${icon} mt-0.5 text-[10px] ${colorClass}"></i>
+        <div class="flex-1 whitespace-pre-wrap ${colorClass}">${logs.join(' ')}</div>
+      `;
+
+      consoleOutput.appendChild(logRow);
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    }
+
+    // --- Action Buttons ---
+
+    // Bouton Lancer
+    document.getElementById('runBtn').addEventListener('click', () => {
+      updatePreview();
+    });
+
+    // Rafraîchir manuellement
+    document.getElementById('refreshPreview').addEventListener('click', () => {
+      updatePreview();
+    });
+
+    // Vider la console
+    document.getElementById('clearConsoleBtn').addEventListener('click', () => {
+      consoleOutput.innerHTML = '';
+    });
+
+    // Bouton Effacer le code
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      const activeTab = document.querySelector('.tab-btn.active').getAttribute('data-tab');
+      editors[activeTab].setValue('');
+      editors[activeTab].focus();
+    });
+
+    // Bouton Télécharger le fichier ZIP/HTML assemblé
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const html = editors.html.getValue();
+      const css = editors.css.getValue();
+      const js = editors.js.getValue();
+
+      const fullCode = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projet Exporté</title>
+  <style>
+${css}
+  </style>
+</head>
+<body>
+${html}
+  <script>
+${js}
+  <\/script>
+</body>
+</html>`;
+
+      const blob = new Blob([fullCode], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'index.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // --- Gestion du Thème (Clair / Sombre) ---
+    const themeToggleBtn = document.getElementById('themeToggle');
+
+    themeToggleBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      const newTheme = isDark ? 'dracula' : 'neo';
+
+      Object.keys(editors).forEach(key => {
+        editors[key].setOption('theme', newTheme);
+      });
+    });
+
+    // --- Resizing / Split View Implementation ---
+    const resizerH = document.getElementById('resizerH');
+    const editorPanel = document.getElementById('editorPanel');
+    const previewPanel = document.getElementById('previewPanel');
+    const mainContainer = document.getElementById('mainContainer');
+
+    let isDraggingH = false;
+
+    resizerH.addEventListener('mousedown', (e) => {
+      isDraggingH = true;
+      resizerH.classList.add('dragging');
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    });
+
+    // Redimensionnement Vertical (Console)
+    const resizerV = document.getElementById('resizerV');
+    const iframeContainer = document.getElementById('iframeContainer');
+    const consoleContainer = document.getElementById('consoleContainer');
+
+    let isDraggingV = false;
+
+    resizerV.addEventListener('mousedown', (e) => {
+      isDraggingV = true;
+      resizerV.classList.add('dragging');
+      document.body.style.cursor = 'row-resize';
+      document.body.style.userSelect = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDraggingH) {
+        const containerWidth = mainContainer.clientWidth;
+        const pointerX = e.clientX;
+        const leftPercent = (pointerX / containerWidth) * 100;
+
+        if (leftPercent > 15 && leftPercent < 85) {
+          editorPanel.style.width = `${leftPercent}%`;
+          previewPanel.style.width = `${100 - leftPercent}%`;
+        }
+      }
+
+      if (isDraggingV) {
+        const previewRect = previewPanel.getBoundingClientRect();
+        const pointerY = e.clientY - previewRect.top;
+        const totalHeight = previewRect.height;
+        const topPercent = (pointerY / totalHeight) * 100;
+
+        if (topPercent > 20 && topPercent < 80) {
+          iframeContainer.style.height = `${topPercent}%`;
+          consoleContainer.style.height = `${100 - topPercent}%`;
+        }
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDraggingH || isDraggingV) {
+        isDraggingH = false;
+        isDraggingV = false;
+        resizerH.classList.remove('dragging');
+        resizerV.classList.remove('dragging');
+        document.body.style.cursor = 'default';
+        document.body.style.userSelect = 'auto';
+
+        // Rafraîchir les instances de CodeMirror après redimensionnement
+        Object.keys(editors).forEach(key => editors[key].refresh());
+      }
+    });
+
+    // --- Initialisation au chargement ---
+    window.onload = function() {
+      initEditors();
+      updatePreview();
+    };
+  </script>
+</body>
+</html>
