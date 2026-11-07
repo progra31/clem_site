@@ -55,7 +55,10 @@
         }
 
         .btn {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             padding: 12px 20px;
             font-size: 1rem;
             color: #ffffff;
@@ -68,6 +71,13 @@
         .btn:hover {
             background-color: #0056b3;
         }
+
+        .btn-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            object-fit: contain;
+        }
     </style>
 </head>
 <body>
@@ -79,9 +89,18 @@
     <div class="card">
         <h2>Projets</h2>
         <div class="button-container">
-            <a href="https://progra31.github.io/clem_site/xp-computer/" class="btn">ordinateur web</a>
-            <a href="https://progra31.github.io/clem_site/super-pannel" class="btn">super pannel</a>
-            <a href="https://progra31.github.io/clem_site/code-editor/" class="btn">CforCodeEditor</a>
+            <a href="https://progra31.github.io/clem_site/xp-computer/" class="btn">
+                <img src="https://raw.githubusercontent.com/progra31/clem_site/b9cf8c15137952f12ed20a31a24230dee62666df/icones/icone%20ordi%20web.png" alt="" class="btn-icon">
+                ordinateur web
+            </a>
+            <a href="https://progra31.github.io/clem_site/super-pannel" class="btn">
+                <img src="https://raw.githubusercontent.com/progra31/clem_site/405ac6c2ca93b54c8bbb102df28352e79bc2e100/icones/icone%20super%20pannel.png" alt="" class="btn-icon">
+                super pannel
+            </a>
+            <a href="https://progra31.github.io/clem_site/code-editor/" class="btn">
+                <img src="https://raw.githubusercontent.com/progra31/clem_site/29b96fa79e3ae469d712bdf98046345462d7789c/icones/code%20editor%20icone.png" alt="" class="btn-icon">
+                CforCodeEditor
+            </a>
         </div>
     </div>
 
