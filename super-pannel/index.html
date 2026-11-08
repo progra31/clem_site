@@ -19,7 +19,7 @@
     body {
       font-family: 'Inter', sans-serif;
       overflow: hidden;
-      background-color: #1a0f0a;
+      background-color: #120905;
     }
 
     /* Textured Wood Desk Background */
@@ -27,9 +27,9 @@
       position: relative;
       width: 100vw;
       height: 100vh;
-      background: radial-gradient(circle at 50% 50%, #4a2e1b 0%, #2b180d 70%, #170b04 100%),
+      background: radial-gradient(circle at 50% 50%, #3d2313 0%, #211208 70%, #0d0603 100%),
                   repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 2px, transparent 2px, transparent 4px);
-      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.85);
+      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.9);
       overflow: hidden;
     }
 
@@ -45,15 +45,15 @@
     .draggable-item:active {
       cursor: grabbing;
       z-index: 999 !important;
-      transform: scale(1.02);
-      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5) !important;
+      transform: scale(1.015);
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.6) !important;
     }
 
-    /* Paper Aesthetics for Specs & FPS */
+    /* Paper Aesthetics for Specs, FPS, Links */
     .paper-scrap {
       background: #fdfbf7;
       background-image: radial-gradient(#e2d9cc 1px, transparent 0);
-      background-size: 12px 12px;
+      background-size: 10px 10px;
       color: #2c2520;
       font-family: 'Fira Code', monospace;
       border-radius: 2px;
@@ -67,11 +67,11 @@
       top: -6px;
       left: 50%;
       transform: translateX(-50%);
-      width: 40px;
-      height: 12px;
-      background: rgba(230, 220, 200, 0.6);
+      width: 36px;
+      height: 10px;
+      background: rgba(230, 220, 200, 0.7);
       backdrop-filter: blur(2px);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
     }
 
     .paper-large {
@@ -85,32 +85,32 @@
 
     /* Notepad styling */
     .notepad-container {
-      width: 280px;
-      height: 340px;
+      width: 240px;
+      height: 300px;
       background: #ffffff;
       border-radius: 6px 6px 4px 4px;
-      box-shadow: 8px 16px 30px rgba(0,0,0,0.45);
+      box-shadow: 8px 16px 30px rgba(0,0,0,0.5);
       transform: rotate(-2deg);
       overflow: hidden;
     }
     
     .notepad-header {
       background: #2a2a2a;
-      height: 32px;
+      height: 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 12px;
+      padding: 0 10px;
     }
 
     .notepad-textarea {
       width: 100%;
-      height: calc(100% - 32px);
-      background: repeating-linear-gradient(#fff, #fff 27px, #e5efff 28px);
-      line-height: 28px;
-      padding: 8px 16px;
+      height: calc(100% - 28px);
+      background: repeating-linear-gradient(#fff, #fff 25px, #e5efff 26px);
+      line-height: 26px;
+      padding: 6px 12px;
       font-family: 'Caveat', cursive;
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       color: #1a237e;
       outline: none;
       resize: none;
@@ -121,72 +121,62 @@
 
     /* Pen Holder */
     .pen-holder {
-      width: 85px;
-      height: 95px;
+      width: 70px;
+      height: 80px;
       background: linear-gradient(145deg, #3a3a3a, #1a1a1a);
-      border-radius: 50% 50% 12px 12px / 20px 20px 12px 12px;
-      border: 4px solid #4a4a4a;
+      border-radius: 50% 50% 10px 10px / 18px 18px 10px 10px;
+      border: 3px solid #4a4a4a;
       box-shadow: 8px 12px 22px rgba(0,0,0,0.6);
     }
 
     .pen {
       position: absolute;
-      width: 10px;
-      height: 110px;
-      bottom: 25px;
-      border-radius: 4px;
+      width: 8px;
+      height: 90px;
+      bottom: 20px;
+      border-radius: 3px;
       box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
     }
-    .pen-blue { background: linear-gradient(to right, #1e40af, #3b82f6); left: 18px; transform: rotate(-12deg); }
-    .pen-red { background: linear-gradient(to right, #991b1b, #ef4444); left: 38px; transform: rotate(3deg); }
-    .pen-yellow { background: linear-gradient(to right, #d97706, #fbbf24); left: 56px; transform: rotate(14deg); }
+    .pen-blue { background: linear-gradient(to right, #1e40af, #3b82f6); left: 14px; transform: rotate(-12deg); }
+    .pen-red { background: linear-gradient(to right, #991b1b, #ef4444); left: 30px; transform: rotate(3deg); }
+    .pen-yellow { background: linear-gradient(to right, #d97706, #fbbf24); left: 46px; transform: rotate(14deg); }
 
     /* Coffee Cup */
     .coffee-mug {
-      width: 90px;
-      height: 90px;
+      width: 75px;
+      height: 75px;
       background: radial-gradient(circle, #f3f4f6 60%, #d1d5db 100%);
       border-radius: 50%;
-      box-shadow: 10px 14px 24px rgba(0,0,0,0.5);
+      box-shadow: 8px 12px 20px rgba(0,0,0,0.5);
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 6px solid #e5e7eb;
+      border: 5px solid #e5e7eb;
     }
     .coffee-liquid {
-      width: 68px;
-      height: 68px;
+      width: 55px;
+      height: 55px;
       background: radial-gradient(circle, #3d2314 40%, #26140a 100%);
       border-radius: 50%;
-      border: 3px solid #54331d;
-      box-shadow: inset 2px 2px 6px rgba(0,0,0,0.8);
+      border: 2px solid #54331d;
+      box-shadow: inset 2px 2px 5px rgba(0,0,0,0.8);
       position: relative;
-    }
-    .coffee-foam {
-      position: absolute;
-      top: 15px;
-      right: 18px;
-      width: 14px;
-      height: 10px;
-      background: rgba(184, 137, 93, 0.4);
-      border-radius: 50%;
-      filter: blur(1px);
     }
 
     /* Red Reset Button */
     .reset-btn-3d {
-      width: 80px;
-      height: 80px;
+      width: 65px;
+      height: 65px;
       background: radial-gradient(circle at 30% 30%, #ef4444, #991b1b);
       border-radius: 50%;
-      border: 4px solid #7f1d1d;
-      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.4), inset 0 3px 6px rgba(255,255,255,0.4), 6px 12px 20px rgba(0,0,0,0.5);
+      border: 3px solid #7f1d1d;
+      box-shadow: 0 8px 16px rgba(239, 68, 68, 0.4), inset 0 3px 6px rgba(255,255,255,0.4), 6px 10px 18px rgba(0,0,0,0.6);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-weight: 800;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       letter-spacing: 1px;
       text-shadow: 0 2px 4px rgba(0,0,0,0.6);
       cursor: pointer;
@@ -194,7 +184,7 @@
     }
     .reset-btn-3d:active {
       transform: scale(0.92) !important;
-      box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3), inset 0 4px 8px rgba(0,0,0,0.6) !important;
+      box-shadow: 0 3px 8px rgba(239, 68, 68, 0.3), inset 0 4px 8px rgba(0,0,0,0.6) !important;
     }
 
     /* Keyboard Tracker Layout */
@@ -202,11 +192,11 @@
       background: #2a2d32;
       border: 1px solid #3f444e;
       color: #9ca3af;
-      border-radius: 4px;
+      border-radius: 3px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 600;
       box-shadow: 0 2px 0 #181a1d;
       transition: all 0.05s ease;
@@ -214,54 +204,47 @@
     .key-cap.active {
       background: #38bdf8 !important;
       color: #0f172a !important;
-      box-shadow: 0 0 12px #38bdf8, inset 0 0 4px #ffffff !important;
+      box-shadow: 0 0 10px #38bdf8, inset 0 0 4px #ffffff !important;
       border-color: #7dd3fc !important;
       transform: translateY(2px);
     }
 
     /* Mouse Tracker */
     .mouse-body {
-      width: 100px;
-      height: 150px;
+      width: 75px;
+      height: 115px;
       background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
-      border-radius: 45px 45px 35px 35px;
+      border-radius: 35px 35px 25px 25px;
       border: 2px solid #4a5568;
-      box-shadow: 0 12px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
       position: relative;
     }
     .mouse-btn {
       position: absolute;
       top: 0;
-      width: 46px;
-      height: 55px;
+      width: 34px;
+      height: 42px;
       background: #374151;
       border: 1px solid #4b5563;
       transition: all 0.08s ease;
     }
-    .mouse-btn-left {
-      left: 3px;
-      border-radius: 40px 0 0 10px;
-    }
-    .mouse-btn-right {
-      right: 3px;
-      border-radius: 0 40px 10px 0;
-    }
+    .mouse-btn-left { left: 2px; border-radius: 30px 0 0 8px; }
+    .mouse-btn-right { right: 2px; border-radius: 0 30px 8px 0; }
     .mouse-btn.active {
       background: #38bdf8 !important;
-      box-shadow: 0 0 10px #38bdf8;
+      box-shadow: 0 0 8px #38bdf8;
     }
     .mouse-wheel {
       position: absolute;
-      top: 15px;
+      top: 10px;
       left: 50%;
       transform: translateX(-50%);
-      width: 12px;
-      height: 24px;
+      width: 10px;
+      height: 18px;
       background: #1f2937;
       border: 1px solid #6b7280;
-      border-radius: 6px;
+      border-radius: 4px;
       z-index: 5;
-      transition: background 0.1s;
     }
     .mouse-wheel.scrolling {
       background: #38bdf8;
@@ -271,33 +254,64 @@
     /* Smartphone Frame */
     .phone-frame {
       background: #09090b;
-      border: 4px solid #27272a;
-      border-radius: 36px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.7), inset 0 0 0 2px #3f3f46;
+      border: 3px solid #27272a;
+      border-radius: 28px;
+      box-shadow: 0 16px 32px rgba(0,0,0,0.7), inset 0 0 0 1.5px #3f3f46;
       transition: width 0.3s ease, height 0.3s ease;
       overflow: hidden;
     }
-    .phone-notch {
-      position: absolute;
-      top: 8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 18px;
-      background: #000;
-      border-radius: 10px;
-      z-index: 50;
+
+    /* Photo Album Book */
+    .album-book {
+      background: #3b1f10;
+      border: 3px solid #5a321c;
+      border-radius: 6px;
+      box-shadow: 10px 18px 35px rgba(0,0,0,0.65);
+      transition: width 0.3s ease, height 0.3s ease;
+    }
+
+    /* Solitaire Card Styling */
+    .solitaire-card {
+      width: 36px;
+      height: 50px;
+      border-radius: 3px;
+      background: white;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2px 3px;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .solitaire-card.red { color: #dc2626; }
+    .solitaire-card.black { color: #0f172a; }
+    .solitaire-card.back {
+      background: linear-gradient(135deg, #1e3a8a 25%, #3b82f6 100%);
+      border: 1px solid #60a5fa;
+      color: transparent;
+    }
+
+    /* Minesweeper Tile */
+    .mine-tile {
+      width: 22px;
+      height: 22px;
+      background: #78350f;
+      border: 1.5px solid #92400e;
+      border-top-color: #b45309;
+      border-left-color: #b45309;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: pointer;
     }
-    .phone-camera {
-      width: 8px;
-      height: 8px;
-      background: #1e1e24;
-      border-radius: 50%;
-      border: 1px solid #333;
+    .mine-tile.revealed {
+      background: #451a03;
+      border: 1px solid #270e02;
     }
   </style>
 </head>
@@ -307,61 +321,112 @@
   <div id="desk">
 
     <!-- SIDEBAR CONTROL PANEL -->
-    <aside id="sidebar" class="absolute top-0 left-0 h-full w-64 bg-slate-900/90 backdrop-blur-md text-slate-100 z-50 border-r border-slate-700/50 flex flex-col justify-between p-5 shadow-2xl">
-      <div>
-        <div class="flex items-center gap-3 pb-4 mb-5 border-b border-slate-700">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/30">
-            <i class="fa-solid fa-sliders text-lg"></i>
+    <aside id="sidebar" class="absolute top-0 left-0 h-full w-56 bg-slate-900/95 backdrop-blur-md text-slate-100 z-50 border-r border-slate-700/60 flex flex-col justify-between p-3.5 shadow-2xl">
+      <div class="overflow-y-auto pr-1 space-y-4">
+        <!-- Header -->
+        <div class="flex items-center gap-2.5 pb-3 border-b border-slate-700/80">
+          <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-md shadow-cyan-500/30">
+            <i class="fa-solid fa-sliders text-xs"></i>
           </div>
           <div>
-            <h1 class="font-bold text-lg leading-none tracking-wide text-white">SUPER PANNEL</h1>
-            <span class="text-xs text-cyan-400 font-medium">Tableau de Bord Bureau</span>
+            <h1 class="font-bold text-sm tracking-wide text-white leading-tight">SUPER PANNEL</h1>
+            <span class="text-[10px] text-cyan-400 font-medium">HUD Desktop Suite</span>
           </div>
         </div>
 
-        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Modules HUD</h2>
-        
-        <div class="space-y-2.5" id="hud-toggles">
-          <label class="flex items-center justify-between p-2.5 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition">
-            <span class="text-sm font-medium flex items-center gap-2.5 text-slate-200">
-              <i class="fa-solid fa-gauge-high text-cyan-400 w-4"></i> Compteur FPS
-            </span>
-            <input type="checkbox" data-module="fps" class="w-4 h-4 accent-cyan-500 rounded cursor-pointer">
-          </label>
+        <!-- MODULES HUD SECTION -->
+        <div>
+          <h2 class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+            <span>Modules HUD</span>
+            <i class="fa-solid fa-cubes text-slate-500"></i>
+          </h2>
+          
+          <div class="space-y-1.5" id="hud-toggles">
+            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
+              <span class="flex items-center gap-2 text-slate-200">
+                <i class="fa-solid fa-gauge-high text-cyan-400 w-3.5"></i> Compteur FPS
+              </span>
+              <input type="checkbox" data-module="fps" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
+            </label>
 
-          <label class="flex items-center justify-between p-2.5 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition">
-            <span class="text-sm font-medium flex items-center gap-2.5 text-slate-200">
-              <i class="fa-solid fa-microchip text-emerald-400 w-4"></i> Specs Appareil
-            </span>
-            <input type="checkbox" data-module="specs" class="w-4 h-4 accent-cyan-500 rounded cursor-pointer">
-          </label>
+            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
+              <span class="flex items-center gap-2 text-slate-200">
+                <i class="fa-solid fa-microchip text-emerald-400 w-3.5"></i> Specs Appareil
+              </span>
+              <input type="checkbox" data-module="specs" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
+            </label>
 
-          <label class="flex items-center justify-between p-2.5 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition">
-            <span class="text-sm font-medium flex items-center gap-2.5 text-slate-200">
-              <i class="fa-solid fa-keyboard text-amber-400 w-4"></i> Tracker Clavier
-            </span>
-            <input type="checkbox" data-module="keyboard" class="w-4 h-4 accent-cyan-500 rounded cursor-pointer">
-          </label>
+            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
+              <span class="flex items-center gap-2 text-slate-200">
+                <i class="fa-solid fa-keyboard text-amber-400 w-3.5"></i> Tracker Clavier
+              </span>
+              <input type="checkbox" data-module="keyboard" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
+            </label>
 
-          <label class="flex items-center justify-between p-2.5 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition">
-            <span class="text-sm font-medium flex items-center gap-2.5 text-slate-200">
-              <i class="fa-solid fa-computer-mouse text-purple-400 w-4"></i> Tracker Souris
-            </span>
-            <input type="checkbox" data-module="mouse" class="w-4 h-4 accent-cyan-500 rounded cursor-pointer">
-          </label>
+            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
+              <span class="flex items-center gap-2 text-slate-200">
+                <i class="fa-solid fa-computer-mouse text-purple-400 w-3.5"></i> Tracker Souris
+              </span>
+              <input type="checkbox" data-module="mouse" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
+            </label>
 
-          <label class="flex items-center justify-between p-2.5 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition">
-            <span class="text-sm font-medium flex items-center gap-2.5 text-slate-200">
-              <i class="fa-brands fa-youtube text-red-500 w-4"></i> Smartphone YouTube
-            </span>
-            <input type="checkbox" data-module="youtube" class="w-4 h-4 accent-cyan-500 rounded cursor-pointer">
-          </label>
+            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
+              <span class="flex items-center gap-2 text-slate-200">
+                <i class="fa-brands fa-youtube text-red-500 w-3.5"></i> Smartphone YouTube
+              </span>
+              <input type="checkbox" data-module="youtube" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
+            </label>
+
+            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
+              <span class="flex items-center gap-2 text-slate-200">
+                <i class="fa-solid fa-book-bookmark text-amber-600 w-3.5"></i> Album Photo
+              </span>
+              <input type="checkbox" data-module="album" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
+            </label>
+
+            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
+              <span class="flex items-center gap-2 text-slate-200">
+                <i class="fa-solid fa-spade text-emerald-500 w-3.5"></i> Jeu du Solitaire
+              </span>
+              <input type="checkbox" data-module="solitaire" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
+            </label>
+
+            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
+              <span class="flex items-center gap-2 text-slate-200">
+                <i class="fa-solid fa-land-mine-on text-amber-500 w-3.5"></i> Démineur
+              </span>
+              <input type="checkbox" data-module="minesweeper" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
+            </label>
+
+            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
+              <span class="flex items-center gap-2 text-slate-200">
+                <i class="fa-solid fa-crosshair text-cyan-400 w-3.5"></i> Custom Cursor
+              </span>
+              <input type="checkbox" data-module="customcursor" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
+            </label>
+          </div>
+        </div>
+
+        <!-- CREATE SECTION -->
+        <div class="pt-2 border-t border-slate-800">
+          <h2 class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+            <span>Créer</span>
+            <i class="fa-solid fa-plus-circle text-cyan-400"></i>
+          </h2>
+          <div class="space-y-1.5">
+            <button id="btn-create-link" class="w-full text-left p-2 rounded-md bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-800/50 text-cyan-200 text-xs flex items-center gap-2 transition">
+              <i class="fa-solid fa-paperclip text-cyan-400"></i> Créer un lien
+            </button>
+            <button id="btn-create-photo" class="w-full text-left p-2 rounded-md bg-amber-950/40 hover:bg-amber-900/60 border border-amber-800/50 text-amber-200 text-xs flex items-center gap-2 transition">
+              <i class="fa-solid fa-image text-amber-400"></i> Ajouter une photo
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Footer Info -->
-      <div class="pt-4 border-t border-slate-800 text-xs text-slate-500 flex items-center justify-between">
-        <span>Glisser-déposer actif</span>
+      <div class="pt-3 border-t border-slate-800 text-[10px] text-slate-500 flex items-center justify-between">
+        <span>Bureau interactif</span>
         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
       </div>
     </aside>
@@ -369,218 +434,317 @@
     <!-- DESK SUPPLIES (ALWAYS PRESENT & DRAGGABLE) -->
 
     <!-- 1. Notepad -->
-    <div id="item-notepad" class="draggable-item notepad-container" style="top: 80px; left: 300px;">
+    <div id="item-notepad" class="draggable-item notepad-container" style="top: 40px; left: 240px;">
       <div class="notepad-header">
-        <span class="text-xs font-semibold text-slate-300 tracking-wider">BLOC-NOTES</span>
-        <i class="fa-solid fa-grip-lines text-slate-500 text-xs"></i>
+        <span class="text-[10px] font-semibold text-slate-300 tracking-wider">BLOC-NOTES</span>
+        <i class="fa-solid fa-grip-lines text-slate-500 text-[10px]"></i>
       </div>
-      <textarea id="notepad-input" class="notepad-textarea" placeholder="Tapez vos notes ici... (sauvegarde auto)"></textarea>
+      <textarea id="notepad-input" class="notepad-textarea" placeholder="Tapez vos notes ici..."></textarea>
     </div>
 
     <!-- 2. Pen Holder -->
-    <div id="item-penholder" class="draggable-item pen-holder" style="top: 460px; left: 320px;">
+    <div id="item-penholder" class="draggable-item pen-holder" style="top: 360px; left: 250px;">
       <div class="pen pen-blue"></div>
       <div class="pen pen-red"></div>
       <div class="pen pen-yellow"></div>
     </div>
 
     <!-- 3. Coffee Mug -->
-    <div id="item-coffeemug" class="draggable-item coffee-mug" style="top: 80px; left: 630px;">
-      <div class="coffee-liquid">
-        <div class="coffee-foam"></div>
-      </div>
+    <div id="item-coffeemug" class="draggable-item coffee-mug" style="top: 40px; left: 510px;">
+      <div class="coffee-liquid"></div>
     </div>
 
     <!-- 4. Draggable Red Reset Button -->
-    <div id="item-resetbtn" class="draggable-item reset-btn-3d" style="top: 500px; left: 450px;" title="Réinitialiser l'emplacement et les modules">
+    <div id="item-resetbtn" class="draggable-item reset-btn-3d" style="top: 380px; left: 350px;" title="Réinitialiser le bureau complet">
       RESET
     </div>
 
-    <!-- HUD MODULE WIDGETS (DYNAMIC & DRAGGABLE) -->
+    <!-- CONTAINER FOR DYNAMIC CREATED LINKS (PAPER SCRAPS) -->
+    <div id="links-container"></div>
+
+    <!-- HUD MODULE WIDGETS -->
 
     <!-- HUD 1: FPS Counter Paper -->
-    <div id="hud-fps" class="draggable-item paper-scrap p-4 w-44 hidden" style="top: 80px; left: 770px;">
-      <div class="flex items-center justify-between border-b border-amber-900/20 pb-1 mb-2">
-        <span class="text-xs font-bold uppercase tracking-wider text-amber-900/70">FPS Monitor</span>
-        <i class="fa-solid fa-pin text-amber-800/40 text-xs"></i>
+    <div id="hud-fps" class="draggable-item paper-scrap p-3 w-36 hidden" style="top: 40px; left: 620px;">
+      <div class="flex items-center justify-between border-b border-amber-900/20 pb-1 mb-1.5">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-900/70">FPS Monitor</span>
+        <i class="fa-solid fa-thumbtack text-amber-800/40 text-[10px]"></i>
       </div>
-      <div class="text-center py-1">
-        <span id="fps-val" class="text-4xl font-extrabold text-slate-800">60</span>
-        <span class="text-xs block text-slate-500 font-sans mt-0.5">images / sec</span>
+      <div class="text-center py-0.5">
+        <span id="fps-val" class="text-3xl font-extrabold text-slate-800">60</span>
+        <span class="text-[9px] block text-slate-500 font-sans">FPS</span>
       </div>
     </div>
 
     <!-- HUD 2: Specs Device Paper -->
-    <div id="hud-specs" class="draggable-item paper-large p-5 w-80 hidden" style="top: 220px; left: 630px;">
-      <div class="flex items-center justify-between border-b border-stone-300 pb-2 mb-3">
-        <span class="text-xs font-bold uppercase tracking-widest text-stone-700">Fiche Technique System</span>
-        <i class="fa-solid fa-microchip text-stone-400 text-sm"></i>
+    <div id="hud-specs" class="draggable-item paper-large p-4 w-64 hidden" style="top: 150px; left: 510px;">
+      <div class="flex items-center justify-between border-b border-stone-300 pb-1.5 mb-2">
+        <span class="text-[10px] font-bold uppercase tracking-widest text-stone-700">Fiche Technique System</span>
+        <i class="fa-solid fa-microchip text-stone-400 text-xs"></i>
       </div>
-      <div class="space-y-1.5 text-xs text-stone-800">
-        <div class="flex justify-between">
-          <span class="text-stone-500">Cœurs CPU:</span>
-          <span id="spec-cores" class="font-bold">Detecting...</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-stone-500">Mémoire RAM:</span>
-          <span id="spec-ram" class="font-bold">Detecting...</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-stone-500">Résolution:</span>
-          <span id="spec-res" class="font-bold">Detecting...</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-stone-500">Plateforme:</span>
-          <span id="spec-platform" class="font-bold">Detecting...</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-stone-500">Navigateur:</span>
-          <span id="spec-browser" class="font-bold truncate max-w-[140px]">Detecting...</span>
-        </div>
+      <div class="space-y-1 text-[10px] text-stone-800">
+        <div class="flex justify-between"><span class="text-stone-500">CPU:</span><span id="spec-cores" class="font-bold">--</span></div>
+        <div class="flex justify-between"><span class="text-stone-500">RAM:</span><span id="spec-ram" class="font-bold">--</span></div>
+        <div class="flex justify-between"><span class="text-stone-500">Écran:</span><span id="spec-res" class="font-bold">--</span></div>
+        <div class="flex justify-between"><span class="text-stone-500">OS:</span><span id="spec-platform" class="font-bold">--</span></div>
+        <div class="flex justify-between"><span class="text-stone-500">Navigateur:</span><span id="spec-browser" class="font-bold truncate max-w-[110px]">--</span></div>
       </div>
     </div>
 
     <!-- HUD 3: Keyboard Tracker -->
-    <div id="hud-keyboard" class="draggable-item bg-slate-900/90 backdrop-blur border border-slate-700/80 p-4 rounded-xl shadow-2xl w-[480px] hidden" style="top: 440px; left: 570px;">
-      <div class="flex items-center justify-between mb-3 text-slate-300">
-        <span class="text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+    <div id="hud-keyboard" class="draggable-item bg-slate-900/95 backdrop-blur border border-slate-700/80 p-3 rounded-xl shadow-2xl w-[380px] hidden" style="top: 360px; left: 450px;">
+      <div class="flex items-center justify-between mb-2 text-slate-300">
+        <span class="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
           <i class="fa-solid fa-keyboard text-amber-400"></i> Keyboard HUD
         </span>
-        <span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">Appuyez sur des touches</span>
       </div>
-      
-      <!-- Virtual Keyboard Grid -->
-      <div class="space-y-1.5" id="keyboard-grid">
+      <div class="space-y-1" id="keyboard-grid">
         <!-- Row 1 -->
-        <div class="flex gap-1">
-          <div class="key-cap w-8 h-8" data-key="Escape">Esc</div>
-          <div class="key-cap w-8 h-8" data-key="1">1</div>
-          <div class="key-cap w-8 h-8" data-key="2">2</div>
-          <div class="key-cap w-8 h-8" data-key="3">3</div>
-          <div class="key-cap w-8 h-8" data-key="4">4</div>
-          <div class="key-cap w-8 h-8" data-key="5">5</div>
-          <div class="key-cap w-8 h-8" data-key="6">6</div>
-          <div class="key-cap w-8 h-8" data-key="7">7</div>
-          <div class="key-cap w-8 h-8" data-key="8">8</div>
-          <div class="key-cap w-8 h-8" data-key="9">9</div>
-          <div class="key-cap w-8 h-8" data-key="0">0</div>
-          <div class="key-cap flex-1 h-8" data-key="Backspace">Delete</div>
+        <div class="flex gap-0.5">
+          <div class="key-cap w-6 h-6" data-key="Escape">Esc</div>
+          <div class="key-cap w-6 h-6" data-key="1">1</div>
+          <div class="key-cap w-6 h-6" data-key="2">2</div>
+          <div class="key-cap w-6 h-6" data-key="3">3</div>
+          <div class="key-cap w-6 h-6" data-key="4">4</div>
+          <div class="key-cap w-6 h-6" data-key="5">5</div>
+          <div class="key-cap w-6 h-6" data-key="6">6</div>
+          <div class="key-cap w-6 h-6" data-key="7">7</div>
+          <div class="key-cap w-6 h-6" data-key="8">8</div>
+          <div class="key-cap w-6 h-6" data-key="9">9</div>
+          <div class="key-cap w-6 h-6" data-key="0">0</div>
+          <div class="key-cap flex-1 h-6" data-key="Backspace">Del</div>
         </div>
         <!-- Row 2 -->
-        <div class="flex gap-1">
-          <div class="key-cap w-12 h-8" data-key="Tab">Tab</div>
-          <div class="key-cap w-8 h-8" data-key="q">Q</div>
-          <div class="key-cap w-8 h-8" data-key="w">W</div>
-          <div class="key-cap w-8 h-8" data-key="e">E</div>
-          <div class="key-cap w-8 h-8" data-key="r">R</div>
-          <div class="key-cap w-8 h-8" data-key="t">T</div>
-          <div class="key-cap w-8 h-8" data-key="y">Y</div>
-          <div class="key-cap w-8 h-8" data-key="u">U</div>
-          <div class="key-cap w-8 h-8" data-key="i">I</div>
-          <div class="key-cap w-8 h-8" data-key="o">O</div>
-          <div class="key-cap w-8 h-8" data-key="p">P</div>
+        <div class="flex gap-0.5">
+          <div class="key-cap w-9 h-6" data-key="Tab">Tab</div>
+          <div class="key-cap w-6 h-6" data-key="q">Q</div>
+          <div class="key-cap w-6 h-6" data-key="w">W</div>
+          <div class="key-cap w-6 h-6" data-key="e">E</div>
+          <div class="key-cap w-6 h-6" data-key="r">R</div>
+          <div class="key-cap w-6 h-6" data-key="t">T</div>
+          <div class="key-cap w-6 h-6" data-key="y">Y</div>
+          <div class="key-cap w-6 h-6" data-key="u">U</div>
+          <div class="key-cap w-6 h-6" data-key="i">I</div>
+          <div class="key-cap w-6 h-6" data-key="o">O</div>
+          <div class="key-cap w-6 h-6" data-key="p">P</div>
         </div>
         <!-- Row 3 -->
-        <div class="flex gap-1">
-          <div class="key-cap w-14 h-8" data-key="CapsLock">Caps</div>
-          <div class="key-cap w-8 h-8" data-key="a">A</div>
-          <div class="key-cap w-8 h-8" data-key="s">S</div>
-          <div class="key-cap w-8 h-8" data-key="d">D</div>
-          <div class="key-cap w-8 h-8" data-key="f">F</div>
-          <div class="key-cap w-8 h-8" data-key="g">G</div>
-          <div class="key-cap w-8 h-8" data-key="h">H</div>
-          <div class="key-cap w-8 h-8" data-key="j">J</div>
-          <div class="key-cap w-8 h-8" data-key="k">K</div>
-          <div class="key-cap w-8 h-8" data-key="l">L</div>
-          <div class="key-cap flex-1 h-8" data-key="Enter">Enter</div>
+        <div class="flex gap-0.5">
+          <div class="key-cap w-10 h-6" data-key="CapsLock">Caps</div>
+          <div class="key-cap w-6 h-6" data-key="a">A</div>
+          <div class="key-cap w-6 h-6" data-key="s">S</div>
+          <div class="key-cap w-6 h-6" data-key="d">D</div>
+          <div class="key-cap w-6 h-6" data-key="f">F</div>
+          <div class="key-cap w-6 h-6" data-key="g">G</div>
+          <div class="key-cap w-6 h-6" data-key="h">H</div>
+          <div class="key-cap w-6 h-6" data-key="j">J</div>
+          <div class="key-cap w-6 h-6" data-key="k">K</div>
+          <div class="key-cap w-6 h-6" data-key="l">L</div>
+          <div class="key-cap flex-1 h-6" data-key="Enter">Enter</div>
         </div>
         <!-- Row 4 -->
-        <div class="flex gap-1">
-          <div class="key-cap w-16 h-8" data-key="Shift">Shift</div>
-          <div class="key-cap w-8 h-8" data-key="z">Z</div>
-          <div class="key-cap w-8 h-8" data-key="x">X</div>
-          <div class="key-cap w-8 h-8" data-key="c">C</div>
-          <div class="key-cap w-8 h-8" data-key="v">V</div>
-          <div class="key-cap w-8 h-8" data-key="b">B</div>
-          <div class="key-cap w-8 h-8" data-key="n">N</div>
-          <div class="key-cap w-8 h-8" data-key="m">M</div>
-          <div class="key-cap flex-1 h-8" data-key="Shift">Shift</div>
+        <div class="flex gap-0.5">
+          <div class="key-cap w-12 h-6" data-key="Shift">Shift</div>
+          <div class="key-cap w-6 h-6" data-key="z">Z</div>
+          <div class="key-cap w-6 h-6" data-key="x">X</div>
+          <div class="key-cap w-6 h-6" data-key="c">C</div>
+          <div class="key-cap w-6 h-6" data-key="v">V</div>
+          <div class="key-cap w-6 h-6" data-key="b">B</div>
+          <div class="key-cap w-6 h-6" data-key="n">N</div>
+          <div class="key-cap w-6 h-6" data-key="m">M</div>
+          <div class="key-cap flex-1 h-6" data-key="Shift">Shift</div>
         </div>
         <!-- Row 5 -->
-        <div class="flex gap-1">
-          <div class="key-cap w-12 h-8" data-key="Control">Ctrl</div>
-          <div class="key-cap w-12 h-8" data-key="Alt">Alt</div>
-          <div class="key-cap flex-1 h-8" data-key=" ">Space</div>
-          <div class="key-cap w-12 h-8" data-key="AltGraph">AltGr</div>
-          <div class="key-cap w-12 h-8" data-key="Control">Ctrl</div>
+        <div class="flex gap-0.5">
+          <div class="key-cap w-9 h-6" data-key="Control">Ctrl</div>
+          <div class="key-cap w-9 h-6" data-key="Alt">Alt</div>
+          <div class="key-cap flex-1 h-6" data-key=" ">Space</div>
+          <div class="key-cap w-9 h-6" data-key="AltGraph">AltGr</div>
+          <div class="key-cap w-9 h-6" data-key="Control">Ctrl</div>
         </div>
       </div>
     </div>
 
     <!-- HUD 4: Mouse Tracker -->
-    <div id="hud-mouse" class="draggable-item bg-slate-900/90 backdrop-blur border border-slate-700/80 p-4 rounded-xl shadow-2xl w-64 hidden" style="top: 80px; left: 980px;">
-      <div class="flex items-center justify-between mb-3 text-slate-300">
-        <span class="text-xs font-bold uppercase tracking-wider flex items-center gap-2">
-          <i class="fa-solid fa-computer-mouse text-purple-400"></i> Mouse HUD
+    <div id="hud-mouse" class="draggable-item bg-slate-900/95 backdrop-blur border border-slate-700/80 p-3 rounded-xl shadow-2xl w-52 hidden" style="top: 40px; left: 780px;">
+      <div class="flex items-center justify-between mb-2 text-slate-300">
+        <span class="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-computer-mouse text-purple-400"></i> Mouse Tracker
         </span>
       </div>
-      <div class="flex items-center gap-4">
-        <!-- Visual Mouse Representation -->
+      <div class="flex items-center gap-3">
         <div class="mouse-body flex-shrink-0">
           <div id="mouse-btn-l" class="mouse-btn mouse-btn-left"></div>
           <div id="mouse-btn-r" class="mouse-btn mouse-btn-right"></div>
           <div id="mouse-wheel" class="mouse-wheel"></div>
         </div>
-        <!-- Live Mouse Coordinates -->
-        <div class="space-y-2 text-xs font-mono text-slate-300">
-          <div>
-            <span class="text-slate-500 block">X Pos:</span>
-            <span id="mouse-pos-x" class="font-bold text-cyan-400 text-sm">0</span> px
-          </div>
-          <div>
-            <span class="text-slate-500 block">Y Pos:</span>
-            <span id="mouse-pos-y" class="font-bold text-cyan-400 text-sm">0</span> px
-          </div>
-          <div>
-            <span class="text-slate-500 block">Dernier Clic:</span>
-            <span id="mouse-last-click" class="text-slate-300 text-[11px]">Aucun</span>
-          </div>
+        <div class="space-y-1.5 text-[10px] font-mono text-slate-300">
+          <div><span class="text-slate-500 block">X:</span><span id="mouse-pos-x" class="font-bold text-cyan-400">0</span> px</div>
+          <div><span class="text-slate-500 block">Y:</span><span id="mouse-pos-y" class="font-bold text-cyan-400">0</span> px</div>
+          <div><span class="text-slate-500 block">Clic:</span><span id="mouse-last-click" class="text-slate-300">Aucun</span></div>
         </div>
       </div>
     </div>
 
-    <!-- HUD 5: YouTube Player Smartphone -->
-    <div id="hud-youtube" class="draggable-item phone-frame hidden" style="top: 250px; left: 980px; width: 260px; height: 480px;">
-      <div class="phone-notch">
-        <div class="phone-camera"></div>
-      </div>
-
-      <!-- Smartphone Screen Body -->
-      <div class="w-full h-full bg-slate-950 flex flex-col pt-8 pb-4 px-3 text-white">
-        <!-- Controls Header inside Phone -->
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-[11px] font-semibold text-slate-400 tracking-wider flex items-center gap-1">
+    <!-- HUD 5: YouTube Smartphone -->
+    <div id="hud-youtube" class="draggable-item phone-frame hidden" style="top: 180px; left: 780px; width: 220px; height: 380px;">
+      <div class="w-full h-full bg-slate-950 flex flex-col pt-3 pb-3 px-2 text-white">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-[10px] font-semibold text-slate-400 tracking-wider flex items-center gap-1">
             <i class="fa-brands fa-youtube text-red-500"></i> Player
           </span>
-          <!-- Rotate Phone Button -->
-          <button id="yt-rotate-btn" title="Pivoter l'écran" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg border border-slate-700 text-slate-300 transition">
+          <button id="yt-rotate-btn" class="px-1.5 py-0.5 bg-slate-800 hover:bg-slate-700 text-[10px] rounded border border-slate-700 text-slate-300">
             <i class="fa-solid fa-rotate text-cyan-400"></i>
           </button>
         </div>
+        <div class="flex-1 bg-black rounded-lg overflow-hidden relative border border-slate-800 flex items-center justify-center">
+          <iframe id="yt-iframe" class="w-full h-full" src="https://www.youtube.com/embed/jfKfPfyJRdk" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="mt-2 flex gap-1">
+          <input type="text" id="yt-url-input" placeholder="URL YouTube..." class="flex-1 bg-slate-900 border border-slate-800 rounded px-2 py-0.5 text-[10px] text-slate-200 outline-none select-text" style="-webkit-user-select: text;">
+          <button id="yt-load-btn" class="bg-cyan-600 hover:bg-cyan-500 text-white px-2 py-0.5 rounded text-[10px] font-semibold">OK</button>
+        </div>
+      </div>
+    </div>
 
-        <!-- Video Display Container -->
-        <div class="flex-1 bg-black rounded-xl overflow-hidden relative border border-slate-800 flex items-center justify-center">
-          <iframe id="yt-iframe" class="w-full h-full" src="https://www.youtube.com/embed/jfKfPfyJRdk?enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <!-- HUD 6: Photo Album -->
+    <div id="hud-album" class="draggable-item album-book hidden" style="top: 180px; left: 240px; width: 440px; height: 260px;">
+      <div class="h-full w-full flex flex-col p-2 text-amber-100">
+        <!-- Header Controls -->
+        <div class="flex items-center justify-between border-b border-amber-950/80 pb-1 mb-1">
+          <span class="text-xs font-bold text-amber-200 flex items-center gap-1.5">
+            <i class="fa-solid fa-book-open text-amber-500"></i> Album Souvenirs
+          </span>
+          <button id="album-toggle-btn" class="px-2 py-0.5 bg-amber-900/60 hover:bg-amber-800 border border-amber-700 text-[10px] rounded text-amber-200 transition">
+            Fermer le livre
+          </button>
         </div>
 
-        <!-- URL Input & Media Controls -->
-        <div class="mt-3 space-y-2">
-          <div class="flex gap-1.5">
-            <input type="text" id="yt-url-input" placeholder="Lien ou ID YouTube..." class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-200 outline-none focus:border-cyan-500 select-text" style="-webkit-user-select: text;">
-            <button id="yt-load-btn" class="bg-cyan-600 hover:bg-cyan-500 text-white px-2.5 py-1 rounded-lg text-xs font-semibold transition">
-              Charger
-            </button>
+        <!-- Book Inner Layout (Pages vs Closed Cover) -->
+        <div id="album-open-view" class="flex-1 flex gap-2">
+          <!-- Left Page (8 slots) -->
+          <div class="flex-1 bg-amber-100/10 rounded p-1.5 grid grid-cols-2 grid-rows-4 gap-1 border border-amber-900/40" id="album-page-1"></div>
+          <!-- Spine Divider -->
+          <div class="w-1 bg-amber-950/80 rounded"></div>
+          <!-- Right Page (8 slots) -->
+          <div class="flex-1 bg-amber-100/10 rounded p-1.5 grid grid-cols-2 grid-rows-4 gap-1 border border-amber-900/40" id="album-page-2"></div>
+        </div>
+
+        <div id="album-closed-view" class="flex-1 hidden flex flex-col items-center justify-center border-2 border-amber-800/40 rounded bg-gradient-to-br from-amber-950 to-amber-900">
+          <i class="fa-solid fa-book-bookmark text-4xl text-amber-600 mb-2"></i>
+          <span class="text-xs font-bold tracking-widest text-amber-200 uppercase">Mon Album Photo</span>
+          <span class="text-[10px] text-amber-400">Cliquez sur "Ouvrir" pour afficher vos photos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HUD 7: Solitaire Game -->
+    <div id="hud-solitaire" class="draggable-item bg-emerald-900 border-2 border-emerald-700 rounded-xl p-3 shadow-2xl hidden" style="top: 40px; left: 1010px; width: 340px; height: 380px;">
+      <div class="flex items-center justify-between border-b border-emerald-700 pb-1.5 mb-2 text-emerald-100">
+        <span class="text-xs font-bold flex items-center gap-1.5">
+          <i class="fa-solid fa-spade text-emerald-400"></i> Solitaire Klondike
+        </span>
+        <button id="solitaire-reset-btn" class="px-2 py-0.5 bg-emerald-800 hover:bg-emerald-700 text-[10px] rounded border border-emerald-600">
+          Nouvelle partie
+        </button>
+      </div>
+
+      <!-- Solitaire Board -->
+      <div class="space-y-3">
+        <!-- Top Row: Stock, Waste & Foundations -->
+        <div class="flex justify-between items-center">
+          <div class="flex gap-2">
+            <div id="sol-stock" class="solitaire-card back"></div>
+            <div id="sol-waste" class="min-w-[36px] min-h-[50px]"></div>
           </div>
+          <div class="flex gap-1.5" id="sol-foundations">
+            <div class="solitaire-card bg-emerald-950/40 border-dashed border-emerald-700 flex items-center justify-center text-emerald-600">♠</div>
+            <div class="solitaire-card bg-emerald-950/40 border-dashed border-emerald-700 flex items-center justify-center text-emerald-600">♥</div>
+            <div class="solitaire-card bg-emerald-950/40 border-dashed border-emerald-700 flex items-center justify-center text-emerald-600">♣</div>
+            <div class="solitaire-card bg-emerald-950/40 border-dashed border-emerald-700 flex items-center justify-center text-emerald-600">♦</div>
+          </div>
+        </div>
+
+        <!-- Tableau Piles -->
+        <div class="grid grid-cols-7 gap-1 min-h-[220px]" id="sol-tableau"></div>
+      </div>
+    </div>
+
+    <!-- HUD 8: Minesweeper -->
+    <div id="hud-minesweeper" class="draggable-item bg-amber-950 border-2 border-amber-800 rounded-xl p-3 shadow-2xl hidden" style="top: 360px; left: 850px; width: 230px;">
+      <div class="flex items-center justify-between border-b border-amber-800 pb-1.5 mb-2 text-amber-100">
+        <span class="text-xs font-bold flex items-center gap-1.5">
+          <i class="fa-solid fa-land-mine-on text-amber-500"></i> Démineur
+        </span>
+        <button id="mine-reset-btn" class="px-2 py-0.5 bg-amber-900 hover:bg-amber-800 text-[10px] rounded border border-amber-700">
+          🙂 Reset
+        </button>
+      </div>
+      <div class="flex justify-between text-[10px] text-amber-300 font-mono mb-2 px-1">
+        <span>Mines: <b id="mine-count">10</b></span>
+        <span>Temps: <b id="mine-timer">0</b>s</span>
+      </div>
+      <!-- Mine Grid 8x8 -->
+      <div id="mine-grid" class="grid grid-cols-8 gap-0.5 bg-amber-900 p-1 rounded border border-amber-800 justify-center"></div>
+    </div>
+
+    <!-- HUD 9: Custom Cursor Settings Panel -->
+    <div id="hud-customcursor" class="draggable-item bg-slate-900/95 backdrop-blur border border-slate-700 rounded-xl p-3.5 shadow-2xl w-64 hidden" style="top: 220px; left: 1010px;">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-1.5 mb-2.5 text-slate-200">
+        <span class="text-xs font-bold flex items-center gap-1.5">
+          <i class="fa-solid fa-crosshair text-cyan-400"></i> Custom Cursor
+        </span>
+        <label class="flex items-center gap-1 cursor-pointer text-[10px] text-cyan-400">
+          <input type="checkbox" id="cursor-active-toggle" class="accent-cyan-500" checked> Actif
+        </label>
+      </div>
+
+      <!-- Preview Box -->
+      <div class="w-full h-20 bg-slate-950 rounded-lg border border-slate-800 flex items-center justify-center relative mb-3 overflow-hidden">
+        <div id="cursor-preview" class="flex items-center justify-center"></div>
+      </div>
+
+      <!-- Controls -->
+      <div class="space-y-2 text-[10px] text-slate-300">
+        <!-- Presets -->
+        <div>
+          <label class="block text-slate-400 mb-0.5">Preset Viseur:</label>
+          <select id="cursor-preset" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-slate-200 outline-none">
+            <option value="cross">Croix Tactique</option>
+            <option value="dot">Viseur Dot</option>
+            <option value="circle-cross">Cercle & Croix</option>
+            <option value="pro">FPS Pro (Gap)</option>
+            <option value="circle">Cercle Simple</option>
+          </select>
+        </div>
+
+        <!-- Size -->
+        <div>
+          <div class="flex justify-between text-slate-400"><span>Taille:</span><span id="val-cursor-size">24px</span></div>
+          <input type="range" id="cursor-size" min="12" max="48" value="24" class="w-full accent-cyan-500 h-1 bg-slate-800 rounded">
+        </div>
+
+        <!-- Thickness -->
+        <div>
+          <div class="flex justify-between text-slate-400"><span>Épaisseur:</span><span id="val-cursor-thick">2px</span></div>
+          <input type="range" id="cursor-thick" min="1" max="6" value="2" class="w-full accent-cyan-500 h-1 bg-slate-800 rounded">
+        </div>
+
+        <!-- Gap -->
+        <div>
+          <div class="flex justify-between text-slate-400"><span>Écartement (Gap):</span><span id="val-cursor-gap">4px</span></div>
+          <input type="range" id="cursor-gap" min="0" max="12" value="4" class="w-full accent-cyan-500 h-1 bg-slate-800 rounded">
+        </div>
+
+        <!-- Color & Outline -->
+        <div class="flex gap-2 items-center pt-1">
+          <div class="flex-1">
+            <label class="block text-slate-400 mb-0.5">Couleur:</label>
+            <input type="color" id="cursor-color" value="#00ffcc" class="w-full h-6 bg-transparent border border-slate-700 rounded cursor-pointer">
+          </div>
+          <label class="flex items-center gap-1 cursor-pointer text-slate-300 mt-3">
+            <input type="checkbox" id="cursor-dot" class="accent-cyan-500" checked> Point central
+          </label>
         </div>
       </div>
     </div>
@@ -591,30 +755,50 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // --- LOCAL STORAGE & STATE MANAGEMENT ---
-      const STORAGE_KEY = 'super_pannel_desk_state_v1';
+      const STORAGE_KEY = 'super_pannel_desk_state_v3';
       
       const defaultState = {
         positions: {
-          'item-notepad': { top: '80px', left: '300px' },
-          'item-penholder': { top: '460px', left: '320px' },
-          'item-coffeemug': { top: '80px', left: '630px' },
-          'item-resetbtn': { top: '500px', left: '450px' },
-          'hud-fps': { top: '80px', left: '770px' },
-          'hud-specs': { top: '220px', left: '630px' },
-          'hud-keyboard': { top: '440px', left: '570px' },
-          'hud-mouse': { top: '80px', left: '980px' },
-          'hud-youtube': { top: '250px', left: '980px' }
+          'item-notepad': { top: '40px', left: '240px' },
+          'item-penholder': { top: '360px', left: '250px' },
+          'item-coffeemug': { top: '40px', left: '510px' },
+          'item-resetbtn': { top: '380px', left: '350px' },
+          'hud-fps': { top: '40px', left: '620px' },
+          'hud-specs': { top: '150px', left: '510px' },
+          'hud-keyboard': { top: '360px', left: '450px' },
+          'hud-mouse': { top: '40px', left: '780px' },
+          'hud-youtube': { top: '180px', left: '780px' },
+          'hud-album': { top: '180px', left: '240px' },
+          'hud-solitaire': { top: '40px', left: '1010px' },
+          'hud-minesweeper': { top: '360px', left: '850px' },
+          'hud-customcursor': { top: '220px', left: '1010px' }
         },
         activeModules: {
           fps: false,
           specs: false,
           keyboard: false,
           mouse: false,
-          youtube: false
+          youtube: false,
+          album: false,
+          solitaire: false,
+          minesweeper: false,
+          customcursor: false
         },
         notepadContent: '',
         youtubeUrl: 'https://www.youtube.com/embed/jfKfPfyJRdk',
-        isPhoneLandscape: false
+        isPhoneLandscape: false,
+        albumOpen: true,
+        albumPhotos: Array(16).fill(null),
+        links: [],
+        customCursor: {
+          active: true,
+          preset: 'cross',
+          size: 24,
+          thick: 2,
+          gap: 4,
+          color: '#00ffcc',
+          dot: true
+        }
       };
 
       let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultState;
@@ -623,23 +807,21 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       }
 
-      // --- DRAGGABLE ENGINE (HTML5 / POINTER EVENTS) ---
+      // --- DRAGGABLE SYSTEM ---
       let activeDragElem = null;
       let startX = 0, startY = 0;
       let initialLeft = 0, initialTop = 0;
 
-      const draggableItems = document.querySelectorAll('.draggable-item');
+      function makeElementDraggable(item) {
+        if (!item) return;
 
-      draggableItems.forEach(item => {
-        // Restore position from state if saved
         if (state.positions[item.id]) {
           item.style.top = state.positions[item.id].top;
           item.style.left = state.positions[item.id].left;
         }
 
         item.addEventListener('pointerdown', (e) => {
-          // Exclude text inputs/textareas/buttons inside elements from triggering drag
-          if (['INPUT', 'TEXTAREA', 'BUTTON', 'IFRAME'].includes(e.target.tagName)) return;
+          if (['INPUT', 'TEXTAREA', 'BUTTON', 'IFRAME', 'SELECT', 'A'].includes(e.target.tagName) || e.target.closest('button')) return;
 
           activeDragElem = item;
           startX = e.clientX;
@@ -659,14 +841,11 @@
           const dx = e.clientX - startX;
           const dy = e.clientY - startY;
 
-          const newLeft = initialLeft + dx;
-          const newTop = initialTop + dy;
-
-          item.style.left = `${newLeft}px`;
-          item.style.top = `${newTop}px`;
+          item.style.left = `${initialLeft + dx}px`;
+          item.style.top = `${initialTop + dy}px`;
         });
 
-        const stopDrag = (e) => {
+        const stopDrag = () => {
           if (activeDragElem === item) {
             state.positions[item.id] = {
               top: item.style.top,
@@ -679,9 +858,11 @@
 
         item.addEventListener('pointerup', stopDrag);
         item.addEventListener('pointercancel', stopDrag);
-      });
+      }
 
-      // --- NOTEPAD FUNCTIONALITY ---
+      document.querySelectorAll('.draggable-item').forEach(makeElementDraggable);
+
+      // --- NOTEPAD ---
       const notepadInput = document.getElementById('notepad-input');
       notepadInput.value = state.notepadContent || '';
       notepadInput.addEventListener('input', (e) => {
@@ -689,14 +870,13 @@
         saveState();
       });
 
-      // --- MODULE HUD TOGGLES ---
+      // --- MODULE TOGGLES ---
       const toggles = document.querySelectorAll('#hud-toggles input[type="checkbox"]');
 
       toggles.forEach(toggle => {
         const moduleKey = toggle.getAttribute('data-module');
         toggle.checked = state.activeModules[moduleKey] || false;
         
-        // Initial visibility sync
         const hudElem = document.getElementById(`hud-${moduleKey}`);
         if (hudElem) {
           hudElem.classList.toggle('hidden', !toggle.checked);
@@ -708,20 +888,22 @@
           if (hudElem) {
             hudElem.classList.toggle('hidden', !isChecked);
           }
+          if (moduleKey === 'customcursor') {
+            updateCustomCursor();
+          }
           saveState();
         });
       });
 
-      // --- RESET BUTTON LOGIC ---
-      const resetBtn = document.getElementById('item-resetbtn');
-      resetBtn.addEventListener('click', () => {
-        if (confirm('Voulez-vous réinitialiser le bureau et les emplacements des modules ?')) {
+      // --- RESET BUTTON ---
+      document.getElementById('item-resetbtn').addEventListener('click', () => {
+        if (confirm('Voulez-vous réinitialiser le bureau, l\'album et tous les réglages ?')) {
           localStorage.removeItem(STORAGE_KEY);
           location.reload();
         }
       });
 
-      // --- HUD 1: REALTIME FPS COUNTER ---
+      // --- HUD 1: REALTIME FPS ---
       const fpsVal = document.getElementById('fps-val');
       let frameCount = 0;
       let lastFpsTime = performance.now();
@@ -738,36 +920,25 @@
       }
       requestAnimationFrame(updateFPS);
 
-      // --- HUD 2: DEVICE SPECS ---
-      document.getElementById('spec-cores').innerText = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} cœurs` : 'Indisponible';
-      document.getElementById('spec-ram').innerText = navigator.deviceMemory ? `~${navigator.deviceMemory} GB` : 'Indisponible';
-      document.getElementById('spec-res').innerText = `${window.screen.width} x ${window.screen.height}`;
-      document.getElementById('spec-platform').innerText = navigator.platform || 'Inconnue';
-      
-      const ua = navigator.userAgent;
-      let browserName = 'Navigateur Inconnu';
-      if (ua.includes('Chrome')) browserName = 'Google Chrome';
-      else if (ua.includes('Firefox')) browserName = 'Mozilla Firefox';
-      else if (ua.includes('Safari')) browserName = 'Apple Safari';
-      else if (ua.includes('Edg')) browserName = 'Microsoft Edge';
-      document.getElementById('spec-browser').innerText = browserName;
+      // --- HUD 2: SPECS ---
+      document.getElementById('spec-cores').innerText = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} cœurs` : 'N/A';
+      document.getElementById('spec-ram').innerText = navigator.deviceMemory ? `~${navigator.deviceMemory} GB` : 'N/A';
+      document.getElementById('spec-res').innerText = `${window.screen.width}x${window.screen.height}`;
+      document.getElementById('spec-platform').innerText = navigator.platform || 'Inconnu';
+      document.getElementById('spec-browser').innerText = navigator.userAgent.includes('Chrome') ? 'Chrome' : 'Navigateur';
 
       // --- HUD 3: KEYBOARD TRACKER ---
       const keyCaps = document.querySelectorAll('.key-cap');
-
       window.addEventListener('keydown', (e) => {
         keyCaps.forEach(cap => {
-          const targetKey = cap.getAttribute('data-key');
-          if (targetKey && targetKey.toLowerCase() === e.key.toLowerCase()) {
+          if (cap.getAttribute('data-key')?.toLowerCase() === e.key.toLowerCase()) {
             cap.classList.add('active');
           }
         });
       });
-
       window.addEventListener('keyup', (e) => {
         keyCaps.forEach(cap => {
-          const targetKey = cap.getAttribute('data-key');
-          if (targetKey && targetKey.toLowerCase() === e.key.toLowerCase()) {
+          if (cap.getAttribute('data-key')?.toLowerCase() === e.key.toLowerCase()) {
             cap.classList.remove('active');
           }
         });
@@ -785,51 +956,33 @@
         posX.innerText = e.clientX;
         posY.innerText = e.clientY;
       });
-
       window.addEventListener('mousedown', (e) => {
-        if (e.button === 0) {
-          btnL.classList.add('active');
-          lastClick.innerText = 'Clic Gauche';
-        } else if (e.button === 2) {
-          btnR.classList.add('active');
-          lastClick.innerText = 'Clic Droit';
-        } else if (e.button === 1) {
-          wheel.classList.add('scrolling');
-          lastClick.innerText = 'Clic Molette';
-        }
+        if (e.button === 0) { btnL.classList.add('active'); lastClick.innerText = 'Gauche'; }
+        else if (e.button === 2) { btnR.classList.add('active'); lastClick.innerText = 'Droit'; }
+        else if (e.button === 1) { wheel.classList.add('scrolling'); lastClick.innerText = 'Molette'; }
       });
-
       window.addEventListener('mouseup', (e) => {
         if (e.button === 0) btnL.classList.remove('active');
         if (e.button === 2) btnR.classList.remove('active');
         if (e.button === 1) wheel.classList.remove('scrolling');
       });
 
-      let scrollTimeout;
-      window.addEventListener('wheel', () => {
-        wheel.classList.add('scrolling');
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => wheel.classList.remove('scrolling'), 200);
-      });
-
-      // Prevent context menu on desk to allow smooth right-click tracking
       document.getElementById('desk').addEventListener('contextmenu', e => e.preventDefault());
 
-      // --- HUD 5: YOUTUBE PLAYER SMARTPHONE ---
+      // --- HUD 5: YOUTUBE SMARTPHONE ---
       const phoneFrame = document.getElementById('hud-youtube');
       const ytIframe = document.getElementById('yt-iframe');
       const ytRotateBtn = document.getElementById('yt-rotate-btn');
       const ytUrlInput = document.getElementById('yt-url-input');
       const ytLoadBtn = document.getElementById('yt-load-btn');
 
-      // Sync saved phone orientation
       function applyPhoneOrientation() {
         if (state.isPhoneLandscape) {
-          phoneFrame.style.width = '460px';
-          phoneFrame.style.height = '280px';
+          phoneFrame.style.width = '380px';
+          phoneFrame.style.height = '220px';
         } else {
-          phoneFrame.style.width = '260px';
-          phoneFrame.style.height = '480px';
+          phoneFrame.style.width = '220px';
+          phoneFrame.style.height = '380px';
         }
       }
       applyPhoneOrientation();
@@ -843,25 +996,326 @@
       function loadYoutubeVideo() {
         let val = ytUrlInput.value.trim();
         if (!val) return;
-
         let videoId = val;
-        // Extract Youtube ID if full URL is given
-        if (val.includes('v=')) {
-          videoId = val.split('v=')[1].split('&')[0];
-        } else if (val.includes('youtu.be/')) {
-          videoId = val.split('youtu.be/')[1].split('?')[0];
-        }
+        if (val.includes('v=')) videoId = val.split('v=')[1].split('&')[0];
+        else if (val.includes('youtu.be/')) videoId = val.split('youtu.be/')[1].split('?')[0];
 
-        const embedUrl = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
         ytIframe.src = embedUrl;
         state.youtubeUrl = embedUrl;
         saveState();
       }
-
       ytLoadBtn.addEventListener('click', loadYoutubeVideo);
-      ytUrlInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') loadYoutubeVideo();
+
+      // --- HUD 6: PHOTO ALBUM ---
+      const page1 = document.getElementById('album-page-1');
+      const page2 = document.getElementById('album-page-2');
+      const openView = document.getElementById('album-open-view');
+      const closedView = document.getElementById('album-closed-view');
+      const toggleAlbumBtn = document.getElementById('album-toggle-btn');
+      const albumBook = document.getElementById('hud-album');
+
+      function renderAlbum() {
+        if (state.albumOpen) {
+          openView.classList.remove('hidden');
+          closedView.classList.add('hidden');
+          toggleAlbumBtn.innerText = 'Fermer le livre';
+          albumBook.style.width = '440px';
+          albumBook.style.height = '260px';
+        } else {
+          openView.classList.add('hidden');
+          closedView.classList.remove('hidden');
+          toggleAlbumBtn.innerText = 'Ouvrir le livre';
+          albumBook.style.width = '220px';
+          albumBook.style.height = '260px';
+        }
+
+        page1.innerHTML = '';
+        page2.innerHTML = '';
+
+        state.albumPhotos.forEach((imgUrl, index) => {
+          const slot = document.createElement('div');
+          slot.className = 'w-full h-full bg-amber-950/40 rounded border border-amber-900/60 overflow-hidden flex items-center justify-center relative group';
+          
+          if (imgUrl) {
+            slot.innerHTML = `
+              <img src="${imgUrl}" class="w-full h-full object-cover">
+              <button data-slot="${index}" class="remove-photo absolute top-0.5 right-0.5 bg-red-600 text-white w-3.5 h-3.5 rounded-full text-[8px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition">×</button>
+            `;
+          } else {
+            slot.innerHTML = `<span class="text-[8px] text-amber-800 font-mono">${index + 1}</span>`;
+          }
+
+          if (index < 8) page1.appendChild(slot);
+          else page2.appendChild(slot);
+        });
+
+        document.querySelectorAll('.remove-photo').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const slotIdx = parseInt(e.target.getAttribute('data-slot'));
+            state.albumPhotos[slotIdx] = null;
+            saveState();
+            renderAlbum();
+          });
+        });
+      }
+
+      toggleAlbumBtn.addEventListener('click', () => {
+        state.albumOpen = !state.albumOpen;
+        saveState();
+        renderAlbum();
       });
+      renderAlbum();
+
+      // --- SECTION CREER: LIENS & PHOTOS ---
+      const linksContainer = document.getElementById('links-container');
+
+      function renderLinks() {
+        linksContainer.innerHTML = '';
+        state.links.forEach((linkObj, i) => {
+          const paper = document.createElement('div');
+          paper.id = `link-item-${i}`;
+          paper.className = 'draggable-item paper-scrap p-2.5 w-36';
+          paper.style.top = linkObj.top || '200px';
+          paper.style.left = linkObj.left || '400px';
+          paper.innerHTML = `
+            <div class="flex justify-between items-center border-b border-amber-900/20 pb-1 mb-1 text-[10px]">
+              <span class="font-bold truncate max-w-[90px] text-amber-900">${linkObj.title}</span>
+              <button class="delete-link text-red-600 font-bold hover:text-red-800 text-xs">×</button>
+            </div>
+            <a href="${linkObj.url}" target="_blank" class="block text-center bg-amber-800 hover:bg-amber-900 text-amber-100 rounded py-0.5 text-[10px] font-semibold transition">
+              Visiter le lien <i class="fa-solid fa-external-link text-[8px]"></i>
+            </a>
+          `;
+          linksContainer.appendChild(paper);
+          makeElementDraggable(paper);
+
+          paper.querySelector('.delete-link').addEventListener('click', () => {
+            state.links.splice(i, 1);
+            saveState();
+            renderLinks();
+          });
+        });
+      }
+      renderLinks();
+
+      document.getElementById('btn-create-link').addEventListener('click', () => {
+        const title = prompt('Titre du lien :');
+        if (!title) return;
+        let url = prompt('URL du site web :');
+        if (!url) return;
+        if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+
+        state.links.push({ title, url, top: '220px', left: '420px' });
+        saveState();
+        renderLinks();
+      });
+
+      document.getElementById('btn-create-photo').addEventListener('click', () => {
+        const emptySlot = state.albumPhotos.findIndex(p => p === null);
+        if (emptySlot === -1) {
+          alert('L\'album photo est plein (16/16) !');
+          return;
+        }
+
+        const choice = prompt('Tapez "1" pour coller une URL d\'image, ou "2" pour parcourir un fichier local :');
+        if (choice === '1') {
+          const imgUrl = prompt('URL de l\'image :');
+          if (imgUrl) {
+            state.albumPhotos[emptySlot] = imgUrl;
+            saveState();
+            renderAlbum();
+          }
+        } else if (choice === '2') {
+          const fileInput = document.createElement('input');
+          fileInput.type = 'file';
+          fileInput.accept = 'image/*';
+          fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                state.albumPhotos[emptySlot] = event.target.result;
+                saveState();
+                renderAlbum();
+              };
+              reader.readAsDataURL(file);
+            }
+          };
+          fileInput.click();
+        }
+      });
+
+      // --- HUD 7: SOLITAIRE ENGINE ---
+      const suits = ['♠', '♥', '♣', '♦'];
+      const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+      let deck = [];
+
+      function initSolitaire() {
+        deck = [];
+        suits.forEach(suit => {
+          values.forEach(val => {
+            deck.push({ suit, val, color: (suit === '♥' || suit === '♦') ? 'red' : 'black' });
+          });
+        });
+        deck.sort(() => Math.random() - 0.5);
+
+        const tableau = document.getElementById('sol-tableau');
+        tableau.innerHTML = '';
+        for (let i = 0; i < 7; i++) {
+          const col = document.createElement('div');
+          col.className = 'flex flex-col gap-1 items-center border border-emerald-800/40 rounded p-1 bg-emerald-950/20';
+          const cardData = deck.pop();
+          if (cardData) {
+            col.innerHTML = `
+              <div class="solitaire-card ${cardData.color}">
+                <div>${cardData.val}</div>
+                <div class="text-center text-xs">${cardData.suit}</div>
+              </div>
+            `;
+          }
+          tableau.appendChild(col);
+        }
+      }
+      document.getElementById('solitaire-reset-btn').addEventListener('click', initSolitaire);
+      initSolitaire();
+
+      // --- HUD 8: MINESWEEPER ENGINE ---
+      const mineGrid = document.getElementById('mine-grid');
+      let mines = [];
+
+      function initMinesweeper() {
+        mineGrid.innerHTML = '';
+        mines = Array(64).fill(false);
+        let placed = 0;
+        while (placed < 10) {
+          const idx = Math.floor(Math.random() * 64);
+          if (!mines[idx]) { mines[idx] = true; placed++; }
+        }
+
+        for (let i = 0; i < 64; i++) {
+          const tile = document.createElement('div');
+          tile.className = 'mine-tile';
+          tile.addEventListener('click', () => {
+            if (mines[i]) {
+              tile.innerHTML = '💣';
+              tile.classList.add('bg-red-950');
+              alert('Démineur: Boum ! Partie terminée.');
+            } else {
+              tile.classList.add('revealed');
+              tile.innerText = '1';
+            }
+          });
+          mineGrid.appendChild(tile);
+        }
+      }
+      document.getElementById('mine-reset-btn').addEventListener('click', initMinesweeper);
+      initMinesweeper();
+
+      // --- HUD 9: CUSTOM CURSOR ENGINE (REPAIRED & FIXED) ---
+      const previewBox = document.getElementById('cursor-preview');
+      const deskElem = document.getElementById('desk');
+
+      const inputPreset = document.getElementById('cursor-preset');
+      const inputSize = document.getElementById('cursor-size');
+      const inputThick = document.getElementById('cursor-thick');
+      const inputGap = document.getElementById('cursor-gap');
+      const inputColor = document.getElementById('cursor-color');
+      const inputDot = document.getElementById('cursor-dot');
+      const inputActive = document.getElementById('cursor-active-toggle');
+
+      // Sync state inputs
+      if (state.customCursor) {
+        inputPreset.value = state.customCursor.preset;
+        inputSize.value = state.customCursor.size;
+        inputThick.value = state.customCursor.thick;
+        inputGap.value = state.customCursor.gap;
+        inputColor.value = state.customCursor.color;
+        inputDot.checked = state.customCursor.dot;
+        inputActive.checked = state.customCursor.active;
+      }
+
+      function generateCursorSVG(cfg) {
+        const sz = parseInt(cfg.size);
+        const th = parseInt(cfg.thick);
+        const gp = parseInt(cfg.gap);
+        const cl = cfg.color;
+        const center = sz / 2;
+
+        let svgBody = '';
+
+        if (cfg.preset === 'cross') {
+          svgBody = `
+            <line x1="${center}" y1="0" x2="${center}" y2="${sz}" stroke="${cl}" stroke-width="${th}" />
+            <line x1="0" y1="${center}" x2="${sz}" y2="${center}" stroke="${cl}" stroke-width="${th}" />
+          `;
+        } else if (cfg.preset === 'dot') {
+          svgBody = `<circle cx="${center}" cy="${center}" r="${th * 2}" fill="${cl}" />`;
+        } else if (cfg.preset === 'circle-cross') {
+          svgBody = `
+            <circle cx="${center}" cy="${center}" r="${center - 2}" stroke="${cl}" stroke-width="${th}" fill="none" />
+            <line x1="${center}" y1="2" x2="${center}" y2="${sz - 2}" stroke="${cl}" stroke-width="${th}" />
+            <line x1="2" y1="${center}" x2="${sz - 2}" y2="${center}" stroke="${cl}" stroke-width="${th}" />
+          `;
+        } else if (cfg.preset === 'pro') {
+          svgBody = `
+            <line x1="${center}" y1="0" x2="${center}" y2="${center - gp}" stroke="${cl}" stroke-width="${th}" />
+            <line x1="${center}" y1="${center + gp}" x2="${center}" y2="${sz}" stroke="${cl}" stroke-width="${th}" />
+            <line x1="0" y1="${center}" x2="${center - gp}" y2="${center}" stroke="${cl}" stroke-width="${th}" />
+            <line x1="${center + gp}" y1="${center}" x2="${sz}" y2="${center}" stroke="${cl}" stroke-width="${th}" />
+          `;
+        } else if (cfg.preset === 'circle') {
+          svgBody = `<circle cx="${center}" cy="${center}" r="${center - 2}" stroke="${cl}" stroke-width="${th}" fill="none" />`;
+        }
+
+        if (cfg.dot && cfg.preset !== 'dot') {
+          svgBody += `<circle cx="${center}" cy="${center}" r="${Math.max(th, 2)}" fill="${cl}" />`;
+        }
+
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">${svgBody}</svg>`;
+      }
+
+      function updateCustomCursor() {
+        const cfg = {
+          active: inputActive.checked,
+          preset: inputPreset.value,
+          size: parseInt(inputSize.value),
+          thick: parseInt(inputThick.value),
+          gap: parseInt(inputGap.value),
+          color: inputColor.value,
+          dot: inputDot.checked
+        };
+
+        state.customCursor = cfg;
+        saveState();
+
+        document.getElementById('val-cursor-size').innerText = `${cfg.size}px`;
+        document.getElementById('val-cursor-thick').innerText = `${cfg.thick}px`;
+        document.getElementById('val-cursor-gap').innerText = `${cfg.gap}px`;
+
+        const svgCode = generateCursorSVG(cfg);
+
+        // Render preview
+        previewBox.innerHTML = svgCode;
+
+        // Apply globally if HUD is enabled and toggle active
+        const isHudEnabled = state.activeModules.customcursor;
+        if (isHudEnabled && cfg.active) {
+          const encodedSvg = encodeURIComponent(svgCode);
+          const hotspot = cfg.size / 2;
+          const cursorStyle = `url("data:image/svg+xml,${encodedSvg}") ${hotspot} ${hotspot}, auto`;
+          deskElem.style.cursor = cursorStyle;
+        } else {
+          deskElem.style.cursor = 'default';
+        }
+      }
+
+      [inputPreset, inputSize, inputThick, inputGap, inputColor, inputDot, inputActive].forEach(elem => {
+        elem.addEventListener('input', updateCustomCursor);
+        elem.addEventListener('change', updateCustomCursor);
+      });
+
+      updateCustomCursor();
     });
   </script>
 </body>
