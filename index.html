@@ -79,7 +79,7 @@
             object-fit: contain;
         }
 
-        /* Style pour l'indicateur de version en bas à gauche */
+        /* Indicateur de version en bas à gauche */
         #version-checker {
             position: fixed;
             bottom: 20px;
@@ -106,6 +106,78 @@
             object-fit: contain;
             display: block;
         }
+
+        /* Fenêtre modale d'erreur */
+        #error-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: #d9534f;
+        }
+
+        .modal-content p {
+            font-size: 0.95rem;
+            color: #555;
+            word-break: break-word;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-retry {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-retry:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-close {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-close:hover {
+            background-color: #5a6268;
+        }
     </style>
 </head>
 <body>
@@ -113,6 +185,18 @@
     <!-- Indicateur de version en bas à gauche -->
     <div id="version-checker" onclick="handleVersionClick()" title="Vérifier les mises à jour">
         <img id="version-icon" src="https://raw.githubusercontent.com/progra31/clem_site/e991b2fd1d0c616cd6bf50fdaaaae8d1287cd8c9/icones/status-version-check/checking-version.png" alt="Statut de version">
+    </div>
+
+    <!-- Fenêtre modale d'erreur -->
+    <div id="error-modal">
+        <div class="modal-content">
+            <h3>Échec de la vérification</h3>
+            <p id="error-details">Une erreur est survenue lors de la vérification de la version.</p>
+            <div class="modal-buttons">
+                <button class="btn-retry" onclick="retryFromModal()">Relancer</button>
+                <button class="btn-close" onclick="closeModal()">Fermer</button>
+            </div>
+        </div>
     </div>
 
     <img src="https://raw.githubusercontent.com/progra31/clem_site/0175baecfc2932a7bdb549834f007b05d973f68d/icones/logo%20principal.png" alt="Logo CforCode" class="logo">
@@ -149,16 +233,25 @@
         };
 
         let currentState = "checking";
+        let lastErrorMessage = "";
 
         async function checkForUpdates() {
             const iconElement = document.getElementById("version-icon");
             iconElement.src = icons.checking;
             currentState = "checking";
 
+            // Création d'un contrôleur pour limiter le temps de recherche à 15 secondes
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000);
+
             try {
-                const response = await fetch('https://api.github.com/repos/progra31/clem_site/releases/latest');
+                const response = await fetch('https://api.github.com/repos/progra31/clem_site/releases/latest', {
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
                 if (!response.ok) {
-                    throw new Error("Erreur réseau");
+                    throw new Error(`Erreur HTTP : ${response.status} ${response.statusText}`);
                 }
                 
                 const data = await response.json();
@@ -174,10 +267,18 @@
                     document.getElementById("version-checker").title = "Le site est à jour. Cliquez pour revérifier.";
                 }
             } catch (error) {
+                clearTimeout(timeoutId);
                 console.error("Impossible de vérifier les mises à jour :", error);
+                
+                if (error.name === 'AbortError') {
+                    lastErrorMessage = "La requête a pris trop de temps (délai de 15 secondes dépassé).";
+                } else {
+                    lastErrorMessage = error.message;
+                }
+
                 iconElement.src = icons.cant;
                 currentState = "cant";
-                document.getElementById("version-checker").title = "Impossible de vérifier la version. Cliquez pour réessayer.";
+                document.getElementById("version-checker").title = "Impossible de vérifier la version. Cliquez pour voir les détails.";
             }
         }
 
@@ -185,10 +286,23 @@
             if (currentState === "wrong") {
                 // Si le site n'est pas à jour, actualiser l'onglet
                 location.reload(true);
+            } else if (currentState === "cant") {
+                // Si l'échec est survenu, ouvrir la fenêtre modale avec les détails
+                document.getElementById("error-details").textContent = lastErrorMessage;
+                document.getElementById("error-modal").style.display = "flex";
             } else {
-                // Sinon, lancer une nouvelle recherche manuelle
+                // Sinon (right ou checking), lancer une nouvelle recherche manuelle
                 checkForUpdates();
             }
+        }
+
+        function closeModal() {
+            document.getElementById("error-modal").style.display = "none";
+        }
+
+        function retryFromModal() {
+            closeModal();
+            checkForUpdates();
         }
 
         // Lancer la vérification au chargement de la page
