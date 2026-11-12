@@ -36,17 +36,48 @@
     /* Common Draggable Box Styling */
     .draggable-item {
       position: absolute;
-      cursor: grab;
+      cursor: default;
       transition: box-shadow 0.2s ease, transform 0.1s ease;
       touch-action: none;
       z-index: 10;
     }
 
-    .draggable-item:active {
-      cursor: grabbing;
+    .draggable-item.dragging-active {
+      cursor: grabbing !important;
       z-index: 999 !important;
       transform: scale(1.015);
       box-shadow: 0 20px 35px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    /* Visual indicator on the top drag zone when drag mode is ON */
+    body.drag-enabled .draggable-item::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 28px;
+      cursor: grab;
+      z-index: 25;
+      border-radius: inherit;
+      pointer-events: auto;
+    }
+
+    /* Exceptions for inputs/buttons inside the top 28px zone so they remain clickable */
+    .draggable-item button,
+    .draggable-item input,
+    .draggable-item select,
+    .draggable-item label,
+    .draggable-item a {
+      position: relative;
+      z-index: 30;
+    }
+
+    /* Small round items (Reset btn, Coffee mug, Pen holder) allow grabbing their whole top/body */
+    body.drag-enabled #item-resetbtn::after,
+    body.drag-enabled #item-coffeemug::after,
+    body.drag-enabled #item-penholder::after {
+      height: 100%;
     }
 
     /* Paper Aesthetics for Specs, FPS, Links */
@@ -476,275 +507,27 @@
       </div>
     </div>
 
-    <!-- HUD 2: Specs Device Paper -->
-    <div id="hud-specs" class="draggable-item paper-large p-4 w-64 hidden" style="top: 150px; left: 510px;">
-      <div class="flex items-center justify-between border-b border-stone-300 pb-1.5 mb-2">
-        <span class="text-[10px] font-bold uppercase tracking-widest text-stone-700">Fiche Technique System</span>
-        <i class="fa-solid fa-microchip text-stone-400 text-xs"></i>
+    <!-- BOTTOM RIGHT DRAG TOGGLE WIDGET -->
+    <div id="drag-status-badge" class="fixed bottom-4 right-4 z-50 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 px-3.5 py-2 rounded-xl shadow-2xl flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <span id="drag-status-dot" class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span>
+        <span id="drag-status-label" class="text-xs font-semibold text-slate-200 tracking-wide">Glissement activé</span>
       </div>
-      <div class="space-y-1 text-[10px] text-stone-800">
-        <div class="flex justify-between"><span class="text-stone-500">CPU:</span><span id="spec-cores" class="font-bold">--</span></div>
-        <div class="flex justify-between"><span class="text-stone-500">RAM:</span><span id="spec-ram" class="font-bold">--</span></div>
-        <div class="flex justify-between"><span class="text-stone-500">Écran:</span><span id="spec-res" class="font-bold">--</span></div>
-        <div class="flex justify-between"><span class="text-stone-500">OS:</span><span id="spec-platform" class="font-bold">--</span></div>
-        <div class="flex justify-between"><span class="text-stone-500">Navigateur:</span><span id="spec-browser" class="font-bold truncate max-w-[110px]">--</span></div>
-      </div>
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" id="global-drag-toggle" class="sr-only peer" checked>
+        <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyan-500"></div>
+      </label>
     </div>
 
-    <!-- HUD 3: Keyboard Tracker -->
-    <div id="hud-keyboard" class="draggable-item bg-slate-900/95 backdrop-blur border border-slate-700/80 p-3 rounded-xl shadow-2xl w-[380px] hidden" style="top: 360px; left: 450px;">
-      <div class="flex items-center justify-between mb-2 text-slate-300">
-        <span class="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
-          <i class="fa-solid fa-keyboard text-amber-400"></i> Keyboard HUD
-        </span>
-      </div>
-      <div class="space-y-1" id="keyboard-grid">
-        <!-- Row 1 -->
-        <div class="flex gap-0.5">
-          <div class="key-cap w-6 h-6" data-key="Escape">Esc</div>
-          <div class="key-cap w-6 h-6" data-key="1">1</div>
-          <div class="key-cap w-6 h-6" data-key="2">2</div>
-          <div class="key-cap w-6 h-6" data-key="3">3</div>
-          <div class="key-cap w-6 h-6" data-key="4">4</div>
-          <div class="key-cap w-6 h-6" data-key="5">5</div>
-          <div class="key-cap w-6 h-6" data-key="6">6</div>
-          <div class="key-cap w-6 h-6" data-key="7">7</div>
-          <div class="key-cap w-6 h-6" data-key="8">8</div>
-          <div class="key-cap w-6 h-6" data-key="9">9</div>
-          <div class="key-cap w-6 h-6" data-key="0">0</div>
-          <div class="key-cap flex-1 h-6" data-key="Backspace">Del</div>
-        </div>
-        <!-- Row 2 -->
-        <div class="flex gap-0.5">
-          <div class="key-cap w-9 h-6" data-key="Tab">Tab</div>
-          <div class="key-cap w-6 h-6" data-key="q">Q</div>
-          <div class="key-cap w-6 h-6" data-key="w">W</div>
-          <div class="key-cap w-6 h-6" data-key="e">E</div>
-          <div class="key-cap w-6 h-6" data-key="r">R</div>
-          <div class="key-cap w-6 h-6" data-key="t">T</div>
-          <div class="key-cap w-6 h-6" data-key="y">Y</div>
-          <div class="key-cap w-6 h-6" data-key="u">U</div>
-          <div class="key-cap w-6 h-6" data-key="i">I</div>
-          <div class="key-cap w-6 h-6" data-key="o">O</div>
-          <div class="key-cap w-6 h-6" data-key="p">P</div>
-        </div>
-        <!-- Row 3 -->
-        <div class="flex gap-0.5">
-          <div class="key-cap w-10 h-6" data-key="CapsLock">Caps</div>
-          <div class="key-cap w-6 h-6" data-key="a">A</div>
-          <div class="key-cap w-6 h-6" data-key="s">S</div>
-          <div class="key-cap w-6 h-6" data-key="d">D</div>
-          <div class="key-cap w-6 h-6" data-key="f">F</div>
-          <div class="key-cap w-6 h-6" data-key="g">G</div>
-          <div class="key-cap w-6 h-6" data-key="h">H</div>
-          <div class="key-cap w-6 h-6" data-key="j">J</div>
-          <div class="key-cap w-6 h-6" data-key="k">K</div>
-          <div class="key-cap w-6 h-6" data-key="l">L</div>
-          <div class="key-cap flex-1 h-6" data-key="Enter">Enter</div>
-        </div>
-        <!-- Row 4 -->
-        <div class="flex gap-0.5">
-          <div class="key-cap w-12 h-6" data-key="Shift">Shift</div>
-          <div class="key-cap w-6 h-6" data-key="z">Z</div>
-          <div class="key-cap w-6 h-6" data-key="x">X</div>
-          <div class="key-cap w-6 h-6" data-key="c">C</div>
-          <div class="key-cap w-6 h-6" data-key="v">V</div>
-          <div class="key-cap w-6 h-6" data-key="b">B</div>
-          <div class="key-cap w-6 h-6" data-key="n">N</div>
-          <div class="key-cap w-6 h-6" data-key="m">M</div>
-          <div class="key-cap flex-1 h-6" data-key="Shift">Shift</div>
-        </div>
-        <!-- Row 5 -->
-        <div class="flex gap-0.5">
-          <div class="key-cap w-9 h-6" data-key="Control">Ctrl</div>
-          <div class="key-cap w-9 h-6" data-key="Alt">Alt</div>
-          <div class="key-cap flex-1 h-6" data-key=" ">Space</div>
-          <div class="key-cap w-9 h-6" data-key="AltGraph">AltGr</div>
-          <div class="key-cap w-9 h-6" data-key="Control">Ctrl</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- HUD 4: Mouse Tracker -->
-    <div id="hud-mouse" class="draggable-item bg-slate-900/95 backdrop-blur border border-slate-700/80 p-3 rounded-xl shadow-2xl w-52 hidden" style="top: 40px; left: 780px;">
-      <div class="flex items-center justify-between mb-2 text-slate-300">
-        <span class="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
-          <i class="fa-solid fa-computer-mouse text-purple-400"></i> Mouse Tracker
-        </span>
-      </div>
-      <div class="flex items-center gap-3">
-        <div class="mouse-body flex-shrink-0">
-          <div id="mouse-btn-l" class="mouse-btn mouse-btn-left"></div>
-          <div id="mouse-btn-r" class="mouse-btn mouse-btn-right"></div>
-          <div id="mouse-wheel" class="mouse-wheel"></div>
-        </div>
-        <div class="space-y-1.5 text-[10px] font-mono text-slate-300">
-          <div><span class="text-slate-500 block">X:</span><span id="mouse-pos-x" class="font-bold text-cyan-400">0</span> px</div>
-          <div><span class="text-slate-500 block">Y:</span><span id="mouse-pos-y" class="font-bold text-cyan-400">0</span> px</div>
-          <div><span class="text-slate-500 block">Clic:</span><span id="mouse-last-click" class="text-slate-300">Aucun</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- HUD 5: YouTube Smartphone -->
-    <div id="hud-youtube" class="draggable-item phone-frame hidden" style="top: 180px; left: 780px; width: 220px; height: 380px;">
-      <div class="w-full h-full bg-slate-950 flex flex-col pt-3 pb-3 px-2 text-white">
-        <div class="flex items-center justify-between mb-1.5">
-          <span class="text-[10px] font-semibold text-slate-400 tracking-wider flex items-center gap-1">
-            <i class="fa-brands fa-youtube text-red-500"></i> Player
-          </span>
-          <button id="yt-rotate-btn" class="px-1.5 py-0.5 bg-slate-800 hover:bg-slate-700 text-[10px] rounded border border-slate-700 text-slate-300">
-            <i class="fa-solid fa-rotate text-cyan-400"></i>
-          </button>
-        </div>
-        <div class="flex-1 bg-black rounded-lg overflow-hidden relative border border-slate-800 flex items-center justify-center">
-          <iframe id="yt-iframe" class="w-full h-full" src="https://www.youtube.com/embed/jfKfPfyJRdk" frameborder="0" allowfullscreen></iframe>
-        </div>
-        <div class="mt-2 flex gap-1">
-          <input type="text" id="yt-url-input" placeholder="URL YouTube..." class="flex-1 bg-slate-900 border border-slate-800 rounded px-2 py-0.5 text-[10px] text-slate-200 outline-none select-text" style="-webkit-user-select: text;">
-          <button id="yt-load-btn" class="bg-cyan-600 hover:bg-cyan-500 text-white px-2 py-0.5 rounded text-[10px] font-semibold">OK</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- HUD 6: Photo Album -->
-    <div id="hud-album" class="draggable-item album-book hidden" style="top: 180px; left: 240px; width: 440px; height: 260px;">
-      <div class="h-full w-full flex flex-col p-2 text-amber-100">
-        <!-- Header Controls -->
-        <div class="flex items-center justify-between border-b border-amber-950/80 pb-1 mb-1">
-          <span class="text-xs font-bold text-amber-200 flex items-center gap-1.5">
-            <i class="fa-solid fa-book-open text-amber-500"></i> Album Souvenirs
-          </span>
-          <button id="album-toggle-btn" class="px-2 py-0.5 bg-amber-900/60 hover:bg-amber-800 border border-amber-700 text-[10px] rounded text-amber-200 transition">
-            Fermer le livre
-          </button>
-        </div>
-
-        <!-- Book Inner Layout (Pages vs Closed Cover) -->
-        <div id="album-open-view" class="flex-1 flex gap-2">
-          <!-- Left Page (8 slots) -->
-          <div class="flex-1 bg-amber-100/10 rounded p-1.5 grid grid-cols-2 grid-rows-4 gap-1 border border-amber-900/40" id="album-page-1"></div>
-          <!-- Spine Divider -->
-          <div class="w-1 bg-amber-950/80 rounded"></div>
-          <!-- Right Page (8 slots) -->
-          <div class="flex-1 bg-amber-100/10 rounded p-1.5 grid grid-cols-2 grid-rows-4 gap-1 border border-amber-900/40" id="album-page-2"></div>
-        </div>
-
-        <div id="album-closed-view" class="flex-1 hidden flex flex-col items-center justify-center border-2 border-amber-800/40 rounded bg-gradient-to-br from-amber-950 to-amber-900">
-          <i class="fa-solid fa-book-bookmark text-4xl text-amber-600 mb-2"></i>
-          <span class="text-xs font-bold tracking-widest text-amber-200 uppercase">Mon Album Photo</span>
-          <span class="text-[10px] text-amber-400">Cliquez sur "Ouvrir" pour afficher vos photos</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- HUD 7: Solitaire Game -->
-    <div id="hud-solitaire" class="draggable-item bg-emerald-900 border-2 border-emerald-700 rounded-xl p-3 shadow-2xl hidden" style="top: 40px; left: 1010px; width: 340px; height: 380px;">
-      <div class="flex items-center justify-between border-b border-emerald-700 pb-1.5 mb-2 text-emerald-100">
-        <span class="text-xs font-bold flex items-center gap-1.5">
-          <i class="fa-solid fa-spade text-emerald-400"></i> Solitaire Klondike
-        </span>
-        <button id="solitaire-reset-btn" class="px-2 py-0.5 bg-emerald-800 hover:bg-emerald-700 text-[10px] rounded border border-emerald-600">
-          Nouvelle partie
-        </button>
-      </div>
-
-      <!-- Solitaire Board -->
-      <div class="space-y-3">
-        <!-- Top Row: Stock, Waste & Foundations -->
-        <div class="flex justify-between items-center">
-          <div class="flex gap-2">
-            <div id="sol-stock" class="solitaire-card back"></div>
-            <div id="sol-waste" class="min-w-[36px] min-h-[50px]"></div>
-          </div>
-          <div class="flex gap-1.5" id="sol-foundations">
-            <div class="solitaire-card bg-emerald-950/40 border-dashed border-emerald-700 flex items-center justify-center text-emerald-600">♠</div>
-            <div class="solitaire-card bg-emerald-950/40 border-dashed border-emerald-700 flex items-center justify-center text-emerald-600">♥</div>
-            <div class="solitaire-card bg-emerald-950/40 border-dashed border-emerald-700 flex items-center justify-center text-emerald-600">♣</div>
-            <div class="solitaire-card bg-emerald-950/40 border-dashed border-emerald-700 flex items-center justify-center text-emerald-600">♦</div>
-          </div>
-        </div>
-
-        <!-- Tableau Piles -->
-        <div class="grid grid-cols-7 gap-1 min-h-[220px]" id="sol-tableau"></div>
-      </div>
-    </div>
-
-    <!-- HUD 8: Minesweeper -->
-    <div id="hud-minesweeper" class="draggable-item bg-amber-950 border-2 border-amber-800 rounded-xl p-3 shadow-2xl hidden" style="top: 360px; left: 850px; width: 230px;">
-      <div class="flex items-center justify-between border-b border-amber-800 pb-1.5 mb-2 text-amber-100">
-        <span class="text-xs font-bold flex items-center gap-1.5">
-          <i class="fa-solid fa-land-mine-on text-amber-500"></i> Démineur
-        </span>
-        <button id="mine-reset-btn" class="px-2 py-0.5 bg-amber-900 hover:bg-amber-800 text-[10px] rounded border border-amber-700">
-          🙂 Reset
-        </button>
-      </div>
-      <div class="flex justify-between text-[10px] text-amber-300 font-mono mb-2 px-1">
-        <span>Mines: <b id="mine-count">10</b></span>
-        <span>Temps: <b id="mine-timer">0</b>s</span>
-      </div>
-      <!-- Mine Grid 8x8 -->
-      <div id="mine-grid" class="grid grid-cols-8 gap-0.5 bg-amber-900 p-1 rounded border border-amber-800 justify-center"></div>
-    </div>
-
-    <!-- HUD 9: Custom Cursor Settings Panel -->
-    <div id="hud-customcursor" class="draggable-item bg-slate-900/95 backdrop-blur border border-slate-700 rounded-xl p-3.5 shadow-2xl w-64 hidden" style="top: 220px; left: 1010px;">
-      <div class="flex items-center justify-between border-b border-slate-700 pb-1.5 mb-2.5 text-slate-200">
-        <span class="text-xs font-bold flex items-center gap-1.5">
-          <i class="fa-solid fa-crosshair text-cyan-400"></i> Custom Cursor
-        </span>
-        <label class="flex items-center gap-1 cursor-pointer text-[10px] text-cyan-400">
-          <input type="checkbox" id="cursor-active-toggle" class="accent-cyan-500" checked> Actif
-        </label>
-      </div>
-
-      <!-- Preview Box -->
-      <div class="w-full h-20 bg-slate-950 rounded-lg border border-slate-800 flex items-center justify-center relative mb-3 overflow-hidden">
-        <div id="cursor-preview" class="flex items-center justify-center"></div>
-      </div>
-
-      <!-- Controls -->
-      <div class="space-y-2 text-[10px] text-slate-300">
-        <!-- Presets -->
-        <div>
-          <label class="block text-slate-400 mb-0.5">Preset Viseur:</label>
-          <select id="cursor-preset" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-slate-200 outline-none">
-            <option value="cross">Croix Tactique</option>
-            <option value="dot">Viseur Dot</option>
-            <option value="circle-cross">Cercle & Croix</option>
-            <option value="pro">FPS Pro (Gap)</option>
-            <option value="circle">Cercle Simple</option>
-          </select>
-        </div>
-
-        <!-- Size -->
-        <div>
-          <div class="flex justify-between text-slate-400"><span>Taille:</span><span id="val-cursor-size">24px</span></div>
-          <input type="range" id="cursor-size" min="12" max="48" value="24" class="w-full accent-cyan-500 h-1 bg-slate-800 rounded">
-        </div>
-
-        <!-- Thickness -->
-        <div>
-          <div class="flex justify-between text-slate-400"><span>Épaisseur:</span><span id="val-cursor-thick">2px</span></div>
-          <input type="range" id="cursor-thick" min="1" max="6" value="2" class="w-full accent-cyan-500 h-1 bg-slate-800 rounded">
-        </div>
-
-        <!-- Gap -->
-        <div>
-          <div class="flex justify-between text-slate-400"><span>Écartement (Gap):</span><span id="val-cursor-gap">4px</span></div>
-          <input type="range" id="cursor-gap" min="0" max="12" value="4" class="w-full accent-cyan-500 h-1 bg-slate-800 rounded">
-        </div>
-
-        <!-- Color & Outline -->
-        <div class="flex gap-2 items-center pt-1">
-          <div class="flex-1">
-            <label class="block text-slate-400 mb-0.5">Couleur:</label>
-            <input type="color" id="cursor-color" value="#00ffcc" class="w-full h-6 bg-transparent border border-slate-700 rounded cursor-pointer">
-          </div>
-          <label class="flex items-center gap-1 cursor-pointer text-slate-300 mt-3">
-            <input type="checkbox" id="cursor-dot" class="accent-cyan-500" checked> Point central
-          </label>
+    <!-- CUSTOM MODAL FOR PROMPTS & CONFIRMATIONS -->
+    <div id="custom-modal-backdrop" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[1000] hidden flex items-center justify-center p-4">
+      <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-w-sm w-full p-4 text-slate-100">
+        <h3 id="modal-title" class="text-sm font-bold text-white mb-2">Action</h3>
+        <p id="modal-message" class="text-xs text-slate-300 mb-3"></p>
+        <div id="modal-inputs" class="space-y-2 mb-4"></div>
+        <div class="flex justify-end gap-2">
+          <button id="modal-cancel-btn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 transition">Annuler</button>
+          <button id="modal-confirm-btn" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-xs font-semibold text-white transition">Valider</button>
         </div>
       </div>
     </div>
@@ -755,9 +538,10 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // --- LOCAL STORAGE & STATE MANAGEMENT ---
-      const STORAGE_KEY = 'super_pannel_desk_state_v3';
+      const STORAGE_KEY = 'super_pannel_cforcode_state_v4';
       
       const defaultState = {
+        dragEnabled: true,
         positions: {
           'item-notepad': { top: '40px', left: '240px' },
           'item-penholder': { top: '360px', left: '250px' },
@@ -802,15 +586,98 @@
       };
 
       let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultState;
+      if (typeof state.dragEnabled !== 'boolean') state.dragEnabled = true;
 
       function saveState() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       }
 
-      // --- DRAGGABLE SYSTEM ---
+      // --- CUSTOM MODAL HELPER (REPLACES ALERT/CONFIRM/PROMPT) ---
+      const modalBackdrop = document.getElementById('custom-modal-backdrop');
+      const modalTitle = document.getElementById('modal-title');
+      const modalMessage = document.getElementById('modal-message');
+      const modalInputs = document.getElementById('modal-inputs');
+      const modalCancelBtn = document.getElementById('modal-cancel-btn');
+      const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+
+      function showCustomModal({ title, message = '', fields = [], showCancel = true, confirmText = 'Valider', danger = false }) {
+        return new Promise((resolve) => {
+          modalTitle.textContent = title;
+          modalMessage.textContent = message;
+          modalMessage.classList.toggle('hidden', !message);
+          modalInputs.innerHTML = '';
+
+          fields.forEach(f => {
+            const input = document.createElement('input');
+            input.type = f.type || 'text';
+            input.id = `modal-field-${f.name}`;
+            input.placeholder = f.placeholder || '';
+            input.className = 'w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-cyan-500 select-text';
+            input.style.webkitUserSelect = 'text';
+            modalInputs.appendChild(input);
+          });
+
+          modalCancelBtn.classList.toggle('hidden', !showCancel);
+          modalConfirmBtn.textContent = confirmText;
+          modalConfirmBtn.className = danger
+            ? 'px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-xs font-semibold text-white transition'
+            : 'px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-xs font-semibold text-white transition';
+
+          modalBackdrop.classList.remove('hidden');
+          if (fields.length > 0) modalInputs.firstChild.focus();
+
+          const cleanup = () => {
+            modalBackdrop.classList.add('hidden');
+            modalConfirmBtn.onclick = null;
+            modalCancelBtn.onclick = null;
+          };
+
+          modalCancelBtn.onclick = () => {
+            cleanup();
+            resolve(null);
+          };
+
+          modalConfirmBtn.onclick = () => {
+            const values = {};
+            fields.forEach(f => {
+              values[f.name] = document.getElementById(`modal-field-${f.name}`).value;
+            });
+            cleanup();
+            resolve(fields.length > 0 ? values : true);
+          };
+        });
+      }
+
+      // --- GLOBAL DRAG TOGGLE (BOTTOM RIGHT) ---
+      const globalDragToggle = document.getElementById('global-drag-toggle');
+      const dragStatusLabel = document.getElementById('drag-status-label');
+      const dragStatusDot = document.getElementById('drag-status-dot');
+
+      function updateDragUI() {
+        globalDragToggle.checked = state.dragEnabled;
+        if (state.dragEnabled) {
+          document.body.classList.add('drag-enabled');
+          dragStatusLabel.textContent = 'Glissement activé';
+          dragStatusDot.className = 'w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]';
+        } else {
+          document.body.classList.remove('drag-enabled');
+          dragStatusLabel.textContent = 'Glissement désactivé';
+          dragStatusDot.className = 'w-2 h-2 rounded-full bg-slate-500';
+        }
+      }
+
+      globalDragToggle.addEventListener('change', (e) => {
+        state.dragEnabled = e.target.checked;
+        updateDragUI();
+        saveState();
+      });
+      updateDragUI();
+
+      // --- DRAGGABLE SYSTEM (TOP ZONE ONLY) ---
       let activeDragElem = null;
       let startX = 0, startY = 0;
       let initialLeft = 0, initialTop = 0;
+      let hasMoved = false;
 
       function makeElementDraggable(item) {
         if (!item) return;
@@ -821,16 +688,31 @@
         }
 
         item.addEventListener('pointerdown', (e) => {
-          if (['INPUT', 'TEXTAREA', 'BUTTON', 'IFRAME', 'SELECT', 'A'].includes(e.target.tagName) || e.target.closest('button')) return;
+          // 1. Check if global drag mode is active
+          if (!state.dragEnabled) return;
 
-          activeDragElem = item;
-          startX = e.clientX;
-          startY = e.clientY;
+          // 2. Ignore interactive controls inside elements
+          if (['INPUT', 'TEXTAREA', 'BUTTON', 'IFRAME', 'SELECT', 'A', 'LABEL'].includes(e.target.tagName) || e.target.closest('button, label, a')) {
+            return;
+          }
 
           const rect = item.getBoundingClientRect();
+          const offsetY = e.clientY - rect.top;
+
+          // 3. Enforce grabbing the top part of the zone (top 32px), except small round supplies
+          const isSmallRoundSupply = ['item-resetbtn', 'item-coffeemug', 'item-penholder'].includes(item.id);
+          if (!isSmallRoundSupply && offsetY > 32) {
+            return;
+          }
+
+          activeDragElem = item;
+          hasMoved = false;
+          startX = e.clientX;
+          startY = e.clientY;
           initialLeft = rect.left;
           initialTop = rect.top;
 
+          item.classList.add('dragging-active');
           item.setPointerCapture(e.pointerId);
           e.stopPropagation();
         });
@@ -840,6 +722,7 @@
 
           const dx = e.clientX - startX;
           const dy = e.clientY - startY;
+          if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasMoved = true;
 
           item.style.left = `${initialLeft + dx}px`;
           item.style.top = `${initialTop + dy}px`;
@@ -847,6 +730,7 @@
 
         const stopDrag = () => {
           if (activeDragElem === item) {
+            item.classList.remove('dragging-active');
             state.positions[item.id] = {
               top: item.style.top,
               left: item.style.left
@@ -896,8 +780,18 @@
       });
 
       // --- RESET BUTTON ---
-      document.getElementById('item-resetbtn').addEventListener('click', () => {
-        if (confirm('Voulez-vous réinitialiser le bureau, l\'album et tous les réglages ?')) {
+      document.getElementById('item-resetbtn').addEventListener('click', async () => {
+        if (hasMoved) {
+          hasMoved = false;
+          return;
+        }
+        const confirmed = await showCustomModal({
+          title: 'Réinitialiser le bureau',
+          message: 'Voulez-vous vraiment réinitialiser les positions, l\'album photo et tous les réglages ?',
+          confirmText: 'Tout réinitialiser',
+          danger: true
+        });
+        if (confirmed) {
           localStorage.removeItem(STORAGE_KEY);
           location.reload();
         }
@@ -1099,34 +993,54 @@
       }
       renderLinks();
 
-      document.getElementById('btn-create-link').addEventListener('click', () => {
-        const title = prompt('Titre du lien :');
-        if (!title) return;
-        let url = prompt('URL du site web :');
-        if (!url) return;
+      document.getElementById('btn-create-link').addEventListener('click', async () => {
+        const res = await showCustomModal({
+          title: 'Créer un raccourci lien',
+          message: 'Entrez le nom et l\'adresse web du raccourci à placer sur le bureau :',
+          fields: [
+            { name: 'title', placeholder: 'Titre du lien (ex: GitHub CforCode)' },
+            { name: 'url', placeholder: 'URL (ex: https://github.com)' }
+          ],
+          confirmText: 'Créer le papier'
+        });
+
+        if (!res || !res.title.trim() || !res.url.trim()) return;
+        let url = res.url.trim();
         if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
 
-        state.links.push({ title, url, top: '220px', left: '420px' });
+        state.links.push({ title: res.title.trim(), url, top: '220px', left: '420px' });
         saveState();
         renderLinks();
       });
 
-      document.getElementById('btn-create-photo').addEventListener('click', () => {
+      document.getElementById('btn-create-photo').addEventListener('click', async () => {
         const emptySlot = state.albumPhotos.findIndex(p => p === null);
         if (emptySlot === -1) {
-          alert('L\'album photo est plein (16/16) !');
+          await showCustomModal({
+            title: 'Album Photo plein',
+            message: 'Votre album contient déjà 16 photos. Supprimez-en une pour en ajouter une nouvelle.',
+            showCancel: false,
+            confirmText: 'Compris'
+          });
           return;
         }
 
-        const choice = prompt('Tapez "1" pour coller une URL d\'image, ou "2" pour parcourir un fichier local :');
-        if (choice === '1') {
-          const imgUrl = prompt('URL de l\'image :');
-          if (imgUrl) {
-            state.albumPhotos[emptySlot] = imgUrl;
-            saveState();
-            renderAlbum();
-          }
-        } else if (choice === '2') {
+        const res = await showCustomModal({
+          title: 'Ajouter une photo à l\'album',
+          message: 'Collez une URL d\'image ci-dessous ou laissez vide pour importer un fichier depuis votre appareil :',
+          fields: [
+            { name: 'imgUrl', placeholder: 'https://exemple.com/photo.jpg (ou laisser vide)' }
+          ],
+          confirmText: 'Continuer'
+        });
+
+        if (!res) return;
+
+        if (res.imgUrl && res.imgUrl.trim() !== '') {
+          state.albumPhotos[emptySlot] = res.imgUrl.trim();
+          saveState();
+          renderAlbum();
+        } else {
           const fileInput = document.createElement('input');
           fileInput.type = 'file';
           fileInput.accept = 'image/*';
@@ -1196,11 +1110,16 @@
         for (let i = 0; i < 64; i++) {
           const tile = document.createElement('div');
           tile.className = 'mine-tile';
-          tile.addEventListener('click', () => {
+          tile.addEventListener('click', async () => {
             if (mines[i]) {
               tile.innerHTML = '💣';
               tile.classList.add('bg-red-950');
-              alert('Démineur: Boum ! Partie terminée.');
+              await showCustomModal({
+                title: '💥 Boum !',
+                message: 'Vous avez cliqué sur une mine. Cliquez sur Reset pour rejouer.',
+                showCancel: false,
+                confirmText: 'OK'
+              });
             } else {
               tile.classList.add('revealed');
               tile.innerText = '1';
