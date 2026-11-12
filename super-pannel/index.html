@@ -1,1241 +1,2323 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Super Pannel - Bureau Interactif & HUD</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Super Pannel — CforCode</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap');
+    :root {
+      --bg-wood-1: #5a3821;
+      --bg-wood-2: #3b2212;
+      --sidebar-bg: rgba(18, 20, 26, 0.96);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.35);
+      --paper-bg: #fdfbf7;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
 
     * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
       user-select: none;
-      -webkit-user-select: none;
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      overflow: hidden;
-      background-color: #120905;
-    }
-
-    /* Textured Wood Desk Background */
-    #desk {
-      position: relative;
-      width: 100vw;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      display: flex;
       height: 100vh;
-      background: radial-gradient(circle at 50% 50%, #3d2313 0%, #211208 70%, #0d0603 100%),
-                  repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 2px, transparent 2px, transparent 4px);
-      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.9);
+      width: 100vw;
       overflow: hidden;
+      background-color: #1e130c;
+      color: var(--text-main);
     }
 
-    /* Common Draggable Box Styling */
-    .draggable-item {
-      position: absolute;
-      cursor: default;
-      transition: box-shadow 0.2s ease, transform 0.1s ease;
-      touch-action: none;
-      z-index: 10;
+    /* --- SIDEBAR --- */
+    #sidebar {
+      width: 235px;
+      min-width: 235px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 900;
+      overflow-y: auto;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.55);
     }
 
-    .draggable-item.dragging-active {
-      cursor: grabbing !important;
-      z-index: 999 !important;
-      transform: scale(1.015);
-      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.6) !important;
-    }
-
-    /* Visual indicator on the top drag zone when drag mode is ON */
-    body.drag-enabled .draggable-item::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 28px;
-      cursor: grab;
-      z-index: 25;
-      border-radius: inherit;
-      pointer-events: auto;
-    }
-
-    /* Exceptions for inputs/buttons inside the top 28px zone so they remain clickable */
-    .draggable-item button,
-    .draggable-item input,
-    .draggable-item select,
-    .draggable-item label,
-    .draggable-item a {
-      position: relative;
-      z-index: 30;
-    }
-
-    /* Small round items (Reset btn, Coffee mug, Pen holder) allow grabbing their whole top/body */
-    body.drag-enabled #item-resetbtn::after,
-    body.drag-enabled #item-coffeemug::after,
-    body.drag-enabled #item-penholder::after {
-      height: 100%;
-    }
-
-    /* Paper Aesthetics for Specs, FPS, Links */
-    .paper-scrap {
-      background: #fdfbf7;
-      background-image: radial-gradient(#e2d9cc 1px, transparent 0);
-      background-size: 10px 10px;
-      color: #2c2520;
-      font-family: 'Fira Code', monospace;
-      border-radius: 2px;
-      box-shadow: 4px 10px 20px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,0,0,0.05);
-      transform: rotate(-1.5deg);
-    }
-
-    .paper-scrap::before {
-      content: '';
-      position: absolute;
-      top: -6px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 36px;
-      height: 10px;
-      background: rgba(230, 220, 200, 0.7);
-      backdrop-filter: blur(2px);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-    }
-
-    .paper-large {
-      background: #faf6ee;
-      color: #1f1915;
-      font-family: 'Fira Code', monospace;
-      box-shadow: 6px 14px 28px rgba(0,0,0,0.45);
-      border-left: 3px solid #e06c75;
-      transform: rotate(1deg);
-    }
-
-    /* Notepad styling */
-    .notepad-container {
-      width: 240px;
-      height: 300px;
-      background: #ffffff;
-      border-radius: 6px 6px 4px 4px;
-      box-shadow: 8px 16px 30px rgba(0,0,0,0.5);
-      transform: rotate(-2deg);
-      overflow: hidden;
-    }
-    
-    .notepad-header {
-      background: #2a2a2a;
-      height: 28px;
+    .brand {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .notepad-textarea {
-      width: 100%;
-      height: calc(100% - 28px);
-      background: repeating-linear-gradient(#fff, #fff 25px, #e5efff 26px);
-      line-height: 26px;
-      padding: 6px 12px;
-      font-family: 'Caveat', cursive;
-      font-size: 1.25rem;
-      color: #1a237e;
-      outline: none;
-      resize: none;
+    .brand h1 {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand span {
+      font-size: 0.65rem;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .module-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .module-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-size: 0.8rem;
+    }
+
+    .module-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .module-item input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+
+    .create-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .btn-create {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: white;
       border: none;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: filter 0.15s;
+    }
+
+    .btn-create:hover {
+      filter: brightness(1.12);
+    }
+
+    .btn-create.secondary {
+      background: linear-gradient(135deg, #059669, #0d9488);
+    }
+
+    /* --- DESK AREA --- */
+    #desk {
+      flex: 1;
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 0.04) 0px,
+          rgba(0, 0, 0, 0.04) 2px,
+          transparent 2px,
+          transparent 18px
+        ),
+        radial-gradient(circle at 50% 45%, var(--bg-wood-1) 0%, var(--bg-wood-2) 100%);
+      box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.75);
+    }
+
+    /* --- DRAGGABLE SYSTEM (TOP HANDLE ONLY) --- */
+    .draggable-item {
+      position: absolute;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+      transition: box-shadow 0.15s ease;
+    }
+
+    .draggable-item.dragging {
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.7);
+      z-index: 800 !important;
+    }
+
+    .drag-handle {
+      height: 22px;
+      width: 100%;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      border-bottom: 1px dashed rgba(0, 0, 0, 0.15);
+    }
+
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    body.drag-disabled .drag-handle {
+      cursor: default !important;
+    }
+
+    .drag-dots {
+      opacity: 0.55;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+    }
+
+    /* --- DESK SUPPLIES --- */
+    /* Notepad */
+    .supply-notepad {
+      width: 210px;
+      height: 265px;
+      background: #fffdf5;
+      border-radius: 4px;
+      color: #1e293b;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+    }
+
+    .supply-notepad .drag-handle {
+      background: #1e293b;
+      color: #f8fafc;
+      border-bottom: 2px solid #dc2626;
+    }
+
+    #notepad-text {
+      flex: 1;
+      width: 100%;
+      border: none;
+      resize: none;
+      padding: 8px 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      line-height: 20px;
+      color: #1e293b;
+      background: repeating-linear-gradient(
+        #fffdf5,
+        #fffdf5 19px,
+        #e2e8f0 20px
+      );
+      outline: none;
       user-select: text;
-      -webkit-user-select: text;
     }
 
     /* Pen Holder */
-    .pen-holder {
-      width: 70px;
-      height: 80px;
-      background: linear-gradient(145deg, #3a3a3a, #1a1a1a);
-      border-radius: 50% 50% 10px 10px / 18px 18px 10px 10px;
-      border: 3px solid #4a4a4a;
-      box-shadow: 8px 12px 22px rgba(0,0,0,0.6);
+    .supply-penholder {
+      width: 72px;
+      height: 88px;
+      background: linear-gradient(180deg, #334155, #1e293b);
+      border-radius: 8px 8px 14px 14px;
+      border: 2px solid #475569;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .supply-penholder .drag-handle {
+      background: rgba(0, 0, 0, 0.35);
+      color: #cbd5e1;
+      border-radius: 6px 6px 0 0;
+      justify-content: center;
+    }
+
+    .pens-container {
+      position: relative;
+      flex: 1;
     }
 
     .pen {
       position: absolute;
       width: 8px;
-      height: 90px;
-      bottom: 20px;
-      border-radius: 3px;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      height: 68px;
+      bottom: 8px;
+      border-radius: 3px 3px 0 0;
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.4);
     }
-    .pen-blue { background: linear-gradient(to right, #1e40af, #3b82f6); left: 14px; transform: rotate(-12deg); }
-    .pen-red { background: linear-gradient(to right, #991b1b, #ef4444); left: 30px; transform: rotate(3deg); }
-    .pen-yellow { background: linear-gradient(to right, #d97706, #fbbf24); left: 46px; transform: rotate(14deg); }
+    .pen::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 1px;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-bottom: 8px solid #cbd5e1;
+    }
+    .pen.blue { background: #2563eb; left: 14px; transform: rotate(-12deg); }
+    .pen.red { background: #dc2626; left: 30px; transform: rotate(4deg); }
+    .pen.yellow { background: #eab308; left: 45px; transform: rotate(14deg); }
 
-    /* Coffee Cup */
-    .coffee-mug {
-      width: 75px;
-      height: 75px;
-      background: radial-gradient(circle, #f3f4f6 60%, #d1d5db 100%);
-      border-radius: 50%;
-      box-shadow: 8px 12px 20px rgba(0,0,0,0.5);
+    /* Coffee Mug */
+    .supply-mug {
+      width: 82px;
+      height: 86px;
+      background: #f8fafc;
+      border-radius: 12px 12px 24px 24px;
+      border: 2px solid #cbd5e1;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      border: 5px solid #e5e7eb;
     }
+
+    .supply-mug .drag-handle {
+      background: #e2e8f0;
+      color: #475569;
+      border-radius: 10px 10px 0 0;
+      justify-content: center;
+    }
+
+    .mug-handle-ear {
+      position: absolute;
+      right: -13px;
+      top: 30px;
+      width: 14px;
+      height: 32px;
+      border: 4px solid #e2e8f0;
+      border-left: none;
+      border-radius: 0 10px 10px 0;
+    }
+
     .coffee-liquid {
-      width: 55px;
-      height: 55px;
-      background: radial-gradient(circle, #3d2314 40%, #26140a 100%);
+      margin-top: 6px;
+      width: 56px;
+      height: 46px;
       border-radius: 50%;
-      border: 2px solid #54331d;
-      box-shadow: inset 2px 2px 5px rgba(0,0,0,0.8);
-      position: relative;
+      background: radial-gradient(circle at 35% 35%, #6f4e37, #2c1a0e);
+      border: 3px solid #d6ccc2;
     }
 
     /* Red Reset Button */
-    .reset-btn-3d {
-      width: 65px;
-      height: 65px;
-      background: radial-gradient(circle at 30% 30%, #ef4444, #991b1b);
-      border-radius: 50%;
-      border: 3px solid #7f1d1d;
-      box-shadow: 0 8px 16px rgba(239, 68, 68, 0.4), inset 0 3px 6px rgba(255,255,255,0.4), 6px 10px 18px rgba(0,0,0,0.6);
-      display: flex;
-      align-items: center;
+    .supply-reset {
+      width: 96px;
+      background: #1e293b;
+      border: 2px solid #475569;
+      border-radius: 8px;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .supply-reset .drag-handle {
+      background: #0f172a;
+      color: #94a3b8;
       justify-content: center;
+    }
+
+    .reset-btn-wrap {
+      padding: 8px;
+    }
+
+    #btn-reset-all {
+      width: 100%;
+      padding: 8px 4px;
+      background: linear-gradient(180deg, #ef4444, #b91c1c);
       color: white;
       font-weight: 800;
       font-size: 0.75rem;
-      letter-spacing: 1px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      border: none;
+      border-radius: 6px;
+      box-shadow: 0 4px 0 #7f1d1d;
       cursor: pointer;
-      transition: transform 0.1s, box-shadow 0.1s;
-    }
-    .reset-btn-3d:active {
-      transform: scale(0.92) !important;
-      box-shadow: 0 3px 8px rgba(239, 68, 68, 0.3), inset 0 4px 8px rgba(0,0,0,0.6) !important;
+      letter-spacing: 0.5px;
     }
 
-    /* Keyboard Tracker Layout */
-    .key-cap {
-      background: #2a2d32;
-      border: 1px solid #3f444e;
-      color: #9ca3af;
-      border-radius: 3px;
+    #btn-reset-all:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #7f1d1d;
+    }
+
+    /* --- HUD WIDGETS --- */
+    .hud-widget {
+      display: none;
+      border-radius: 4px;
+    }
+
+    .hud-widget.active {
+      display: block;
+    }
+
+    /* 1. FPS Counter (Paper scrap) */
+    #hud-fps {
+      width: 135px;
+      background: #fef9c3;
+      color: #1e293b;
+      border: 1px solid #fde047;
+      clip-path: polygon(0 0, 100% 0, 98% 92%, 85% 100%, 40% 95%, 10% 100%, 0 92%);
+      padding-bottom: 10px;
+    }
+
+    #hud-fps .drag-handle {
+      background: rgba(234, 179, 8, 0.25);
+      color: #854d0e;
+    }
+
+    .fps-value {
+      padding: 8px 10px;
+      font-family: 'Courier New', monospace;
+      font-weight: 800;
+      font-size: 1.05rem;
+      text-align: center;
+    }
+
+    /* 2. Device Specs (Larger paper sheet) */
+    #hud-specs {
+      width: 225px;
+      background: #f8fafc;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+      clip-path: polygon(0 0, 100% 0, 100% 96%, 92% 100%, 75% 97%, 50% 100%, 22% 97%, 0 100%);
+      padding-bottom: 12px;
+    }
+
+    #hud-specs .drag-handle {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .specs-body {
+      padding: 8px 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.72rem;
+      line-height: 1.45;
+    }
+
+    /* 3. Keyboard Tracker */
+    #hud-keyboard {
+      width: 390px;
+      background: #1e293b;
+      border: 2px solid #475569;
+      border-radius: 8px;
+      color: #f8fafc;
+    }
+
+    #hud-keyboard .drag-handle {
+      background: #0f172a;
+      color: #94a3b8;
+      border-radius: 6px 6px 0 0;
+    }
+
+    .kb-grid {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .kb-row {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+    }
+
+    .kb-key {
+      min-width: 23px;
+      height: 23px;
+      padding: 0 5px;
+      background: #334155;
+      border: 1px solid #475569;
+      border-bottom: 3px solid #0f172a;
+      border-radius: 4px;
+      font-size: 0.62rem;
+      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 9px;
-      font-weight: 600;
-      box-shadow: 0 2px 0 #181a1d;
-      transition: all 0.05s ease;
-    }
-    .key-cap.active {
-      background: #38bdf8 !important;
-      color: #0f172a !important;
-      box-shadow: 0 0 10px #38bdf8, inset 0 0 4px #ffffff !important;
-      border-color: #7dd3fc !important;
-      transform: translateY(2px);
+      text-transform: uppercase;
+      transition: all 0.06s;
     }
 
-    /* Mouse Tracker */
+    .kb-key.space {
+      width: 130px;
+    }
+
+    .kb-key.pressed {
+      background: #7dd3fc !important;
+      color: #0c4a6e !important;
+      border-color: #38bdf8;
+      box-shadow: 0 0 10px #38bdf8;
+      transform: translateY(1px);
+    }
+
+    /* 4. Mouse Tracker */
+    #hud-mouse {
+      width: 155px;
+      background: #1e293b;
+      border: 2px solid #475569;
+      border-radius: 8px;
+      color: #f8fafc;
+    }
+
+    #hud-mouse .drag-handle {
+      background: #0f172a;
+      color: #94a3b8;
+      border-radius: 6px 6px 0 0;
+    }
+
+    .mouse-visual-wrap {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
     .mouse-body {
-      width: 75px;
-      height: 115px;
-      background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
-      border-radius: 35px 35px 25px 25px;
-      border: 2px solid #4a5568;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+      width: 64px;
+      height: 92px;
+      background: #334155;
+      border: 2px solid #64748b;
+      border-radius: 28px 28px 32px 32px;
       position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
+
+    .mouse-top-btns {
+      display: flex;
+      height: 36px;
+      border-bottom: 2px solid #1e293b;
+    }
+
     .mouse-btn {
-      position: absolute;
-      top: 0;
-      width: 34px;
-      height: 42px;
-      background: #374151;
-      border: 1px solid #4b5563;
-      transition: all 0.08s ease;
+      flex: 1;
+      background: #475569;
+      transition: background 0.08s;
     }
-    .mouse-btn-left { left: 2px; border-radius: 30px 0 0 8px; }
-    .mouse-btn-right { right: 2px; border-radius: 0 30px 8px 0; }
+
+    .mouse-btn.left {
+      border-right: 1px solid #1e293b;
+    }
+
     .mouse-btn.active {
-      background: #38bdf8 !important;
-      box-shadow: 0 0 8px #38bdf8;
+      background: #7dd3fc !important;
+      box-shadow: 0 0 10px #38bdf8;
     }
+
     .mouse-wheel {
       position: absolute;
       top: 10px;
       left: 50%;
       transform: translateX(-50%);
-      width: 10px;
+      width: 8px;
       height: 18px;
-      background: #1f2937;
-      border: 1px solid #6b7280;
+      background: #0f172a;
       border-radius: 4px;
-      z-index: 5;
-    }
-    .mouse-wheel.scrolling {
-      background: #38bdf8;
-      box-shadow: 0 0 8px #38bdf8;
+      border: 1px solid #94a3b8;
     }
 
-    /* Smartphone Frame */
-    .phone-frame {
-      background: #09090b;
-      border: 3px solid #27272a;
-      border-radius: 28px;
-      box-shadow: 0 16px 32px rgba(0,0,0,0.7), inset 0 0 0 1.5px #3f3f46;
-      transition: width 0.3s ease, height 0.3s ease;
+    .mouse-wheel.active {
+      background: #38bdf8;
+    }
+
+    .mouse-coords {
+      font-family: monospace;
+      font-size: 0.68rem;
+      color: #cbd5e1;
+      text-align: center;
+    }
+
+    /* 5. YouTube Smartphone */
+    #hud-youtube {
+      background: #0f172a;
+      border: 3px solid #334155;
+      border-radius: 16px;
+      width: 215px;
+      transition: width 0.2s ease;
+    }
+
+    #hud-youtube.landscape {
+      width: 340px;
+    }
+
+    #hud-youtube .drag-handle {
+      background: #1e293b;
+      color: #94a3b8;
+      border-radius: 13px 13px 0 0;
+    }
+
+    .phone-screen {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .yt-controls-top {
+      display: flex;
+      gap: 4px;
+    }
+
+    .yt-input {
+      flex: 1;
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: white;
+      padding: 4px 6px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      user-select: text;
+    }
+
+    .yt-btn {
+      background: #334155;
+      color: white;
+      border: 1px solid #475569;
+      padding: 4px 7px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      cursor: pointer;
+    }
+
+    .yt-btn:hover {
+      background: #475569;
+    }
+
+    .yt-frame-box {
+      width: 100%;
+      height: 120px;
+      background: #000;
+      border-radius: 6px;
       overflow: hidden;
     }
 
-    /* Photo Album Book */
-    .album-book {
-      background: #3b1f10;
-      border: 3px solid #5a321c;
-      border-radius: 6px;
-      box-shadow: 10px 18px 35px rgba(0,0,0,0.65);
-      transition: width 0.3s ease, height 0.3s ease;
+    #hud-youtube.landscape .yt-frame-box {
+      height: 175px;
     }
 
-    /* Solitaire Card Styling */
-    .solitaire-card {
-      width: 36px;
-      height: 50px;
-      border-radius: 3px;
-      background: white;
-      border: 1px solid #cbd5e1;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    .yt-frame-box iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .yt-bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    /* 6. Photo Album (Open / Close Book) */
+    #hud-album {
+      background: #4a2511;
+      border: 2px solid #2b1408;
+      border-radius: 6px;
+      color: #f8fafc;
+    }
+
+    #hud-album .drag-handle {
+      background: #2b1408;
+      color: #fde68a;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .album-closed-cover {
+      width: 170px;
+      height: 220px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      padding: 2px 3px;
-      font-size: 10px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .solitaire-card.red { color: #dc2626; }
-    .solitaire-card.black { color: #0f172a; }
-    .solitaire-card.back {
-      background: linear-gradient(135deg, #1e3a8a 25%, #3b82f6 100%);
-      border: 1px solid #60a5fa;
-      color: transparent;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #5c2d16, #3b1c0c);
+      border-left: 8px solid #231006;
+      text-align: center;
     }
 
-    /* Minesweeper Tile */
-    .mine-tile {
-      width: 22px;
-      height: 22px;
-      background: #78350f;
-      border: 1.5px solid #92400e;
-      border-top-color: #b45309;
-      border-left-color: #b45309;
+    .album-open-spread {
+      display: flex;
+      gap: 6px;
+      padding: 8px;
+      background: #3b1c0c;
+    }
+
+    .album-page {
+      width: 175px;
+      background: #fdf8f0;
+      border-radius: 3px;
+      padding: 6px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(4, 48px);
+      gap: 5px;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.15);
+    }
+
+    .photo-slot {
+      background: #e2e8f0;
+      border: 1px dashed #94a3b8;
+      border-radius: 3px;
+      position: relative;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 10px;
-      font-weight: bold;
+      font-size: 0.6rem;
+      color: #64748b;
+    }
+
+    .photo-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-del-btn {
+      position: absolute;
+      top: 1px;
+      right: 1px;
+      background: rgba(220, 38, 38, 0.85);
+      color: white;
+      border: none;
+      width: 14px;
+      height: 14px;
+      font-size: 0.55rem;
+      border-radius: 2px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .photo-slot:hover .photo-del-btn {
+      display: block;
+    }
+
+    /* 7. Solitaire (Card Mat) */
+    #hud-solitaire {
+      width: 440px;
+      background: radial-gradient(circle, #15803d, #14532d);
+      border: 3px solid #052e16;
+      border-radius: 8px;
+      color: white;
+    }
+
+    #hud-solitaire .drag-handle {
+      background: #052e16;
+      color: #86efac;
+      border-radius: 5px 5px 0 0;
+    }
+
+    .sol-board {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sol-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sol-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .sol-slot {
+      width: 50px;
+      height: 68px;
+      border: 1px dashed rgba(255, 255, 255, 0.35);
+      border-radius: 4px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
       cursor: pointer;
     }
-    .mine-tile.revealed {
-      background: #451a03;
-      border: 1px solid #270e02;
+
+    .sol-tableau {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      min-height: 195px;
+    }
+
+    .sol-col {
+      position: relative;
+      min-height: 68px;
+    }
+
+    .playing-card {
+      width: 50px;
+      height: 68px;
+      background: #ffffff;
+      border: 1px solid #94a3b8;
+      border-radius: 4px;
+      position: absolute;
+      left: 0;
+      padding: 3px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .playing-card.red { color: #dc2626; }
+    .playing-card.black { color: #0f172a; }
+
+    .playing-card.facedown {
+      background: repeating-linear-gradient(
+        45deg,
+        #1d4ed8,
+        #1d4ed8 4px,
+        #1e40af 4px,
+        #1e40af 8px
+      );
+      border-color: #93c5fd;
+    }
+
+    .playing-card.selected {
+      outline: 2px solid #facc15;
+      transform: translateY(-2px);
+    }
+
+    /* 8. Minesweeper (Dirt Patch) */
+    #hud-minesweeper {
+      width: 246px;
+      background: #5c4033;
+      border: 3px solid #3e2723;
+      border-radius: 6px;
+    }
+
+    #hud-minesweeper .drag-handle {
+      background: #3e2723;
+      color: #d7ccc8;
+    }
+
+    .mine-header {
+      padding: 6px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #4e342e;
+      font-family: monospace;
+      font-size: 0.75rem;
+    }
+
+    .mine-grid {
+      padding: 8px;
+      display: grid;
+      grid-template-columns: repeat(9, 24px);
+      gap: 2px;
+      justify-content: center;
+    }
+
+    .mine-cell {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, #795548, #5d4037);
+      border: 1px solid #3e2723;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: white;
+    }
+
+    .mine-cell.revealed {
+      background: #d7ccc8;
+      color: #1e293b;
+      border-color: #a1887f;
+    }
+
+    .mine-cell.bomb {
+      background: #dc2626;
+    }
+
+    /* 9. Custom Cursor (White Acrylic Plate) */
+    #hud-cursor {
+      width: 245px;
+      background: #ffffff;
+      color: #0f172a;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+    }
+
+    #hud-cursor .drag-handle {
+      background: #f1f5f9;
+      color: #334155;
+      border-radius: 6px 6px 0 0;
+    }
+
+    .cursor-body {
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.72rem;
+    }
+
+    .cursor-preview-box {
+      height: 54px;
+      background: #0f172a;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cursor-presets {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .preset-btn {
+      padding: 3px 6px;
+      background: #e2e8f0;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #1e293b;
+    }
+
+    .preset-btn:hover {
+      background: #cbd5e1;
+    }
+
+    .cursor-control-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cursor-control-row input[type="range"] {
+      width: 100px;
+    }
+
+    /* --- CUSTOM CREATED LINKS (TORN PAPER) --- */
+    .torn-link-note {
+      width: 165px;
+      background: #fffbeb;
+      color: #1e293b;
+      border: 1px solid #fcd34d;
+      clip-path: polygon(0 0, 100% 0, 97% 93%, 82% 100%, 55% 94%, 25% 100%, 0 92%);
+      padding-bottom: 10px;
+    }
+
+    .torn-link-note .drag-handle {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .torn-link-content {
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .torn-link-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .torn-link-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .btn-visit-link {
+      flex: 1;
+      background: #2563eb;
+      color: white;
+      text-decoration: none;
+      text-align: center;
+      padding: 4px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+
+    .btn-del-link {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 4px 6px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      cursor: pointer;
+    }
+
+    /* --- DRAG TOGGLE IN BOTTOM LEFT --- */
+    #drag-toggle-badge {
+      position: fixed;
+      bottom: 14px;
+      left: 248px;
+      z-index: 950;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 6px 12px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 34px;
+      height: 18px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #475569;
+      transition: 0.2s;
+      border-radius: 18px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 12px;
+      width: 12px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #22c55e;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(16px);
+    }
+
+    /* --- CUSTOM MODAL --- */
+    #modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 10px;
+      width: 310px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+    }
+
+    .modal-box h3 {
+      font-size: 0.95rem;
+      color: #38bdf8;
+    }
+
+    .modal-box input[type="text"],
+    .modal-box input[type="url"],
+    .modal-box input[type="file"] {
+      width: 100%;
+      padding: 7px 9px;
+      background: #0f172a;
+      border: 1px solid #475569;
+      border-radius: 6px;
+      color: white;
+      font-size: 0.78rem;
+      user-select: text;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn-modal {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-modal.cancel {
+      background: #475569;
+      color: white;
+    }
+
+    .btn-modal.confirm {
+      background: #0284c7;
+      color: white;
     }
   </style>
 </head>
-<body class="h-screen w-screen overflow-hidden">
+<body>
 
-  <!-- MAIN DESK CONTAINER -->
-  <div id="desk">
-
-    <!-- SIDEBAR CONTROL PANEL -->
-    <aside id="sidebar" class="absolute top-0 left-0 h-full w-56 bg-slate-900/95 backdrop-blur-md text-slate-100 z-50 border-r border-slate-700/60 flex flex-col justify-between p-3.5 shadow-2xl">
-      <div class="overflow-y-auto pr-1 space-y-4">
-        <!-- Header -->
-        <div class="flex items-center gap-2.5 pb-3 border-b border-slate-700/80">
-          <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-md shadow-cyan-500/30">
-            <i class="fa-solid fa-sliders text-xs"></i>
-          </div>
-          <div>
-            <h1 class="font-bold text-sm tracking-wide text-white leading-tight">SUPER PANNEL</h1>
-            <span class="text-[10px] text-cyan-400 font-medium">HUD Desktop Suite</span>
-          </div>
-        </div>
-
-        <!-- MODULES HUD SECTION -->
-        <div>
-          <h2 class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
-            <span>Modules HUD</span>
-            <i class="fa-solid fa-cubes text-slate-500"></i>
-          </h2>
-          
-          <div class="space-y-1.5" id="hud-toggles">
-            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
-              <span class="flex items-center gap-2 text-slate-200">
-                <i class="fa-solid fa-gauge-high text-cyan-400 w-3.5"></i> Compteur FPS
-              </span>
-              <input type="checkbox" data-module="fps" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
-            </label>
-
-            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
-              <span class="flex items-center gap-2 text-slate-200">
-                <i class="fa-solid fa-microchip text-emerald-400 w-3.5"></i> Specs Appareil
-              </span>
-              <input type="checkbox" data-module="specs" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
-            </label>
-
-            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
-              <span class="flex items-center gap-2 text-slate-200">
-                <i class="fa-solid fa-keyboard text-amber-400 w-3.5"></i> Tracker Clavier
-              </span>
-              <input type="checkbox" data-module="keyboard" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
-            </label>
-
-            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
-              <span class="flex items-center gap-2 text-slate-200">
-                <i class="fa-solid fa-computer-mouse text-purple-400 w-3.5"></i> Tracker Souris
-              </span>
-              <input type="checkbox" data-module="mouse" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
-            </label>
-
-            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
-              <span class="flex items-center gap-2 text-slate-200">
-                <i class="fa-brands fa-youtube text-red-500 w-3.5"></i> Smartphone YouTube
-              </span>
-              <input type="checkbox" data-module="youtube" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
-            </label>
-
-            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
-              <span class="flex items-center gap-2 text-slate-200">
-                <i class="fa-solid fa-book-bookmark text-amber-600 w-3.5"></i> Album Photo
-              </span>
-              <input type="checkbox" data-module="album" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
-            </label>
-
-            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
-              <span class="flex items-center gap-2 text-slate-200">
-                <i class="fa-solid fa-spade text-emerald-500 w-3.5"></i> Jeu du Solitaire
-              </span>
-              <input type="checkbox" data-module="solitaire" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
-            </label>
-
-            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
-              <span class="flex items-center gap-2 text-slate-200">
-                <i class="fa-solid fa-land-mine-on text-amber-500 w-3.5"></i> Démineur
-              </span>
-              <input type="checkbox" data-module="minesweeper" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
-            </label>
-
-            <label class="flex items-center justify-between p-2 rounded-md bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 cursor-pointer transition text-xs">
-              <span class="flex items-center gap-2 text-slate-200">
-                <i class="fa-solid fa-crosshair text-cyan-400 w-3.5"></i> Custom Cursor
-              </span>
-              <input type="checkbox" data-module="customcursor" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
-            </label>
-          </div>
-        </div>
-
-        <!-- CREATE SECTION -->
-        <div class="pt-2 border-t border-slate-800">
-          <h2 class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
-            <span>Créer</span>
-            <i class="fa-solid fa-plus-circle text-cyan-400"></i>
-          </h2>
-          <div class="space-y-1.5">
-            <button id="btn-create-link" class="w-full text-left p-2 rounded-md bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-800/50 text-cyan-200 text-xs flex items-center gap-2 transition">
-              <i class="fa-solid fa-paperclip text-cyan-400"></i> Créer un lien
-            </button>
-            <button id="btn-create-photo" class="w-full text-left p-2 rounded-md bg-amber-950/40 hover:bg-amber-900/60 border border-amber-800/50 text-amber-200 text-xs flex items-center gap-2 transition">
-              <i class="fa-solid fa-image text-amber-400"></i> Ajouter une photo
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Footer Info -->
-      <div class="pt-3 border-t border-slate-800 text-[10px] text-slate-500 flex items-center justify-between">
-        <span>Bureau interactif</span>
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-      </div>
-    </aside>
-
-    <!-- DESK SUPPLIES (ALWAYS PRESENT & DRAGGABLE) -->
-
-    <!-- 1. Notepad -->
-    <div id="item-notepad" class="draggable-item notepad-container" style="top: 40px; left: 240px;">
-      <div class="notepad-header">
-        <span class="text-[10px] font-semibold text-slate-300 tracking-wider">BLOC-NOTES</span>
-        <i class="fa-solid fa-grip-lines text-slate-500 text-[10px]"></i>
-      </div>
-      <textarea id="notepad-input" class="notepad-textarea" placeholder="Tapez vos notes ici..."></textarea>
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="brand">
+      <h1>Super Pannel</h1>
+      <span>CforCode</span>
     </div>
 
-    <!-- 2. Pen Holder -->
-    <div id="item-penholder" class="draggable-item pen-holder" style="top: 360px; left: 250px;">
-      <div class="pen pen-blue"></div>
-      <div class="pen pen-red"></div>
-      <div class="pen pen-yellow"></div>
+    <div>
+      <div class="section-title">Modules HUD</div>
+      <div class="module-list">
+        <label class="module-item"><input type="checkbox" data-hud="hud-fps" /> Compteur de FPS</label>
+        <label class="module-item"><input type="checkbox" data-hud="hud-specs" /> Specs de l'appareil</label>
+        <label class="module-item"><input type="checkbox" data-hud="hud-keyboard" /> Tracker Clavier</label>
+        <label class="module-item"><input type="checkbox" data-hud="hud-mouse" /> Tracker Souris</label>
+        <label class="module-item"><input type="checkbox" data-hud="hud-youtube" /> Lecteur YouTube</label>
+        <label class="module-item"><input type="checkbox" data-hud="hud-album" /> Album Photo</label>
+        <label class="module-item"><input type="checkbox" data-hud="hud-solitaire" /> Solitaire</label>
+        <label class="module-item"><input type="checkbox" data-hud="hud-minesweeper" /> Démineur</label>
+        <label class="module-item"><input type="checkbox" data-hud="hud-cursor" /> Custom Cursor</label>
+      </div>
     </div>
 
-    <!-- 3. Coffee Mug -->
-    <div id="item-coffeemug" class="draggable-item coffee-mug" style="top: 40px; left: 510px;">
+    <div>
+      <div class="section-title">Créer</div>
+      <div class="create-actions">
+        <button class="btn-create" id="open-link-modal">🔗 Créer un lien</button>
+        <button class="btn-create secondary" id="open-photo-modal">🖼️ Créer une photo</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- DESK WORKSPACE -->
+  <main id="desk">
+
+    <!-- SUPPLY: NOTEPAD -->
+    <div id="supply-notepad" class="draggable-item supply-notepad" style="left: 30px; top: 30px; z-index: 10;">
+      <div class="drag-handle"><span>BLOC-NOTES</span><span class="drag-dots">⋮⋮</span></div>
+      <textarea id="notepad-text" placeholder="Écrivez vos notes ici..."></textarea>
+    </div>
+
+    <!-- SUPPLY: PEN HOLDER -->
+    <div id="supply-penholder" class="draggable-item supply-penholder" style="left: 820px; top: 40px; z-index: 10;">
+      <div class="drag-handle"><span class="drag-dots">⋮⋮</span></div>
+      <div class="pens-container">
+        <div class="pen blue"></div>
+        <div class="pen red"></div>
+        <div class="pen yellow"></div>
+      </div>
+    </div>
+
+    <!-- SUPPLY: COFFEE MUG -->
+    <div id="supply-mug" class="draggable-item supply-mug" style="left: 920px; top: 38px; z-index: 10;">
+      <div class="drag-handle"><span class="drag-dots">⋮⋮</span></div>
+      <div class="mug-handle-ear"></div>
       <div class="coffee-liquid"></div>
     </div>
 
-    <!-- 4. Draggable Red Reset Button -->
-    <div id="item-resetbtn" class="draggable-item reset-btn-3d" style="top: 380px; left: 350px;" title="Réinitialiser le bureau complet">
-      RESET
-    </div>
-
-    <!-- CONTAINER FOR DYNAMIC CREATED LINKS (PAPER SCRAPS) -->
-    <div id="links-container"></div>
-
-    <!-- HUD MODULE WIDGETS -->
-
-    <!-- HUD 1: FPS Counter Paper -->
-    <div id="hud-fps" class="draggable-item paper-scrap p-3 w-36 hidden" style="top: 40px; left: 620px;">
-      <div class="flex items-center justify-between border-b border-amber-900/20 pb-1 mb-1.5">
-        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-900/70">FPS Monitor</span>
-        <i class="fa-solid fa-thumbtack text-amber-800/40 text-[10px]"></i>
-      </div>
-      <div class="text-center py-0.5">
-        <span id="fps-val" class="text-3xl font-extrabold text-slate-800">60</span>
-        <span class="text-[9px] block text-slate-500 font-sans">FPS</span>
+    <!-- SUPPLY: RED RESET BUTTON -->
+    <div id="supply-reset" class="draggable-item supply-reset" style="left: 910px; top: 150px; z-index: 10;">
+      <div class="drag-handle"><span class="drag-dots">⋮⋮</span></div>
+      <div class="reset-btn-wrap">
+        <button id="btn-reset-all">RESET</button>
       </div>
     </div>
 
-    <!-- BOTTOM RIGHT DRAG TOGGLE WIDGET -->
-    <div id="drag-status-badge" class="fixed bottom-4 right-4 z-50 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 px-3.5 py-2 rounded-xl shadow-2xl flex items-center gap-3">
-      <div class="flex items-center gap-2">
-        <span id="drag-status-dot" class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span>
-        <span id="drag-status-label" class="text-xs font-semibold text-slate-200 tracking-wide">Glissement activé</span>
-      </div>
-      <label class="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" id="global-drag-toggle" class="sr-only peer" checked>
-        <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyan-500"></div>
-      </label>
+    <!-- HUD 1: FPS -->
+    <div id="hud-fps" class="draggable-item hud-widget" style="left: 270px; top: 30px; z-index: 20;">
+      <div class="drag-handle"><span>FPS</span><span class="drag-dots">⋮⋮</span></div>
+      <div class="fps-value" id="fps-display">60 FPS</div>
     </div>
 
-    <!-- CUSTOM MODAL FOR PROMPTS & CONFIRMATIONS -->
-    <div id="custom-modal-backdrop" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[1000] hidden flex items-center justify-center p-4">
-      <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-w-sm w-full p-4 text-slate-100">
-        <h3 id="modal-title" class="text-sm font-bold text-white mb-2">Action</h3>
-        <p id="modal-message" class="text-xs text-slate-300 mb-3"></p>
-        <div id="modal-inputs" class="space-y-2 mb-4"></div>
-        <div class="flex justify-end gap-2">
-          <button id="modal-cancel-btn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 transition">Annuler</button>
-          <button id="modal-confirm-btn" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-xs font-semibold text-white transition">Valider</button>
+    <!-- HUD 2: SPECS -->
+    <div id="hud-specs" class="draggable-item hud-widget" style="left: 430px; top: 30px; z-index: 20;">
+      <div class="drag-handle"><span>SPECS APPAREIL</span><span class="drag-dots">⋮⋮</span></div>
+      <div class="specs-body" id="specs-display">Chargement...</div>
+    </div>
+
+    <!-- HUD 3: KEYBOARD TRACKER -->
+    <div id="hud-keyboard" class="draggable-item hud-widget" style="left: 270px; top: 170px; z-index: 20;">
+      <div class="drag-handle"><span>TRACKER CLAVIER</span><span class="drag-dots">⋮⋮</span></div>
+      <div class="kb-grid" id="kb-container"></div>
+    </div>
+
+    <!-- HUD 4: MOUSE TRACKER -->
+    <div id="hud-mouse" class="draggable-item hud-widget" style="left: 685px; top: 170px; z-index: 20;">
+      <div class="drag-handle"><span>TRACKER SOURIS</span><span class="drag-dots">⋮⋮</span></div>
+      <div class="mouse-visual-wrap">
+        <div class="mouse-body">
+          <div class="mouse-top-btns">
+            <div class="mouse-btn left" id="m-btn-left"></div>
+            <div class="mouse-btn right" id="m-btn-right"></div>
+          </div>
+          <div class="mouse-wheel" id="m-btn-mid"></div>
+        </div>
+        <div class="mouse-coords" id="mouse-coords">X: 0 | Y: 0</div>
+      </div>
+    </div>
+
+    <!-- HUD 5: YOUTUBE SMARTPHONE -->
+    <div id="hud-youtube" class="draggable-item hud-widget" style="left: 30px; top: 320px; z-index: 20;">
+      <div class="drag-handle"><span>SMARTPHONE YT</span><span class="drag-dots">⋮⋮</span></div>
+      <div class="phone-screen">
+        <div class="yt-controls-top">
+          <input type="text" id="yt-url-input" class="yt-input" placeholder="Lien YouTube..." />
+          <button class="yt-btn" id="yt-load-btn">OK</button>
+        </div>
+        <div class="yt-frame-box">
+          <iframe id="yt-iframe" src="https://www.youtube.com/embed/jfKfPfyJRdk?enablejsapi=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <div class="yt-bottom-bar">
+          <button class="yt-btn" id="yt-play-pause">⏯ Lecture / Pause</button>
+          <button class="yt-btn" id="yt-rotate-btn">🔄 Pivoter</button>
         </div>
       </div>
     </div>
 
+    <!-- HUD 6: PHOTO ALBUM -->
+    <div id="hud-album" class="draggable-item hud-widget" style="left: 280px; top: 350px; z-index: 20;">
+      <div class="drag-handle"><span>ALBUM PHOTO</span><span class="drag-dots">⋮⋮</span></div>
+      <div id="album-content"></div>
+    </div>
+
+    <!-- HUD 7: SOLITAIRE -->
+    <div id="hud-solitaire" class="draggable-item hud-widget" style="left: 480px; top: 320px; z-index: 20;">
+      <div class="drag-handle"><span>SOLITAIRE</span><span class="drag-dots">⋮⋮</span></div>
+      <div class="sol-board">
+        <div class="sol-top-row">
+          <div class="sol-group">
+            <div class="sol-slot" id="sol-stock">Pioche</div>
+            <div class="sol-slot" id="sol-waste"></div>
+          </div>
+          <button class="yt-btn" id="sol-new-game">Nouvelle Partie</button>
+          <div class="sol-group" id="sol-foundations"></div>
+        </div>
+        <div class="sol-tableau" id="sol-tableau"></div>
+      </div>
+    </div>
+
+    <!-- HUD 8: MINESWEEPER -->
+    <div id="hud-minesweeper" class="draggable-item hud-widget" style="left: 690px; top: 350px; z-index: 20;">
+      <div class="drag-handle"><span>DÉMINEUR</span><span class="drag-dots">⋮⋮</span></div>
+      <div class="mine-header">
+        <span id="mine-count">💣 10</span>
+        <button class="yt-btn" id="mine-reset">😊 Reset</button>
+        <span id="mine-status">Prêt</span>
+      </div>
+      <div class="mine-grid" id="mine-grid"></div>
+    </div>
+
+    <!-- HUD 9: CUSTOM CURSOR -->
+    <div id="hud-cursor" class="draggable-item hud-widget" style="left: 670px; top: 30px; z-index: 20;">
+      <div class="drag-handle"><span>CUSTOM CURSOR</span><span class="drag-dots">⋮⋮</span></div>
+      <div class="cursor-body">
+        <div class="cursor-preview-box" id="cursor-preview"></div>
+        <div class="cursor-presets">
+          <button class="preset-btn" data-preset="cross">Croix</button>
+          <button class="preset-btn" data-preset="dot">Point</button>
+          <button class="preset-btn" data-preset="circle">Cercle</button>
+          <button class="preset-btn" data-preset="fps">FPS Pro</button>
+        </div>
+        <div class="cursor-control-row">
+          <span>Taille</span>
+          <input type="range" id="cur-size" min="8" max="44" value="20" />
+        </div>
+        <div class="cursor-control-row">
+          <span>Épaisseur</span>
+          <input type="range" id="cur-thick" min="1" max="6" value="2" />
+        </div>
+        <div class="cursor-control-row">
+          <span>Écart (Gap)</span>
+          <input type="range" id="cur-gap" min="0" max="14" value="4" />
+        </div>
+        <div class="cursor-control-row">
+          <span>Couleur</span>
+          <input type="color" id="cur-color" value="#38bdf8" />
+        </div>
+        <div class="cursor-control-row">
+          <label><input type="checkbox" id="cur-dot" checked /> Point central</label>
+          <label><input type="checkbox" id="cur-apply" checked /> Activer</label>
+        </div>
+        <div class="cursor-control-row">
+          <input type="text" id="cur-code" class="yt-input" placeholder="Code JSON import/export" />
+          <button class="yt-btn" id="cur-import-btn">Importer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Container for created links -->
+    <div id="created-links-layer"></div>
+
+    <!-- DRAG TOGGLE IN BOTTOM LEFT -->
+    <div id="drag-toggle-badge">
+      <label class="switch">
+        <input type="checkbox" id="drag-enabled-checkbox" checked />
+        <span class="slider"></span>
+      </label>
+      <span id="drag-status-label">Glissement activé</span>
+    </div>
+  </main>
+
+  <!-- CUSTOM MODAL -->
+  <div id="modal-backdrop">
+    <div class="modal-box" id="modal-content"></div>
   </div>
 
-  <!-- SCRIPT LOGIC -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // --- LOCAL STORAGE & STATE MANAGEMENT ---
-      const STORAGE_KEY = 'super_pannel_cforcode_state_v4';
-      
-      const defaultState = {
-        dragEnabled: true,
-        positions: {
-          'item-notepad': { top: '40px', left: '240px' },
-          'item-penholder': { top: '360px', left: '250px' },
-          'item-coffeemug': { top: '40px', left: '510px' },
-          'item-resetbtn': { top: '380px', left: '350px' },
-          'hud-fps': { top: '40px', left: '620px' },
-          'hud-specs': { top: '150px', left: '510px' },
-          'hud-keyboard': { top: '360px', left: '450px' },
-          'hud-mouse': { top: '40px', left: '780px' },
-          'hud-youtube': { top: '180px', left: '780px' },
-          'hud-album': { top: '180px', left: '240px' },
-          'hud-solitaire': { top: '40px', left: '1010px' },
-          'hud-minesweeper': { top: '360px', left: '850px' },
-          'hud-customcursor': { top: '220px', left: '1010px' }
-        },
-        activeModules: {
-          fps: false,
-          specs: false,
-          keyboard: false,
-          mouse: false,
-          youtube: false,
-          album: false,
-          solitaire: false,
-          minesweeper: false,
-          customcursor: false
-        },
-        notepadContent: '',
-        youtubeUrl: 'https://www.youtube.com/embed/jfKfPfyJRdk',
-        isPhoneLandscape: false,
-        albumOpen: true,
-        albumPhotos: Array(16).fill(null),
-        links: [],
-        customCursor: {
-          active: true,
-          preset: 'cross',
-          size: 24,
-          thick: 2,
-          gap: 4,
-          color: '#00ffcc',
-          dot: true
+    const STORAGE_KEY = 'super_pannel_cforcode_v1';
+
+    let appState = {
+      dragEnabled: true,
+      notepad: '',
+      activeHuds: [],
+      positions: {},
+      albumOpen: true,
+      photos: Array(16).fill(null),
+      links: [],
+      ytUrl: 'https://www.youtube.com/embed/jfKfPfyJRdk?enablejsapi=1',
+      ytLandscape: false,
+      cursor: {
+        size: 20,
+        thick: 2,
+        gap: 4,
+        color: '#38bdf8',
+        dot: true,
+        apply: true
+      }
+    };
+
+    let topZIndex = 30;
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          appState = { ...appState, ...parsed };
+          if (!Array.isArray(appState.photos) || appState.photos.length !== 16) {
+            appState.photos = Array(16).fill(null);
+          }
         }
-      };
-
-      let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultState;
-      if (typeof state.dragEnabled !== 'boolean') state.dragEnabled = true;
-
-      function saveState() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn('Erreur lecture sauvegarde:', e);
       }
+    }
 
-      // --- CUSTOM MODAL HELPER (REPLACES ALERT/CONFIRM/PROMPT) ---
-      const modalBackdrop = document.getElementById('custom-modal-backdrop');
-      const modalTitle = document.getElementById('modal-title');
-      const modalMessage = document.getElementById('modal-message');
-      const modalInputs = document.getElementById('modal-inputs');
-      const modalCancelBtn = document.getElementById('modal-cancel-btn');
-      const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+    // --- INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      initDragSystem();
+      initDragToggle();
+      initNotepad();
+      initHudToggles();
+      initFpsModule();
+      initSpecsModule();
+      initKeyboardModule();
+      initMouseModule();
+      initYoutubeModule();
+      initAlbumModule();
+      initSolitaireModule();
+      initMinesweeperModule();
+      initCursorModule();
+      initCreateTools();
+      initResetButton();
+      restorePositions();
+    });
 
-      function showCustomModal({ title, message = '', fields = [], showCancel = true, confirmText = 'Valider', danger = false }) {
-        return new Promise((resolve) => {
-          modalTitle.textContent = title;
-          modalMessage.textContent = message;
-          modalMessage.classList.toggle('hidden', !message);
-          modalInputs.innerHTML = '';
+    // --- TOP-HANDLE DRAG SYSTEM ---
+    function initDragSystem() {
+      let activeEl = null;
+      let offsetX = 0;
+      let offsetY = 0;
 
-          fields.forEach(f => {
-            const input = document.createElement('input');
-            input.type = f.type || 'text';
-            input.id = `modal-field-${f.name}`;
-            input.placeholder = f.placeholder || '';
-            input.className = 'w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-cyan-500 select-text';
-            input.style.webkitUserSelect = 'text';
-            modalInputs.appendChild(input);
-          });
+      document.addEventListener('mousedown', (e) => {
+        const handle = e.target.closest('.drag-handle');
+        const item = e.target.closest('.draggable-item');
+        if (item) {
+          topZIndex++;
+          item.style.zIndex = topZIndex;
+        }
+        if (!handle || !item || !appState.dragEnabled) return;
 
-          modalCancelBtn.classList.toggle('hidden', !showCancel);
-          modalConfirmBtn.textContent = confirmText;
-          modalConfirmBtn.className = danger
-            ? 'px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-xs font-semibold text-white transition'
-            : 'px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-xs font-semibold text-white transition';
+        activeEl = item;
+        activeEl.classList.add('dragging');
+        const rect = activeEl.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+      });
 
-          modalBackdrop.classList.remove('hidden');
-          if (fields.length > 0) modalInputs.firstChild.focus();
+      document.addEventListener('mousemove', (e) => {
+        if (!activeEl) return;
+        const desk = document.getElementById('desk');
+        const deskRect = desk.getBoundingClientRect();
 
-          const cleanup = () => {
-            modalBackdrop.classList.add('hidden');
-            modalConfirmBtn.onclick = null;
-            modalCancelBtn.onclick = null;
+        let newLeft = e.clientX - deskRect.left - offsetX;
+        let newTop = e.clientY - deskRect.top - offsetY;
+
+        newLeft = Math.max(0, Math.min(deskRect.width - 40, newLeft));
+        newTop = Math.max(0, Math.min(deskRect.height - 30, newTop));
+
+        activeEl.style.left = `${newLeft}px`;
+        activeEl.style.top = `${newTop}px`;
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (!activeEl) return;
+        activeEl.classList.remove('dragging');
+        if (activeEl.id) {
+          appState.positions[activeEl.id] = {
+            left: activeEl.style.left,
+            top: activeEl.style.top
           };
+          saveState();
+        }
+        activeEl = null;
+      });
+    }
 
-          modalCancelBtn.onclick = () => {
-            cleanup();
-            resolve(null);
-          };
+    function restorePositions() {
+      const desk = document.getElementById('desk');
+      const deskRect = desk.getBoundingClientRect();
+      Object.entries(appState.positions).forEach(([id, pos]) => {
+        const el = document.getElementById(id);
+        if (el && pos.left && pos.top) {
+          const l = parseFloat(pos.left);
+          const t = parseFloat(pos.top);
+          if (!isNaN(l) && !isNaN(t) && l < deskRect.width - 30 && t < deskRect.height - 30) {
+            el.style.left = pos.left;
+            el.style.top = pos.top;
+          }
+        }
+      });
+    }
 
-          modalConfirmBtn.onclick = () => {
-            const values = {};
-            fields.forEach(f => {
-              values[f.name] = document.getElementById(`modal-field-${f.name}`).value;
-            });
-            cleanup();
-            resolve(fields.length > 0 ? values : true);
-          };
-        });
-      }
-
-      // --- GLOBAL DRAG TOGGLE (BOTTOM RIGHT) ---
-      const globalDragToggle = document.getElementById('global-drag-toggle');
-      const dragStatusLabel = document.getElementById('drag-status-label');
-      const dragStatusDot = document.getElementById('drag-status-dot');
+    // --- DRAG TOGGLE (BOTTOM LEFT) ---
+    function initDragToggle() {
+      const checkbox = document.getElementById('drag-enabled-checkbox');
+      const label = document.getElementById('drag-status-label');
 
       function updateDragUI() {
-        globalDragToggle.checked = state.dragEnabled;
-        if (state.dragEnabled) {
-          document.body.classList.add('drag-enabled');
-          dragStatusLabel.textContent = 'Glissement activé';
-          dragStatusDot.className = 'w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]';
-        } else {
-          document.body.classList.remove('drag-enabled');
-          dragStatusLabel.textContent = 'Glissement désactivé';
-          dragStatusDot.className = 'w-2 h-2 rounded-full bg-slate-500';
-        }
+        checkbox.checked = appState.dragEnabled;
+        label.textContent = appState.dragEnabled ? 'Glissement activé' : 'Glissement désactivé';
+        document.body.classList.toggle('drag-disabled', !appState.dragEnabled);
       }
 
-      globalDragToggle.addEventListener('change', (e) => {
-        state.dragEnabled = e.target.checked;
+      checkbox.addEventListener('change', () => {
+        appState.dragEnabled = checkbox.checked;
         updateDragUI();
         saveState();
       });
+
       updateDragUI();
+    }
 
-      // --- DRAGGABLE SYSTEM (TOP ZONE ONLY) ---
-      let activeDragElem = null;
-      let startX = 0, startY = 0;
-      let initialLeft = 0, initialTop = 0;
-      let hasMoved = false;
-
-      function makeElementDraggable(item) {
-        if (!item) return;
-
-        if (state.positions[item.id]) {
-          item.style.top = state.positions[item.id].top;
-          item.style.left = state.positions[item.id].left;
-        }
-
-        item.addEventListener('pointerdown', (e) => {
-          // 1. Check if global drag mode is active
-          if (!state.dragEnabled) return;
-
-          // 2. Ignore interactive controls inside elements
-          if (['INPUT', 'TEXTAREA', 'BUTTON', 'IFRAME', 'SELECT', 'A', 'LABEL'].includes(e.target.tagName) || e.target.closest('button, label, a')) {
-            return;
-          }
-
-          const rect = item.getBoundingClientRect();
-          const offsetY = e.clientY - rect.top;
-
-          // 3. Enforce grabbing the top part of the zone (top 32px), except small round supplies
-          const isSmallRoundSupply = ['item-resetbtn', 'item-coffeemug', 'item-penholder'].includes(item.id);
-          if (!isSmallRoundSupply && offsetY > 32) {
-            return;
-          }
-
-          activeDragElem = item;
-          hasMoved = false;
-          startX = e.clientX;
-          startY = e.clientY;
-          initialLeft = rect.left;
-          initialTop = rect.top;
-
-          item.classList.add('dragging-active');
-          item.setPointerCapture(e.pointerId);
-          e.stopPropagation();
-        });
-
-        item.addEventListener('pointermove', (e) => {
-          if (activeDragElem !== item) return;
-
-          const dx = e.clientX - startX;
-          const dy = e.clientY - startY;
-          if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasMoved = true;
-
-          item.style.left = `${initialLeft + dx}px`;
-          item.style.top = `${initialTop + dy}px`;
-        });
-
-        const stopDrag = () => {
-          if (activeDragElem === item) {
-            item.classList.remove('dragging-active');
-            state.positions[item.id] = {
-              top: item.style.top,
-              left: item.style.left
-            };
-            saveState();
-            activeDragElem = null;
-          }
-        };
-
-        item.addEventListener('pointerup', stopDrag);
-        item.addEventListener('pointercancel', stopDrag);
-      }
-
-      document.querySelectorAll('.draggable-item').forEach(makeElementDraggable);
-
-      // --- NOTEPAD ---
-      const notepadInput = document.getElementById('notepad-input');
-      notepadInput.value = state.notepadContent || '';
-      notepadInput.addEventListener('input', (e) => {
-        state.notepadContent = e.target.value;
+    // --- NOTEPAD ---
+    function initNotepad() {
+      const textarea = document.getElementById('notepad-text');
+      textarea.value = appState.notepad || '';
+      textarea.addEventListener('input', () => {
+        appState.notepad = textarea.value;
         saveState();
       });
+    }
 
-      // --- MODULE TOGGLES ---
-      const toggles = document.querySelectorAll('#hud-toggles input[type="checkbox"]');
-
-      toggles.forEach(toggle => {
-        const moduleKey = toggle.getAttribute('data-module');
-        toggle.checked = state.activeModules[moduleKey] || false;
-        
-        const hudElem = document.getElementById(`hud-${moduleKey}`);
-        if (hudElem) {
-          hudElem.classList.toggle('hidden', !toggle.checked);
+    // --- HUD SIDEBAR TOGGLES ---
+    function initHudToggles() {
+      const checkboxes = document.querySelectorAll('#sidebar input[data-hud]');
+      checkboxes.forEach((cb) => {
+        const hudId = cb.getAttribute('data-hud');
+        const hudEl = document.getElementById(hudId);
+        if (appState.activeHuds.includes(hudId)) {
+          cb.checked = true;
+          if (hudEl) hudEl.classList.add('active');
         }
 
-        toggle.addEventListener('change', (e) => {
-          const isChecked = e.target.checked;
-          state.activeModules[moduleKey] = isChecked;
-          if (hudElem) {
-            hudElem.classList.toggle('hidden', !isChecked);
+        cb.addEventListener('change', () => {
+          if (cb.checked) {
+            if (!appState.activeHuds.includes(hudId)) appState.activeHuds.push(hudId);
+            if (hudEl) {
+              topZIndex++;
+              hudEl.style.zIndex = topZIndex;
+              hudEl.classList.add('active');
+            }
+          } else {
+            appState.activeHuds = appState.activeHuds.filter((id) => id !== hudId);
+            if (hudEl) hudEl.classList.remove('active');
           }
-          if (moduleKey === 'customcursor') {
-            updateCustomCursor();
-          }
+          if (hudId === 'hud-cursor') applyCustomCursor();
           saveState();
         });
       });
+    }
 
-      // --- RESET BUTTON ---
-      document.getElementById('item-resetbtn').addEventListener('click', async () => {
-        if (hasMoved) {
-          hasMoved = false;
-          return;
-        }
-        const confirmed = await showCustomModal({
-          title: 'Réinitialiser le bureau',
-          message: 'Voulez-vous vraiment réinitialiser les positions, l\'album photo et tous les réglages ?',
-          confirmText: 'Tout réinitialiser',
-          danger: true
-        });
-        if (confirmed) {
-          localStorage.removeItem(STORAGE_KEY);
-          location.reload();
-        }
-      });
+    // --- 1. FPS MODULE ---
+    function initFpsModule() {
+      const display = document.getElementById('fps-display');
+      let frames = 0;
+      let lastTime = performance.now();
 
-      // --- HUD 1: REALTIME FPS ---
-      const fpsVal = document.getElementById('fps-val');
-      let frameCount = 0;
-      let lastFpsTime = performance.now();
-
-      function updateFPS() {
-        const now = performance.now();
-        frameCount++;
-        if (now >= lastFpsTime + 1000) {
-          fpsVal.innerText = Math.round((frameCount * 1000) / (now - lastFpsTime));
-          frameCount = 0;
-          lastFpsTime = now;
+      function loop(now) {
+        frames++;
+        if (now - lastTime >= 1000) {
+          display.textContent = `${frames} FPS`;
+          frames = 0;
+          lastTime = now;
         }
-        requestAnimationFrame(updateFPS);
+        requestAnimationFrame(loop);
       }
-      requestAnimationFrame(updateFPS);
+      requestAnimationFrame(loop);
+    }
 
-      // --- HUD 2: SPECS ---
-      document.getElementById('spec-cores').innerText = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} cœurs` : 'N/A';
-      document.getElementById('spec-ram').innerText = navigator.deviceMemory ? `~${navigator.deviceMemory} GB` : 'N/A';
-      document.getElementById('spec-res').innerText = `${window.screen.width}x${window.screen.height}`;
-      document.getElementById('spec-platform').innerText = navigator.platform || 'Inconnu';
-      document.getElementById('spec-browser').innerText = navigator.userAgent.includes('Chrome') ? 'Chrome' : 'Navigateur';
+    // --- 2. SPECS MODULE ---
+    function initSpecsModule() {
+      const box = document.getElementById('specs-display');
+      const cores = navigator.hardwareConcurrency || 'N/A';
+      const mem = navigator.deviceMemory ? `${navigator.deviceMemory} Go` : 'N/A';
+      const res = `${window.screen.width}x${window.screen.height}`;
+      const lang = navigator.language || 'fr';
+      const platform = navigator.platform || 'Web';
 
-      // --- HUD 3: KEYBOARD TRACKER ---
-      const keyCaps = document.querySelectorAll('.key-cap');
+      box.innerHTML = `
+        <div><strong>CPU :</strong> ${cores} cœurs</div>
+        <div><strong>RAM :</strong> ~${mem}</div>
+        <div><strong>Écran :</strong> ${res}</div>
+        <div><strong>OS :</strong> ${platform}</div>
+        <div><strong>Langue :</strong> ${lang}</div>
+      `;
+    }
+
+    // --- 3. KEYBOARD TRACKER ---
+    function initKeyboardModule() {
+      const rows = [
+        ['Escape', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Backspace'],
+        ['Tab', 'a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+        ['CapsLock', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'Enter'],
+        ['Shift', 'w', 'x', 'c', 'v', 'b', 'n', ',', ';', ':'],
+        ['Control', 'Alt', ' ', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'ArrowRight']
+      ];
+
+      const labels = {
+        Escape: 'Esc',
+        Backspace: '⌫',
+        CapsLock: 'Caps',
+        Control: 'Ctrl',
+        ' ': 'Espace',
+        ArrowLeft: '←',
+        ArrowUp: '↑',
+        ArrowDown: '↓',
+        ArrowRight: '→'
+      };
+
+      const container = document.getElementById('kb-container');
+      const keyElements = {};
+
+      rows.forEach((row) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'kb-row';
+        row.forEach((k) => {
+          const keyDiv = document.createElement('div');
+          keyDiv.className = 'kb-key' + (k === ' ' ? ' space' : '');
+          keyDiv.textContent = labels[k] || k;
+          rowDiv.appendChild(keyDiv);
+          keyElements[k.toLowerCase()] = keyDiv;
+        });
+        container.appendChild(rowDiv);
+      });
+
       window.addEventListener('keydown', (e) => {
-        keyCaps.forEach(cap => {
-          if (cap.getAttribute('data-key')?.toLowerCase() === e.key.toLowerCase()) {
-            cap.classList.add('active');
-          }
-        });
-      });
-      window.addEventListener('keyup', (e) => {
-        keyCaps.forEach(cap => {
-          if (cap.getAttribute('data-key')?.toLowerCase() === e.key.toLowerCase()) {
-            cap.classList.remove('active');
-          }
-        });
+        const k = e.key.toLowerCase();
+        if (keyElements[k]) keyElements[k].classList.add('pressed');
       });
 
-      // --- HUD 4: MOUSE TRACKER ---
-      const btnL = document.getElementById('mouse-btn-l');
-      const btnR = document.getElementById('mouse-btn-r');
-      const wheel = document.getElementById('mouse-wheel');
-      const posX = document.getElementById('mouse-pos-x');
-      const posY = document.getElementById('mouse-pos-y');
-      const lastClick = document.getElementById('mouse-last-click');
+      window.addEventListener('keyup', (e) => {
+        const k = e.key.toLowerCase();
+        if (keyElements[k]) keyElements[k].classList.remove('pressed');
+      });
+    }
+
+    // --- 4. MOUSE TRACKER ---
+    function initMouseModule() {
+      const leftBtn = document.getElementById('m-btn-left');
+      const rightBtn = document.getElementById('m-btn-right');
+      const midBtn = document.getElementById('m-btn-mid');
+      const coords = document.getElementById('mouse-coords');
 
       window.addEventListener('mousemove', (e) => {
-        posX.innerText = e.clientX;
-        posY.innerText = e.clientY;
+        coords.textContent = `X: ${e.clientX} | Y: ${e.clientY}`;
       });
+
       window.addEventListener('mousedown', (e) => {
-        if (e.button === 0) { btnL.classList.add('active'); lastClick.innerText = 'Gauche'; }
-        else if (e.button === 2) { btnR.classList.add('active'); lastClick.innerText = 'Droit'; }
-        else if (e.button === 1) { wheel.classList.add('scrolling'); lastClick.innerText = 'Molette'; }
+        if (e.button === 0) leftBtn.classList.add('active');
+        if (e.button === 1) midBtn.classList.add('active');
+        if (e.button === 2) rightBtn.classList.add('active');
       });
+
       window.addEventListener('mouseup', (e) => {
-        if (e.button === 0) btnL.classList.remove('active');
-        if (e.button === 2) btnR.classList.remove('active');
-        if (e.button === 1) wheel.classList.remove('scrolling');
+        if (e.button === 0) leftBtn.classList.remove('active');
+        if (e.button === 1) midBtn.classList.remove('active');
+        if (e.button === 2) rightBtn.classList.remove('active');
+      });
+    }
+
+    // --- 5. YOUTUBE SMARTPHONE ---
+    function initYoutubeModule() {
+      const phone = document.getElementById('hud-youtube');
+      const input = document.getElementById('yt-url-input');
+      const loadBtn = document.getElementById('yt-load-btn');
+      const iframe = document.getElementById('yt-iframe');
+      const playPauseBtn = document.getElementById('yt-play-pause');
+      const rotateBtn = document.getElementById('yt-rotate-btn');
+
+      let isPlaying = true;
+
+      if (appState.ytLandscape) phone.classList.add('landscape');
+      if (appState.ytUrl) iframe.src = appState.ytUrl;
+
+      function extractVideoId(url) {
+        const reg = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+        const match = url.match(reg);
+        return match ? match[1] : null;
+      }
+
+      loadBtn.addEventListener('click', () => {
+        const id = extractVideoId(input.value.trim());
+        if (id) {
+          const embed = `https://www.youtube.com/embed/${id}?enablejsapi=1&autoplay=1`;
+          iframe.src = embed;
+          appState.ytUrl = embed;
+          isPlaying = true;
+          saveState();
+        }
       });
 
-      document.getElementById('desk').addEventListener('contextmenu', e => e.preventDefault());
-
-      // --- HUD 5: YOUTUBE SMARTPHONE ---
-      const phoneFrame = document.getElementById('hud-youtube');
-      const ytIframe = document.getElementById('yt-iframe');
-      const ytRotateBtn = document.getElementById('yt-rotate-btn');
-      const ytUrlInput = document.getElementById('yt-url-input');
-      const ytLoadBtn = document.getElementById('yt-load-btn');
-
-      function applyPhoneOrientation() {
-        if (state.isPhoneLandscape) {
-          phoneFrame.style.width = '380px';
-          phoneFrame.style.height = '220px';
-        } else {
-          phoneFrame.style.width = '220px';
-          phoneFrame.style.height = '380px';
-        }
-      }
-      applyPhoneOrientation();
-
-      ytRotateBtn.addEventListener('click', () => {
-        state.isPhoneLandscape = !state.isPhoneLandscape;
-        applyPhoneOrientation();
-        saveState();
+      playPauseBtn.addEventListener('click', () => {
+        const cmd = isPlaying ? 'pauseVideo' : 'playVideo';
+        iframe.contentWindow.postMessage(
+          JSON.stringify({ event: 'command', func: cmd, args: [] }),
+          '*'
+        );
+        isPlaying = !isPlaying;
       });
 
-      function loadYoutubeVideo() {
-        let val = ytUrlInput.value.trim();
-        if (!val) return;
-        let videoId = val;
-        if (val.includes('v=')) videoId = val.split('v=')[1].split('&')[0];
-        else if (val.includes('youtu.be/')) videoId = val.split('youtu.be/')[1].split('?')[0];
-
-        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-        ytIframe.src = embedUrl;
-        state.youtubeUrl = embedUrl;
+      rotateBtn.addEventListener('click', () => {
+        appState.ytLandscape = !appState.ytLandscape;
+        phone.classList.toggle('landscape', appState.ytLandscape);
         saveState();
-      }
-      ytLoadBtn.addEventListener('click', loadYoutubeVideo);
+      });
+    }
 
-      // --- HUD 6: PHOTO ALBUM ---
-      const page1 = document.getElementById('album-page-1');
-      const page2 = document.getElementById('album-page-2');
-      const openView = document.getElementById('album-open-view');
-      const closedView = document.getElementById('album-closed-view');
-      const toggleAlbumBtn = document.getElementById('album-toggle-btn');
-      const albumBook = document.getElementById('hud-album');
+    // --- 6. PHOTO ALBUM (OPENABLE / CLOSABLE BOOK) ---
+    function initAlbumModule() {
+      renderAlbum();
+    }
 
-      function renderAlbum() {
-        if (state.albumOpen) {
-          openView.classList.remove('hidden');
-          closedView.classList.add('hidden');
-          toggleAlbumBtn.innerText = 'Fermer le livre';
-          albumBook.style.width = '440px';
-          albumBook.style.height = '260px';
-        } else {
-          openView.classList.add('hidden');
-          closedView.classList.remove('hidden');
-          toggleAlbumBtn.innerText = 'Ouvrir le livre';
-          albumBook.style.width = '220px';
-          albumBook.style.height = '260px';
-        }
-
-        page1.innerHTML = '';
-        page2.innerHTML = '';
-
-        state.albumPhotos.forEach((imgUrl, index) => {
-          const slot = document.createElement('div');
-          slot.className = 'w-full h-full bg-amber-950/40 rounded border border-amber-900/60 overflow-hidden flex items-center justify-center relative group';
-          
-          if (imgUrl) {
-            slot.innerHTML = `
-              <img src="${imgUrl}" class="w-full h-full object-cover">
-              <button data-slot="${index}" class="remove-photo absolute top-0.5 right-0.5 bg-red-600 text-white w-3.5 h-3.5 rounded-full text-[8px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition">×</button>
-            `;
-          } else {
-            slot.innerHTML = `<span class="text-[8px] text-amber-800 font-mono">${index + 1}</span>`;
-          }
-
-          if (index < 8) page1.appendChild(slot);
-          else page2.appendChild(slot);
+    function renderAlbum() {
+      const container = document.getElementById('album-content');
+      if (!appState.albumOpen) {
+        container.innerHTML = `
+          <div class="album-closed-cover">
+            <div style="font-size: 1.8rem;">📖</div>
+            <div style="font-weight: 800; font-size: 0.85rem; color: #fde68a;">MON ALBUM PHOTO</div>
+            <button class="yt-btn" id="btn-open-book">Ouvrir le livre</button>
+          </div>
+        `;
+        document.getElementById('btn-open-book').addEventListener('click', () => {
+          appState.albumOpen = true;
+          saveState();
+          renderAlbum();
         });
-
-        document.querySelectorAll('.remove-photo').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const slotIdx = parseInt(e.target.getAttribute('data-slot'));
-            state.albumPhotos[slotIdx] = null;
-            saveState();
-            renderAlbum();
-          });
-        });
+        return;
       }
 
-      toggleAlbumBtn.addEventListener('click', () => {
-        state.albumOpen = !state.albumOpen;
+      container.innerHTML = `
+        <div style="padding: 4px 8px; background: #2b1408; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.68rem; color: #fde68a;">16 emplacements</span>
+          <button class="yt-btn" id="btn-close-book">📕 Fermer l'album</button>
+        </div>
+        <div class="album-open-spread">
+          <div class="album-page" id="album-page-left"></div>
+          <div class="album-page" id="album-page-right"></div>
+        </div>
+      `;
+
+      document.getElementById('btn-close-book').addEventListener('click', () => {
+        appState.albumOpen = false;
         saveState();
         renderAlbum();
       });
-      renderAlbum();
 
-      // --- SECTION CREER: LIENS & PHOTOS ---
-      const linksContainer = document.getElementById('links-container');
+      const leftPage = document.getElementById('album-page-left');
+      const rightPage = document.getElementById('album-page-right');
 
-      function renderLinks() {
-        linksContainer.innerHTML = '';
-        state.links.forEach((linkObj, i) => {
-          const paper = document.createElement('div');
-          paper.id = `link-item-${i}`;
-          paper.className = 'draggable-item paper-scrap p-2.5 w-36';
-          paper.style.top = linkObj.top || '200px';
-          paper.style.left = linkObj.left || '400px';
-          paper.innerHTML = `
-            <div class="flex justify-between items-center border-b border-amber-900/20 pb-1 mb-1 text-[10px]">
-              <span class="font-bold truncate max-w-[90px] text-amber-900">${linkObj.title}</span>
-              <button class="delete-link text-red-600 font-bold hover:text-red-800 text-xs">×</button>
-            </div>
-            <a href="${linkObj.url}" target="_blank" class="block text-center bg-amber-800 hover:bg-amber-900 text-amber-100 rounded py-0.5 text-[10px] font-semibold transition">
-              Visiter le lien <i class="fa-solid fa-external-link text-[8px]"></i>
-            </a>
+      appState.photos.forEach((src, index) => {
+        const slot = document.createElement('div');
+        slot.className = 'photo-slot';
+        if (src) {
+          slot.innerHTML = `
+            <img src="${src}" alt="Photo ${index + 1}" />
+            <button class="photo-del-btn" title="Supprimer">✕</button>
           `;
-          linksContainer.appendChild(paper);
-          makeElementDraggable(paper);
-
-          paper.querySelector('.delete-link').addEventListener('click', () => {
-            state.links.splice(i, 1);
+          slot.querySelector('.photo-del-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            appState.photos[index] = null;
             saveState();
-            renderLinks();
+            renderAlbum();
           });
+        } else {
+          slot.textContent = `+${index + 1}`;
+        }
+
+        if (index < 8) leftPage.appendChild(slot);
+        else rightPage.appendChild(slot);
+      });
+    }
+
+    // --- 7. SOLITAIRE ---
+    function initSolitaireModule() {
+      const suits = ['♠', '♥', '♦', '♣'];
+      const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+      let stock = [];
+      let waste = [];
+      let foundations = [[], [], [], []];
+      let tableau = [[], [], [], [], [], [], []];
+      let selected = null;
+
+      function isRed(suit) {
+        return suit === '♥' || suit === '♦';
+      }
+
+      function cardRank(val) {
+        return values.indexOf(val);
+      }
+
+      function newGame() {
+        const deck = [];
+        suits.forEach((s) => {
+          values.forEach((v) => {
+            deck.push({ suit: s, val: v, faceUp: false });
+          });
+        });
+
+        for (let i = deck.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+
+        tableau = [[], [], [], [], [], [], []];
+        for (let col = 0; col < 7; col++) {
+          for (let row = 0; row <= col; row++) {
+            const card = deck.pop();
+            if (row === col) card.faceUp = true;
+            tableau[col].push(card);
+          }
+        }
+
+        stock = deck;
+        waste = [];
+        foundations = [[], [], [], []];
+        selected = null;
+        renderSolitaire();
+      }
+
+      function canMoveToFoundation(card, fIndex) {
+        const pile = foundations[fIndex];
+        if (pile.length === 0) return card.val === 'A';
+        const top = pile[pile.length - 1];
+        return top.suit === card.suit && cardRank(card.val) === cardRank(top.val) + 1;
+      }
+
+      function canMoveToTableau(card, colIndex) {
+        const col = tableau[colIndex];
+        if (col.length === 0) return card.val === 'K';
+        const top = col[col.length - 1];
+        if (!top.faceUp) return false;
+        return isRed(top.suit) !== isRed(card.suit) && cardRank(card.val) === cardRank(top.val) - 1;
+      }
+
+      function renderSolitaire() {
+        const stockEl = document.getElementById('sol-stock');
+        const wasteEl = document.getElementById('sol-waste');
+        const foundContainer = document.getElementById('sol-foundations');
+        const tabContainer = document.getElementById('sol-tableau');
+
+        stockEl.innerHTML = stock.length > 0 ? `<div class="playing-card facedown" style="position:static;"></div>` : '↻';
+        wasteEl.innerHTML = '';
+        if (waste.length > 0) {
+          const top = waste[waste.length - 1];
+          const cDiv = createCardEl(top, selected && selected.source === 'waste');
+          cDiv.style.position = 'static';
+          cDiv.onclick = () => {
+            selected = selected && selected.source === 'waste' ? null : { source: 'waste' };
+            renderSolitaire();
+          };
+          wasteEl.appendChild(cDiv);
+        }
+
+        foundContainer.innerHTML = '';
+        foundations.forEach((pile, idx) => {
+          const slot = document.createElement('div');
+          slot.className = 'sol-slot';
+          if (pile.length > 0) {
+            const top = pile[pile.length - 1];
+            const cDiv = createCardEl(top, false);
+            cDiv.style.position = 'static';
+            slot.appendChild(cDiv);
+          } else {
+            slot.textContent = suits[idx];
+          }
+          slot.onclick = () => {
+            if (!selected) return;
+            let card = null;
+            if (selected.source === 'waste') card = waste[waste.length - 1];
+            if (selected.source === 'tableau') {
+              const col = tableau[selected.col];
+              if (selected.index === col.length - 1) card = col[selected.index];
+            }
+            if (card && canMoveToFoundation(card, idx)) {
+              if (selected.source === 'waste') waste.pop();
+              else {
+                tableau[selected.col].pop();
+                const rem = tableau[selected.col];
+                if (rem.length > 0) rem[rem.length - 1].faceUp = true;
+              }
+              foundations[idx].push(card);
+              selected = null;
+              renderSolitaire();
+            }
+          };
+          foundContainer.appendChild(slot);
+        });
+
+        tabContainer.innerHTML = '';
+        tableau.forEach((col, cIdx) => {
+          const colDiv = document.createElement('div');
+          colDiv.className = 'sol-col';
+          if (col.length === 0) {
+            const emptySlot = document.createElement('div');
+            emptySlot.className = 'sol-slot';
+            emptySlot.onclick = () => {
+              if (!selected) return;
+              if (selected.source === 'waste' && canMoveToTableau(waste[waste.length - 1], cIdx)) {
+                tableau[cIdx].push(waste.pop());
+                selected = null;
+                renderSolitaire();
+              } else if (selected.source === 'tableau') {
+                const moving = tableau[selected.col].slice(selected.index);
+                if (canMoveToTableau(moving[0], cIdx)) {
+                  tableau[selected.col].splice(selected.index);
+                  const rem = tableau[selected.col];
+                  if (rem.length > 0) rem[rem.length - 1].faceUp = true;
+                  tableau[cIdx].push(...moving);
+                  selected = null;
+                  renderSolitaire();
+                }
+              }
+            };
+            colDiv.appendChild(emptySlot);
+          } else {
+            col.forEach((card, rIdx) => {
+              const isSel = selected && selected.source === 'tableau' && selected.col === cIdx && rIdx >= selected.index;
+              const cDiv = createCardEl(card, isSel);
+              cDiv.style.top = `${rIdx * 16}px`;
+              cDiv.onclick = (e) => {
+                e.stopPropagation();
+                if (!card.faceUp) return;
+                if (!selected) {
+                  selected = { source: 'tableau', col: cIdx, index: rIdx };
+                  renderSolitaire();
+                  return;
+                }
+                if (selected.source === 'tableau' && selected.col === cIdx && selected.index === rIdx) {
+                  selected = null;
+                  renderSolitaire();
+                  return;
+                }
+                if (selected.source === 'waste') {
+                  const wCard = waste[waste.length - 1];
+                  if (canMoveToTableau(wCard, cIdx)) {
+                    tableau[cIdx].push(waste.pop());
+                    selected = null;
+                    renderSolitaire();
+                    return;
+                  }
+                }
+                if (selected.source === 'tableau') {
+                  const moving = tableau[selected.col].slice(selected.index);
+                  if (canMoveToTableau(moving[0], cIdx)) {
+                    tableau[selected.col].splice(selected.index);
+                    const rem = tableau[selected.col];
+                    if (rem.length > 0) rem[rem.length - 1].faceUp = true;
+                    tableau[cIdx].push(...moving);
+                    selected = null;
+                    renderSolitaire();
+                    return;
+                  }
+                }
+                selected = { source: 'tableau', col: cIdx, index: rIdx };
+                renderSolitaire();
+              };
+              colDiv.appendChild(cDiv);
+            });
+          }
+          tabContainer.appendChild(colDiv);
         });
       }
-      renderLinks();
 
-      document.getElementById('btn-create-link').addEventListener('click', async () => {
-        const res = await showCustomModal({
-          title: 'Créer un raccourci lien',
-          message: 'Entrez le nom et l\'adresse web du raccourci à placer sur le bureau :',
-          fields: [
-            { name: 'title', placeholder: 'Titre du lien (ex: GitHub CforCode)' },
-            { name: 'url', placeholder: 'URL (ex: https://github.com)' }
-          ],
-          confirmText: 'Créer le papier'
-        });
+      function createCardEl(card, isSel) {
+        const div = document.createElement('div');
+        if (!card.faceUp) {
+          div.className = 'playing-card facedown';
+          return div;
+        }
+        div.className = `playing-card ${isRed(card.suit) ? 'red' : 'black'} ${isSel ? 'selected' : ''}`;
+        div.innerHTML = `<div>${card.val}${card.suit}</div><div style="align-self:flex-end;">${card.suit}</div>`;
+        return div;
+      }
 
-        if (!res || !res.title.trim() || !res.url.trim()) return;
-        let url = res.url.trim();
-        if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+      document.getElementById('sol-stock').onclick = () => {
+        selected = null;
+        if (stock.length > 0) {
+          const c = stock.pop();
+          c.faceUp = true;
+          waste.push(c);
+        } else {
+          stock = waste.reverse().map((c) => ({ ...c, faceUp: false }));
+          waste = [];
+        }
+        renderSolitaire();
+      };
 
-        state.links.push({ title: res.title.trim(), url, top: '220px', left: '420px' });
-        saveState();
-        renderLinks();
-      });
+      document.getElementById('sol-new-game').onclick = newGame;
+      newGame();
+    }
 
-      document.getElementById('btn-create-photo').addEventListener('click', async () => {
-        const emptySlot = state.albumPhotos.findIndex(p => p === null);
-        if (emptySlot === -1) {
-          await showCustomModal({
-            title: 'Album Photo plein',
-            message: 'Votre album contient déjà 16 photos. Supprimez-en une pour en ajouter une nouvelle.',
-            showCancel: false,
-            confirmText: 'Compris'
-          });
+    // --- 8. MINESWEEPER (DIRT PATCH) ---
+    function initMinesweeperModule() {
+      const size = 9;
+      const totalMines = 10;
+      let board = [];
+      let gameOver = false;
+
+      function startMine() {
+        gameOver = false;
+        document.getElementById('mine-status').textContent = 'En cours';
+        document.getElementById('mine-count').textContent = `💣 ${totalMines}`;
+        board = Array.from({ length: size }, () =>
+          Array.from({ length: size }, () => ({ mine: false, revealed: false, flagged: false, count: 0 }))
+        );
+
+        let placed = 0;
+        while (placed < totalMines) {
+          const r = Math.floor(Math.random() * size);
+          const c = Math.floor(Math.random() * size);
+          if (!board[r][c].mine) {
+            board[r][c].mine = true;
+            placed++;
+          }
+        }
+
+        for (let r = 0; r < size; r++) {
+          for (let c = 0; c < size; c++) {
+            if (board[r][c].mine) continue;
+            let cnt = 0;
+            for (let dr = -1; dr <= 1; dr++) {
+              for (let dc = -1; dc <= 1; dc++) {
+                const nr = r + dr;
+                const nc = c + dc;
+                if (nr >= 0 && nr < size && nc >= 0 && nc < size && board[nr][nc].mine) cnt++;
+              }
+            }
+            board[r][c].count = cnt;
+          }
+        }
+        renderMine();
+      }
+
+      function reveal(r, c) {
+        if (r < 0 || r >= size || c < 0 || c >= size) return;
+        const cell = board[r][c];
+        if (cell.revealed || cell.flagged) return;
+        cell.revealed = true;
+
+        if (cell.mine) {
+          gameOver = true;
+          document.getElementById('mine-status').textContent = '💥 Perdu';
+          board.forEach((row) => row.forEach((x) => { if (x.mine) x.revealed = true; }));
           return;
         }
 
-        const res = await showCustomModal({
-          title: 'Ajouter une photo à l\'album',
-          message: 'Collez une URL d\'image ci-dessous ou laissez vide pour importer un fichier depuis votre appareil :',
-          fields: [
-            { name: 'imgUrl', placeholder: 'https://exemple.com/photo.jpg (ou laisser vide)' }
-          ],
-          confirmText: 'Continuer'
-        });
-
-        if (!res) return;
-
-        if (res.imgUrl && res.imgUrl.trim() !== '') {
-          state.albumPhotos[emptySlot] = res.imgUrl.trim();
-          saveState();
-          renderAlbum();
-        } else {
-          const fileInput = document.createElement('input');
-          fileInput.type = 'file';
-          fileInput.accept = 'image/*';
-          fileInput.onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onload = (event) => {
-                state.albumPhotos[emptySlot] = event.target.result;
-                saveState();
-                renderAlbum();
-              };
-              reader.readAsDataURL(file);
-            }
-          };
-          fileInput.click();
-        }
-      });
-
-      // --- HUD 7: SOLITAIRE ENGINE ---
-      const suits = ['♠', '♥', '♣', '♦'];
-      const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-      let deck = [];
-
-      function initSolitaire() {
-        deck = [];
-        suits.forEach(suit => {
-          values.forEach(val => {
-            deck.push({ suit, val, color: (suit === '♥' || suit === '♦') ? 'red' : 'black' });
-          });
-        });
-        deck.sort(() => Math.random() - 0.5);
-
-        const tableau = document.getElementById('sol-tableau');
-        tableau.innerHTML = '';
-        for (let i = 0; i < 7; i++) {
-          const col = document.createElement('div');
-          col.className = 'flex flex-col gap-1 items-center border border-emerald-800/40 rounded p-1 bg-emerald-950/20';
-          const cardData = deck.pop();
-          if (cardData) {
-            col.innerHTML = `
-              <div class="solitaire-card ${cardData.color}">
-                <div>${cardData.val}</div>
-                <div class="text-center text-xs">${cardData.suit}</div>
-              </div>
-            `;
+        if (cell.count === 0) {
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) reveal(r + dr, c + dc);
           }
-          tableau.appendChild(col);
         }
       }
-      document.getElementById('solitaire-reset-btn').addEventListener('click', initSolitaire);
-      initSolitaire();
 
-      // --- HUD 8: MINESWEEPER ENGINE ---
-      const mineGrid = document.getElementById('mine-grid');
-      let mines = [];
-
-      function initMinesweeper() {
-        mineGrid.innerHTML = '';
-        mines = Array(64).fill(false);
-        let placed = 0;
-        while (placed < 10) {
-          const idx = Math.floor(Math.random() * 64);
-          if (!mines[idx]) { mines[idx] = true; placed++; }
+      function checkWin() {
+        let safeUnrevealed = 0;
+        board.forEach((row) => row.forEach((c) => {
+          if (!c.mine && !c.revealed) safeUnrevealed++;
+        }));
+        if (safeUnrevealed === 0 && !gameOver) {
+          gameOver = true;
+          document.getElementById('mine-status').textContent = '🏆 Gagné !';
         }
+      }
 
-        for (let i = 0; i < 64; i++) {
-          const tile = document.createElement('div');
-          tile.className = 'mine-tile';
-          tile.addEventListener('click', async () => {
-            if (mines[i]) {
-              tile.innerHTML = '💣';
-              tile.classList.add('bg-red-950');
-              await showCustomModal({
-                title: '💥 Boum !',
-                message: 'Vous avez cliqué sur une mine. Cliquez sur Reset pour rejouer.',
-                showCancel: false,
-                confirmText: 'OK'
-              });
-            } else {
-              tile.classList.add('revealed');
-              tile.innerText = '1';
+      function renderMine() {
+        const grid = document.getElementById('mine-grid');
+        grid.innerHTML = '';
+        for (let r = 0; r < size; r++) {
+          for (let c = 0; c < size; c++) {
+            const cell = board[r][c];
+            const div = document.createElement('div');
+            div.className = 'mine-cell' + (cell.revealed ? ' revealed' : '') + (cell.revealed && cell.mine ? ' bomb' : '');
+            if (cell.revealed) {
+              div.textContent = cell.mine ? '💣' : (cell.count > 0 ? cell.count : '');
+            } else if (cell.flagged) {
+              div.textContent = '🚩';
             }
-          });
-          mineGrid.appendChild(tile);
+
+            div.onclick = () => {
+              if (gameOver) return;
+              reveal(r, c);
+              checkWin();
+              renderMine();
+            };
+
+            div.oncontextmenu = (e) => {
+              e.preventDefault();
+              if (gameOver || cell.revealed) return;
+              cell.flagged = !cell.flagged;
+              renderMine();
+            };
+            grid.appendChild(div);
+          }
         }
       }
-      document.getElementById('mine-reset-btn').addEventListener('click', initMinesweeper);
-      initMinesweeper();
 
-      // --- HUD 9: CUSTOM CURSOR ENGINE (REPAIRED & FIXED) ---
-      const previewBox = document.getElementById('cursor-preview');
-      const deskElem = document.getElementById('desk');
+      document.getElementById('mine-reset').onclick = startMine;
+      startMine();
+    }
 
-      const inputPreset = document.getElementById('cursor-preset');
-      const inputSize = document.getElementById('cursor-size');
-      const inputThick = document.getElementById('cursor-thick');
-      const inputGap = document.getElementById('cursor-gap');
-      const inputColor = document.getElementById('cursor-color');
-      const inputDot = document.getElementById('cursor-dot');
-      const inputActive = document.getElementById('cursor-active-toggle');
+    // --- 9. CUSTOM CURSOR ---
+    function initCursorModule() {
+      const sizeIn = document.getElementById('cur-size');
+      const thickIn = document.getElementById('cur-thick');
+      const gapIn = document.getElementById('cur-gap');
+      const colorIn = document.getElementById('cur-color');
+      const dotIn = document.getElementById('cur-dot');
+      const applyIn = document.getElementById('cur-apply');
+      const codeIn = document.getElementById('cur-code');
+      const importBtn = document.getElementById('cur-import-btn');
 
-      // Sync state inputs
-      if (state.customCursor) {
-        inputPreset.value = state.customCursor.preset;
-        inputSize.value = state.customCursor.size;
-        inputThick.value = state.customCursor.thick;
-        inputGap.value = state.customCursor.gap;
-        inputColor.value = state.customCursor.color;
-        inputDot.checked = state.customCursor.dot;
-        inputActive.checked = state.customCursor.active;
+      function syncInputs() {
+        sizeIn.value = appState.cursor.size;
+        thickIn.value = appState.cursor.thick;
+        gapIn.value = appState.cursor.gap;
+        colorIn.value = appState.cursor.color;
+        dotIn.checked = appState.cursor.dot;
+        applyIn.checked = appState.cursor.apply;
+        codeIn.value = JSON.stringify(appState.cursor);
       }
 
-      function generateCursorSVG(cfg) {
-        const sz = parseInt(cfg.size);
-        const th = parseInt(cfg.thick);
-        const gp = parseInt(cfg.gap);
-        const cl = cfg.color;
-        const center = sz / 2;
-
-        let svgBody = '';
-
-        if (cfg.preset === 'cross') {
-          svgBody = `
-            <line x1="${center}" y1="0" x2="${center}" y2="${sz}" stroke="${cl}" stroke-width="${th}" />
-            <line x1="0" y1="${center}" x2="${sz}" y2="${center}" stroke="${cl}" stroke-width="${th}" />
-          `;
-        } else if (cfg.preset === 'dot') {
-          svgBody = `<circle cx="${center}" cy="${center}" r="${th * 2}" fill="${cl}" />`;
-        } else if (cfg.preset === 'circle-cross') {
-          svgBody = `
-            <circle cx="${center}" cy="${center}" r="${center - 2}" stroke="${cl}" stroke-width="${th}" fill="none" />
-            <line x1="${center}" y1="2" x2="${center}" y2="${sz - 2}" stroke="${cl}" stroke-width="${th}" />
-            <line x1="2" y1="${center}" x2="${sz - 2}" y2="${center}" stroke="${cl}" stroke-width="${th}" />
-          `;
-        } else if (cfg.preset === 'pro') {
-          svgBody = `
-            <line x1="${center}" y1="0" x2="${center}" y2="${center - gp}" stroke="${cl}" stroke-width="${th}" />
-            <line x1="${center}" y1="${center + gp}" x2="${center}" y2="${sz}" stroke="${cl}" stroke-width="${th}" />
-            <line x1="0" y1="${center}" x2="${center - gp}" y2="${center}" stroke="${cl}" stroke-width="${th}" />
-            <line x1="${center + gp}" y1="${center}" x2="${sz}" y2="${center}" stroke="${cl}" stroke-width="${th}" />
-          `;
-        } else if (cfg.preset === 'circle') {
-          svgBody = `<circle cx="${center}" cy="${center}" r="${center - 2}" stroke="${cl}" stroke-width="${th}" fill="none" />`;
-        }
-
-        if (cfg.dot && cfg.preset !== 'dot') {
-          svgBody += `<circle cx="${center}" cy="${center}" r="${Math.max(th, 2)}" fill="${cl}" />`;
-        }
-
-        return `<svg xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">${svgBody}</svg>`;
-      }
-
-      function updateCustomCursor() {
-        const cfg = {
-          active: inputActive.checked,
-          preset: inputPreset.value,
-          size: parseInt(inputSize.value),
-          thick: parseInt(inputThick.value),
-          gap: parseInt(inputGap.value),
-          color: inputColor.value,
-          dot: inputDot.checked
+      function updateFromUI() {
+        appState.cursor = {
+          size: parseInt(sizeIn.value, 10),
+          thick: parseInt(thickIn.value, 10),
+          gap: parseInt(gapIn.value, 10),
+          color: colorIn.value,
+          dot: dotIn.checked,
+          apply: applyIn.checked
         };
-
-        state.customCursor = cfg;
+        codeIn.value = JSON.stringify(appState.cursor);
         saveState();
-
-        document.getElementById('val-cursor-size').innerText = `${cfg.size}px`;
-        document.getElementById('val-cursor-thick').innerText = `${cfg.thick}px`;
-        document.getElementById('val-cursor-gap').innerText = `${cfg.gap}px`;
-
-        const svgCode = generateCursorSVG(cfg);
-
-        // Render preview
-        previewBox.innerHTML = svgCode;
-
-        // Apply globally if HUD is enabled and toggle active
-        const isHudEnabled = state.activeModules.customcursor;
-        if (isHudEnabled && cfg.active) {
-          const encodedSvg = encodeURIComponent(svgCode);
-          const hotspot = cfg.size / 2;
-          const cursorStyle = `url("data:image/svg+xml,${encodedSvg}") ${hotspot} ${hotspot}, auto`;
-          deskElem.style.cursor = cursorStyle;
-        } else {
-          deskElem.style.cursor = 'default';
-        }
+        applyCustomCursor();
       }
 
-      [inputPreset, inputSize, inputThick, inputGap, inputColor, inputDot, inputActive].forEach(elem => {
-        elem.addEventListener('input', updateCustomCursor);
-        elem.addEventListener('change', updateCustomCursor);
+      [sizeIn, thickIn, gapIn, colorIn, dotIn, applyIn].forEach((el) => {
+        el.addEventListener('input', updateFromUI);
+        el.addEventListener('change', updateFromUI);
       });
 
-      updateCustomCursor();
-    });
+      document.querySelectorAll('.preset-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const p = btn.getAttribute('data-preset');
+          if (p === 'cross') appState.cursor = { ...appState.cursor, size: 22, thick: 2, gap: 4, dot: false };
+          if (p === 'dot') appState.cursor = { ...appState.cursor, size: 8, thick: 1, gap: 8, dot: true };
+          if (p === 'circle') appState.cursor = { ...appState.cursor, size: 24, thick: 2, gap: 6, dot: true };
+          if (p === 'fps') appState.cursor = { ...appState.cursor, size: 18, thick: 2, gap: 3, dot: true };
+          syncInputs();
+          saveState();
+          applyCustomCursor();
+        });
+      });
+
+      importBtn.addEventListener('click', () => {
+        try {
+          const parsed = JSON.parse(codeIn.value);
+          appState.cursor = { ...appState.cursor, ...parsed };
+          syncInputs();
+          saveState();
+          applyCustomCursor();
+        } catch (e) {
+          alert('Code JSON invalide.');
+        }
+      });
+
+      syncInputs();
+      applyCustomCursor();
+    }
+
+    function applyCustomCursor() {
+      const desk = document.getElementById('desk');
+      const preview = document.getElementById('cursor-preview');
+      const { size, thick, gap, color, dot, apply } = appState.cursor;
+      const box = 64;
+      const mid = box / 2;
+      const arm = size / 2;
+
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${box}" height="${box}" viewBox="0 0 ${box} ${box}">
+          <line x1="${mid - arm}" y1="${mid}" x2="${mid - gap}" y2="${mid}" stroke="${color}" stroke-width="${thick}" stroke-linecap="round"/>
+          <line x1="${mid + gap}" y1="${mid}" x2="${mid + arm}" y2="${mid}" stroke="${color}" stroke-width="${thick}" stroke-linecap="round"/>
+          <line x1="${mid}" y1="${mid - arm}" x2="${mid}" y2="${mid - gap}" stroke="${color}" stroke-width="${thick}" stroke-linecap="round"/>
+          <line x1="${mid}" y1="${mid + gap}" x2="${mid}" y2="${mid + arm}" stroke="${color}" stroke-width="${thick}" stroke-linecap="round"/>
+          ${dot ? `<circle cx="${mid}" cy="${mid}" r="${Math.max(1.5, thick)}" fill="${color}"/>` : ''}
+        </svg>
+      `;
+
+      preview.innerHTML = svg;
+
+      const isHudActive = appState.activeHuds.includes('hud-cursor');
+      if (isHudActive && apply) {
+        const encoded = encodeURIComponent(svg.trim());
+        desk.style.cursor = `url("data:image/svg+xml,${encoded}") ${mid} ${mid}, crosshair`;
+      } else {
+        desk.style.cursor = 'default';
+      }
+    }
+
+    // --- CREATE TOOLS (LINKS & PHOTOS) ---
+    function initCreateTools() {
+      renderCreatedLinks();
+
+      document.getElementById('open-link-modal').addEventListener('click', () => {
+        openModal(`
+          <h3>Créer un lien</h3>
+          <input type="text" id="new-link-title" placeholder="Nom du lien (ex: GitHub)" />
+          <input type="url" id="new-link-url" placeholder="https://..." />
+          <div class="modal-actions">
+            <button class="btn-modal cancel" id="modal-cancel">Annuler</button>
+            <button class="btn-modal confirm" id="modal-save-link">Créer</button>
+          </div>
+        `);
+
+        document.getElementById('modal-cancel').onclick = closeModal;
+        document.getElementById('modal-save-link').onclick = () => {
+          const title = document.getElementById('new-link-title').value.trim() || 'Lien';
+          let url = document.getElementById('new-link-url').value.trim();
+          if (!url) return;
+          if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+
+          const id = 'link-' + Date.now();
+          appState.links.push({ id, title, url });
+          appState.positions[id] = { left: '320px', top: '90px' };
+          saveState();
+          renderCreatedLinks();
+          closeModal();
+        };
+      });
+
+      document.getElementById('open-photo-modal').addEventListener('click', () => {
+        openModal(`
+          <h3>Ajouter une photo à l'album</h3>
+          <input type="url" id="new-photo-url" placeholder="Coller un lien d'image (https://...)" />
+          <div style="text-align:center; font-size:0.72rem; color:#94a3b8;">— OU importer un fichier —</div>
+          <input type="file" id="new-photo-file" accept="image/*" />
+          <div class="modal-actions">
+            <button class="btn-modal cancel" id="modal-cancel">Annuler</button>
+            <button class="btn-modal confirm" id="modal-save-photo">Ajouter</button>
+          </div>
+        `);
+
+        document.getElementById('modal-cancel').onclick = closeModal;
+        document.getElementById('modal-save-photo').onclick = () => {
+          const urlVal = document.getElementById('new-photo-url').value.trim();
+          const fileInput = document.getElementById('new-photo-file');
+
+          const insertPhoto = (src) => {
+            const emptyIdx = appState.photos.findIndex((p) => p === null);
+            const targetIdx = emptyIdx !== -1 ? emptyIdx : 0;
+            appState.photos[targetIdx] = src;
+
+            // Active automatiquement l'album photo s'il ne l'est pas
+            if (!appState.activeHuds.includes('hud-album')) {
+              appState.activeHuds.push('hud-album');
+              const cb = document.querySelector('input[data-hud="hud-album"]');
+              if (cb) cb.checked = true;
+              document.getElementById('hud-album').classList.add('active');
+            }
+            appState.albumOpen = true;
+            saveState();
+            renderAlbum();
+            closeModal();
+          };
+
+          if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => insertPhoto(e.target.result);
+            reader.readAsDataURL(fileInput.files[0]);
+          } else if (urlVal) {
+            insertPhoto(urlVal);
+          }
+        };
+      });
+    }
+
+    function renderCreatedLinks() {
+      const layer = document.getElementById('created-links-layer');
+      layer.innerHTML = '';
+
+      appState.links.forEach((link) => {
+        const pos = appState.positions[link.id] || { left: '300px', top: '90px' };
+        const el = document.createElement('div');
+        el.id = link.id;
+        el.className = 'draggable-item torn-link-note';
+        el.style.left = pos.left;
+        el.style.top = pos.top;
+        el.style.zIndex = 25;
+
+        el.innerHTML = `
+          <div class="drag-handle"><span>LIEN</span><span class="drag-dots">⋮⋮</span></div>
+          <div class="torn-link-content">
+            <div class="torn-link-title">${escapeHtml(link.title)}</div>
+            <div class="torn-link-actions">
+              <a class="btn-visit-link" href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">Consulter</a>
+              <button class="btn-del-link" title="Supprimer">✕</button>
+            </div>
+          </div>
+        `;
+
+        el.querySelector('.btn-del-link').addEventListener('click', () => {
+          appState.links = appState.links.filter((l) => l.id !== link.id);
+          delete appState.positions[link.id];
+          saveState();
+          renderCreatedLinks();
+        });
+
+        layer.appendChild(el);
+      });
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, (m) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[m]));
+    }
+
+    // --- RESET BUTTON ---
+    function initResetButton() {
+      document.getElementById('btn-reset-all').addEventListener('click', () => {
+        openModal(`
+          <h3 style="color:#ef4444;">Réinitialiser tout ?</h3>
+          <p style="font-size:0.78rem; color:#cbd5e1;">Toutes les positions, notes, photos et modules actifs seront remis à zéro.</p>
+          <div class="modal-actions">
+            <button class="btn-modal cancel" id="modal-cancel">Annuler</button>
+            <button class="btn-modal confirm" style="background:#dc2626;" id="modal-confirm-reset">Tout effacer</button>
+          </div>
+        `);
+        document.getElementById('modal-cancel').onclick = closeModal;
+        document.getElementById('modal-confirm-reset').onclick = () => {
+          localStorage.removeItem(STORAGE_KEY);
+          location.reload();
+        };
+      });
+    }
+
+    function openModal(html) {
+      const backdrop = document.getElementById('modal-backdrop');
+      const content = document.getElementById('modal-content');
+      content.innerHTML = html;
+      backdrop.classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-backdrop').classList.remove('open');
+    }
   </script>
 </body>
 </html>
