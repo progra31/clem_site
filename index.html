@@ -244,7 +244,8 @@
             const timeoutId = setTimeout(() => controller.abort(), 15000);
 
             try {
-                const response = await fetch('https://raw.githubusercontent.com/progra31/CforCode/b8eb20193abf5ef00ecdb088ad78519dfdd16b39/version.txt', {
+                // Mise à jour de l'URL brute avec le nouveau commit de version.txt
+                const response = await fetch('https://raw.githubusercontent.com/progra31/CforCode/49221ce2c4f0ec32658ac7d2dab1ec738b9ca61a/version.txt', {
                     signal: controller.signal,
                     cache: 'no-store'
                 });
@@ -256,14 +257,14 @@
                 
                 const latestVersion = (await response.text()).trim();
 
-                if (latestVersion === CURRENT_VERSION) {
-                    iconElement.src = icons.right;
-                    currentState = "right";
-                    document.getElementById("version-checker").title = "Le site est à jour. Cliquez pour revérifier.";
-                } else {
+                if (latestVersion && latestVersion !== CURRENT_VERSION) {
                     iconElement.src = icons.wrong;
                     currentState = "wrong";
                     document.getElementById("version-checker").title = "Une mise à jour est disponible ! Cliquez pour actualiser.";
+                } else {
+                    iconElement.src = icons.right;
+                    currentState = "right";
+                    document.getElementById("version-checker").title = "Le site est à jour. Cliquez pour revérifier.";
                 }
             } catch (error) {
                 clearTimeout(timeoutId);
