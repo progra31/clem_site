@@ -256,7 +256,7 @@
                 
                 const latestVersion = (await response.text()).trim();
 
-                if (latestVersion && latestVersion !== CURRENT_VERSION) {
+                if (latestVersion !== CURRENT_VERSION) {
                     iconElement.src = icons.wrong;
                     currentState = "wrong";
                     document.getElementById("version-checker").title = "Une mise à jour est disponible ! Cliquez pour actualiser.";
